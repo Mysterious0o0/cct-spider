@@ -5,16 +5,16 @@ import (
 )
 
 type Config struct {
-	configType string
-	configName string
-	configPath string
+	ConfigType string
+	ConfigName string
+	ConfigPath string
 }
 
 func (c *Config) NewConfig() (v *viper.Viper, err error) {
 	v = viper.New()
-	v.SetConfigType(c.configType)
-	v.SetConfigName(c.configName)
-	v.AddConfigPath(c.configPath)
+	v.SetConfigType(c.ConfigType)
+	v.SetConfigName(c.ConfigName)
+	v.AddConfigPath(c.ConfigPath)
 	err = v.ReadInConfig()
 	return
 }
