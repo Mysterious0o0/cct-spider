@@ -11,14 +11,14 @@ type Request struct {
 	Url     string
 	Method  string
 	Timeout time.Duration
-	body    io.Reader
+	Body    io.Reader
 	Param   map[string]string
 	Header  map[string]string
 	Cookie  map[string]string
 }
 
 func (r *Request) Visit() (b []byte, err error) {
-	req, err := http.NewRequest(r.Method, r.Url, r.body)
+	req, err := http.NewRequest(r.Method, r.Url, r.Body)
 	if err != nil {
 		return
 	}
