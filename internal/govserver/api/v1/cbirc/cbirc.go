@@ -11,7 +11,7 @@ func F() {
 	c := config2.Config{
 		ConfigName: "config",
 		ConfigType: "yaml",
-		ConfigPath: "configs/web",
+		ConfigPath: "configs/gov",
 	}
 	nc, err := c.NewConfig()
 	if err != nil {
