@@ -73,13 +73,15 @@ func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 				hrefList = append(hrefList, p.BaseUrl + href +p.Suffix)
 				fmt.Println(p.BaseUrl + href +p.Suffix)
 			}
+		}else {
+			log.Fatalln(b, href)
 		}
 	})
 	return
 }
 
 
-func (p Parse) GetPageNum() (num int) {
+func (p Parse) GetPageNum(r string) (num int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
 		log.Fatalln(err)
@@ -87,14 +89,52 @@ func (p Parse) GetPageNum() (num int) {
 	}
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
 		if selection.Text() != "" {
-			re := regexp.MustCompile("\\d+")
-			numStr := re.FindString(selection.Text())
+			reg := regexp.MustCompile(r)
+			numStr := reg.FindString(selection.Text())
 			if numStr == "" {
 				return
 			}
 			num, err = strconv.Atoi(numStr)
 			if err != nil {
 				log.Fatalln(err)
+			}
+		}
+	})
+	return
+}
+
+func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int) {
+	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
+		s := selection.Text()
+		if s != "" {
+			countReg := regexp.MustCompile(countR)
+			sizeReg := regexp.MustCompile(sizeR)
+			numReg := regexp.MustCompile("\\d+")
+			countStr := countReg.FindString(s)
+			countStr = numReg.FindString(countStr)
+			sizeStr := sizeReg.FindString(s)
+			sizeStr = numReg.FindString(sizeStr)
+			if countStr != ""{
+				count, err = strconv.Atoi(countStr)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}else {
+				fmt.Println("count is nil")
+			}
+
+			if sizeStr != ""{
+				size, err = strconv.Atoi(sizeStr)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}else {
+				fmt.Println("size is nil")
 			}
 		}
 	})

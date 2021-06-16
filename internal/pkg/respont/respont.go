@@ -32,11 +32,18 @@ func (pr PR)GetHtmlInfo() (infoMap map[string]string){
 	return
 }
 
-func (pr PR)GetPageNum() (num int){
+func (pr PR)GetPageNum(r string) (num int){
 	html, _ := pr.Request.Visit()
 	pr.Parse.Html = string(html)
-	num = pr.Parse.GetPageNum()
+	num = pr.Parse.GetPageNum(r)
 	return
 }
 
+
+func (pr PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
+	html, _ := pr.Request.Visit()
+	pr.Parse.Html = string(html)
+	count, size = pr.Parse.GetCountAndSize(countR, sizeR)
+	return
+}
 
