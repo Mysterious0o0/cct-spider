@@ -35,7 +35,7 @@ func GetPageUrlList(url string) {
 			PageNumSelector: ".page script",
 		},
 	}
-	num := pr.GetPageNum()
+	num := pr.GetPageNum("\\d+")
 	fmt.Println(num)
 	if num == 0 {
 		num = 20
