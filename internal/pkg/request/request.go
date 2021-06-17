@@ -42,7 +42,7 @@ func (r *Request) Visit() (b []byte, err error) {
 	if err != nil {
 		return
 	}
-	if resp.StatusCode == http.StatusNotFound {
+	if resp.StatusCode != http.StatusOK {
 		return
 	}
 	defer resp.Body.Close()
