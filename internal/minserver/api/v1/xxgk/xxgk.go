@@ -29,8 +29,8 @@ func GetFirstUrl(url string) {
 	}
 }
 
-func GetDetailPageUrl(url string, baseUrl string) {
-	baseUrl = "https://xxgk.mot.gov.cn/2020/jigou/"
+func GetDetailPageUrl(url string) {
+	//baseUrl = "https://xxgk.mot.gov.cn/2020/jigou/"
 	pr := respont.PR{
 		Request: request.Request{
 			Url:    url,
