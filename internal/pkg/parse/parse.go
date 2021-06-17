@@ -3,6 +3,7 @@ package parse
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/url"
 	"regexp"
 	"strconv"
 	"strings"
@@ -67,11 +68,11 @@ func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 		href, b := selection.Attr(attrName)
 		if b && href != "" {
 			if strings.Contains(href, "http") || strings.Contains(href, "https"){
-				hrefList = append(hrefList, href + p.Suffix)
-				fmt.Println(href + p.Suffix)
+				hrefList = append(hrefList, url.UrlJoint(href, p.Suffix))
+				fmt.Println(url.UrlJoint(href, p.Suffix))
 			}else {
-				hrefList = append(hrefList, p.BaseUrl + href +p.Suffix)
-				fmt.Println(p.BaseUrl + href +p.Suffix)
+				hrefList = append(hrefList, url.UrlJoint(p.BaseUrl, href+p.Suffix))
+				fmt.Println(url.UrlJoint(p.BaseUrl, href+p.Suffix))
 			}
 		}else {
 			fmt.Printf("b :%v, href: %s\n", b, href)
