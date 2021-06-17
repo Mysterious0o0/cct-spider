@@ -10,12 +10,11 @@ import (
 )
 
 func GetFirstUrl(url string) {
-	for i := 0; i <= 100; i++{
+	for i := 0; i <= 100; i++ {
 		url := fmt.Sprintf("%s%v", url, i)
 		fmt.Println(url)
 	}
 }
-
 
 func GetDetailPageUrl(url string, baseUrl string) {
 	baseUrl = "https://www.miit.gov.cn"
@@ -33,12 +32,12 @@ func GetDetailPageUrl(url string, baseUrl string) {
 		fmt.Println(err)
 	}
 	//fmt.Println(j.Data.Total) //总文件数
-	for _, v := range j.Data.DataResults{
+	for _, v := range j.Data.DataResults {
 		fmt.Println(baseUrl + v.GroupData[0].Url)
 	}
 }
 
-func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string){
+func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
 	//var info []string
 	//req := request.Request{
@@ -68,13 +67,14 @@ func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string){
 	//}
 	pr := respont.PR{
 		Request: request.Request{
-			Url : url,
+			Url:    url,
 			Method: http.MethodGet,
 		},
-		Parse:   parse.Parse{
-			UrlSelector: "iframe",
+		Parse: parse.Parse{
+			UrlSelector:   "iframe",
 			TitleSelector: "#con_title",
-			TextSelector: "#con_con>p",
+			TextSelector:  "#con_con>p",
+			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
 	infoMap = pr.GetHtmlInfo()
@@ -84,7 +84,7 @@ func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string){
 
 func getPDFInfo(url string) (info []string) {
 	req := request.Request{
-		Url : url,
+		Url:    url,
 		Method: http.MethodGet,
 	}
 	html, err := req.Visit()
@@ -94,5 +94,3 @@ func getPDFInfo(url string) (info []string) {
 	fmt.Println(string(html))
 	return
 }
-
-

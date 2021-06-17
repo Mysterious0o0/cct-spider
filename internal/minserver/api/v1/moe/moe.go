@@ -57,8 +57,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string){
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			TitleSelector: "#moe-detail-box>h1, #moe-detail-box>h2",
+			DomainName: "http://www.moe.gov.cn/",
 			TextSelector: ".TRS_Editor>p",
+			TitleSelector: "#moe-detail-box>h1, #moe-detail-box>h2",
 		},
 	}
 	infoMap = pr.GetHtmlInfo()

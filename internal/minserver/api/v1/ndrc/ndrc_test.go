@@ -5,12 +5,12 @@ import (
 )
 
 func TestXpath(t *testing.T) {
-	//url := "https://www.ndrc.gov.cn/xxgk/"
-	//GetFirstUrl(url)
-	//pageUrl := "https://www.ndrc.gov.cn/xxgk/./zcfb/gg/index.html"
-	//GetPageUrlList(pageUrl)
-	//detailUrl := "https://www.ndrc.gov.cn/xxgk/./zcfb/gg/index_1.html"
-	//GetDetailPageUrl(detailUrl)
+	url := "https://www.ndrc.gov.cn/xxgk/"
+	GetFirstUrl(url)
+	pageUrl := "https://www.ndrc.gov.cn/xxgk/./zcfb/gg/index.html"
+	GetPageUrlList(pageUrl)
+	detailUrl := "https://www.ndrc.gov.cn/xxgk/./zcfb/gg/index_1.html"
+	GetDetailPageUrl(detailUrl)
 	infoUrl := "https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/201409/t20140915_960787.html"
 	GetHtmlInfo(infoUrl)
 	infoUrl = "https://www.ndrc.gov.cn/xxgk/zcfb/ghxwj/202101/t20210119_1265242.html"

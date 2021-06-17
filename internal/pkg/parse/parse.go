@@ -3,7 +3,6 @@ package parse
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,6 +16,7 @@ type Parse struct {
 	TextSelector    string
 	PageNumSelector string
 	Suffix          string
+	DomainName      string
 }
 
 func (p Parse) GetTextByParseHtml() (title string, info []string) {
@@ -25,7 +25,7 @@ func (p Parse) GetTextByParseHtml() (title string, info []string) {
 	key = make(map[string]byte)
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 		return
 	}
 	dom.Find(p.TitleSelector).Each(func(i int, selection *goquery.Selection) {
@@ -48,7 +48,7 @@ func (p Parse) GetTextByParseHtml() (title string, info []string) {
 func (p Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 		return
 	}
 	dom.Find(p.UrlSelector).Each(func(i int, selection *goquery.Selection) {
@@ -60,7 +60,7 @@ func (p Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 		return
 	}
 	dom.Find(p.UrlSelector).Each(func(i int, selection *goquery.Selection) {
@@ -74,7 +74,7 @@ func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 				fmt.Println(p.BaseUrl + href +p.Suffix)
 			}
 		}else {
-			log.Fatalln(b, href)
+			fmt.Printf("b :%v, href: %s\n", b, href)
 		}
 	})
 	return
@@ -84,19 +84,21 @@ func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 func (p Parse) GetPageNum(r string) (num int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 		return
 	}
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
 		if selection.Text() != "" {
 			reg := regexp.MustCompile(r)
+			numReg := regexp.MustCompile("\\d+")
 			numStr := reg.FindString(selection.Text())
+			numStr = numReg.FindString(numStr)
 			if numStr == "" {
 				return
 			}
 			num, err = strconv.Atoi(numStr)
 			if err != nil {
-				log.Fatalln(err)
+				fmt.Println(err)
 			}
 		}
 	})
@@ -106,7 +108,7 @@ func (p Parse) GetPageNum(r string) (num int) {
 func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 		return
 	}
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
@@ -122,7 +124,7 @@ func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int
 			if countStr != ""{
 				count, err = strconv.Atoi(countStr)
 				if err != nil {
-					log.Fatalln(err)
+					fmt.Println(err)
 				}
 			}else {
 				fmt.Println("count is nil")
@@ -131,7 +133,7 @@ func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int
 			if sizeStr != ""{
 				size, err = strconv.Atoi(sizeStr)
 				if err != nil {
-					log.Fatalln(err)
+					fmt.Println(err)
 				}
 			}else {
 				fmt.Println("size is nil")
