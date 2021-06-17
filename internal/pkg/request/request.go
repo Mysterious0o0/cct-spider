@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -14,7 +15,7 @@ type Request struct {
 	Body    io.Reader
 	Param   map[string]string
 	Header  map[string]string
-	Cookie  map[string]string
+	Cookie  string
 }
 
 func (r *Request) Visit() (b []byte, err error) {
@@ -22,20 +23,17 @@ func (r *Request) Visit() (b []byte, err error) {
 	if err != nil {
 		return
 	}
-	req.Header.Add("User-Agent" ,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36")
+	req.Header.Set("User-Agent" ,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36")
 	q := req.URL.Query()
 	for key, val := range r.Param {
 		q.Add(key, val)
 	}
 	req.URL.RawQuery = q.Encode()
 	for k, v := range r.Header {
-		req.Header.Add(k, v)
+		req.Header.Set(k, v)
 	}
-	for k, v := range r.Cookie {
-		req.AddCookie(&http.Cookie{
-			Name: k,
-			Value: v,
-		})
+	if r.Cookie != ""{
+		req.Header.Set("Cookie", r.Cookie)
 	}
 	client := &http.Client{Timeout: r.Timeout}
 	resp, err := client.Do(req)
@@ -43,6 +41,7 @@ func (r *Request) Visit() (b []byte, err error) {
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
+		fmt.Println(resp.StatusCode, r.Url)
 		return
 	}
 	defer resp.Body.Close()
