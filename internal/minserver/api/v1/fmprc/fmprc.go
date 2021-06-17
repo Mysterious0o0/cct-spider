@@ -8,15 +8,15 @@ import (
 	"net/http"
 )
 
-func GetDetailPageUrl(url string, baseUrl string) {
-	baseUrl = "https://www.fmprc.gov.cn/web/wjb_673085/zfxxgk_674865/gknrlb/zcfg/"
+func GetDetailPageUrl(url string) {
+	//baseUrl = "https://www.fmprc.gov.cn/web/wjb_673085/zfxxgk_674865/gknrlb/zcfg/"
 	pr := respont.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:     baseUrl,
+			BaseUrl:     url,
 			UrlSelector: "div[class='jgbox_r fr'] a[target='_blank']",
 		},
 	}

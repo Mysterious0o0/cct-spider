@@ -1,4 +1,4 @@
-package ndrc
+package most
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 func GetFirstUrl(url string) {
-	baseUrl := "https://www.ndrc.gov.cn/xxgk/"
+	baseUrl := "http://www.most.gov.cn/kjzc/gjkjzc/"
 	pr := respont.PR{
 		Request: request.Request{
 			Url:    url,
@@ -18,12 +18,13 @@ func GetFirstUrl(url string) {
 		},
 		Parse: parse.Parse{
 			BaseUrl:     baseUrl,
-			UrlSelector: "ul[class='tab-menu moremenu'] a",
+			UrlSelector: ".list>a",
 			Suffix:      "index.html",
 		},
 	}
 	pr.GetPageUrl("href")
 }
+
 
 func GetPageUrlList(url string) {
 	pr := respont.PR{
@@ -32,10 +33,10 @@ func GetPageUrlList(url string) {
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			PageNumSelector: ".page script",
+			PageNumSelector: "script[language='JavaScript']",
 		},
 	}
-	num := pr.GetPageNum("\\d+")
+	num := pr.GetPageNum("var countPage = \\d+")
 	fmt.Println(num)
 	if num == 0 {
 		num = 20
@@ -55,48 +56,39 @@ func GetDetailPageUrl(url string) {
 		},
 		Parse: parse.Parse{
 			BaseUrl:     url,
-			UrlSelector: ".u-list a",
+			UrlSelector: ".list>ul a",
 		},
 	}
 	pr.GetPageUrl("href")
 }
 
+
 func GetHtmlInfo(url string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
 	var pr respont.PR
-	s := strings.Split(url, "/")
-	//fmt.Println(s[5])
 	r := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	switch s[5] {
-	case "ghwb", "gg":
+	s := strings.Split(url, "/")
+	fmt.Println(s[3])
+	switch s[3] {
+	case "xxgk":
 		pr = respont.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".TRS_Editor>span, .TRS_Editor>p",
-				TitleSelector: ".TRS_Editor>div>strong>font>span, .TRS_Editor>div>span>strong, .TRS_Editor>span>div>strong, .TRS_Editor>div>font>span>strong, .TRS_Editor>p>strong>font",
+				DomainName:    "http://www.most.gov.cn/",
+				TextSelector:  "#Zoom p",
+				TitleSelector: ".xxgk_title",
 			},
 		}
-	case "qt", "tz", "ghxwj":
-		pr = respont.PR{
-			Request: r,
-			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".article_l span",
-				TitleSelector: ".article_l>div div>span>strong, .article_l>div span>div>strong",
-			},
-		}
-	// "fzggwl"
 	default:
 		pr = respont.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".TRS_Editor>p, .article_l>div>span",
-				TitleSelector: ".article_l>div div>span>strong, .article_l>div span>div>strong",
+				DomainName:    "http://www.most.gov.cn/",
+				TextSelector:  "#Zoom p",
+				TitleSelector: "#Title",
 			},
 		}
 	}
@@ -104,3 +96,6 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 	fmt.Println(infoMap)
 	return
 }
+
+
+

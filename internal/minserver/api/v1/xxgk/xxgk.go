@@ -37,7 +37,7 @@ func GetDetailPageUrl(url string, baseUrl string) {
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			BaseUrl: baseUrl,
+			BaseUrl: url,
 			UrlSelector: "ul[class='fl w100 right_list'] a",
 		},
 	}

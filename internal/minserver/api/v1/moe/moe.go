@@ -35,14 +35,14 @@ func GetPageUrlList(url string) {
 }
 
 func GetDetailPageUrl(url string) {
-	baseurl := "http://www.moe.gov.cn/jyb_xwfb/s271/"
+	//baseurl := "http://www.moe.gov.cn/jyb_xwfb/s271/"
 	pr := respont.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:     baseurl,
+			BaseUrl:     url,
 			UrlSelector: "#list>li>a",
 		},
 	}

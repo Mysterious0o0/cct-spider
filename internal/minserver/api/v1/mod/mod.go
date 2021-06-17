@@ -17,14 +17,14 @@ func GetFirstUrl(url string) {
 }
 
 func GetDetailPageUrl(url string) {
-	baseurl := "http://www.mod.gov.cn/regulatory/"
+	//baseurl := "http://www.mod.gov.cn/regulatory/"
 	pr := respont.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:     baseurl,
+			BaseUrl:     url,
 			UrlSelector: "#main-news-list>li>a",
 		},
 	}

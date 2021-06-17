@@ -6,6 +6,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/respont"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
 	"net/http"
 )
 
@@ -31,9 +32,10 @@ func GetDetailPageUrl(url string, baseUrl string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//fmt.Println(j.Data.Total) //总文件数
+	fmt.Println(j.Data.Total) //总文件数
 	for _, v := range j.Data.DataResults {
-		fmt.Println(baseUrl + v.GroupData[0].Url)
+		fmt.Println(urlprocess.UrlJoint(baseUrl, v.GroupData[0].Url))
+		//fmt.Println(baseUrl + v.GroupData[0].Url)
 	}
 }
 
@@ -41,7 +43,7 @@ func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
 	//var info []string
 	//req := request.Request{
-	//	Url : url,
+	//	Url : urlprocess,
 	//	Method: http.MethodGet,
 	//}
 	//html, err := req.Visit()
