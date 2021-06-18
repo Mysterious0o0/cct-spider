@@ -10,7 +10,7 @@ import (
 	"github.com/robertkrimen/otto"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/respont"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
 	"hash"
 	"net/http"
 	"regexp"
@@ -18,16 +18,15 @@ import (
 )
 
 var _cookie = GetCookie()
+
 func GetCookie() (cookie string) {
-	ck := "__jsluid_s=99da3dbc469fa9fbb54516d1789aa40b;"
 	url := "https://www.mps.gov.cn/n6557558/index.html"
 	req := request.Request{
 		Url:    url,
-		Cookie: ck,
 		Method: http.MethodGet,
 	}
 	b, _ := req.Visit()
-	reg :=regexp.MustCompile(`cookie=(\(.*?\));location`)
+	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
 	jslClearances := reg.FindStringSubmatch(string(b))
 	vm := otto.New()
 	v, err := vm.Run(jslClearances[1])
@@ -36,29 +35,32 @@ func GetCookie() (cookie string) {
 		return
 	}
 	cookiePro := strings.Split(strings.Split(v.String(), "=")[1], ";")[0]
-	req.Cookie = fmt.Sprintf("%s __jsl_clearance_s=%s", ck, cookiePro)
+	ck := req.GetCookie("__jsluid_s")
+	req.Cookies.StrCookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, cookiePro)
+
 	b, _ = req.Visit()
-	reg =regexp.MustCompile(`;go\((.*?)\)`)
+	reg = regexp.MustCompile(`;go\((.*?)\)`)
 	data := reg.FindStringSubmatch(string(b))
 	c := _getCookie(data[1])
 	if c == "" {
+		fmt.Println("getCookie error")
 		return
 	}
-	cookie = fmt.Sprintf("%s __jsl_clearance_s=%s", ck, c)
+	cookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, c)
 	return
 }
 
 func _getCookie(ck string) string {
 	var data map[string]interface{}
 	err := json.Unmarshal([]byte(ck), &data)
-	if err != nil{
+	if err != nil {
 		fmt.Println("[]byte -> map err,", err)
 		return ""
 	}
 	chars := fmt.Sprintf("%s", data["chars"].(string))
 	charsLen := len(chars)
-	for i := 0; i < charsLen; i++{
-		for j :=0; j < charsLen; j++ {
+	for i := 0; i < charsLen; i++ {
+		for j := 0; j < charsLen; j++ {
 			clearance := fmt.Sprintf("%s%c%c%s",
 				data["bts"].([]interface{})[0].(string), chars[i], chars[j], data["bts"].([]interface{})[1].(string))
 			var encrypt hash.Hash
@@ -72,7 +74,7 @@ func _getCookie(ck string) string {
 			}
 			encrypt.Write([]byte(clearance))
 			s := hex.EncodeToString(encrypt.Sum(nil))
-			if s == data["ct"].(string){
+			if s == data["ct"].(string) {
 				return clearance
 			}
 		}
@@ -82,25 +84,24 @@ func _getCookie(ck string) string {
 
 func GetFirstUrl(url string) {
 	fmt.Println(url) // frist url
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
-			Cookie: _cookie,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:         url,
+			BaseUrl:     url,
 			UrlSelector: "div[style='display:none'] a",
 		},
 	}
+	pr.Request.Cookies.StrCookie = _cookie
 	pr.GetPageUrl("href")
 }
 
 func GetDetailPageUrl(url string) {
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
-			Cookie: _cookie,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
@@ -108,15 +109,15 @@ func GetDetailPageUrl(url string) {
 			UrlSelector: ".list a",
 		},
 	}
+	pr.Request.Cookies.StrCookie = _cookie
 	pr.GetPageUrl("href")
 }
 
 func GetHtmlInfo(url string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
-			Cookie: _cookie,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
@@ -125,6 +126,7 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 			TextSelector:  "div[class='wordContent w915'] p",
 		},
 	}
+	pr.Request.Cookies.StrCookie = _cookie
 	infoMap = pr.GetHtmlInfo()
 	fmt.Println(infoMap)
 	return

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/respont"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
 	"net/http"
 )
@@ -67,7 +67,7 @@ func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string) {
 	//if _, ok := infoMap[title]; !ok{
 	//	infoMap[title] = strings.Join(info, "")
 	//}
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,

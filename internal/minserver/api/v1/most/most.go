@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/respont"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
 	"net/http"
 	"strings"
 )
 
 func GetFirstUrl(url string) {
 	baseUrl := "http://www.most.gov.cn/kjzc/gjkjzc/"
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
@@ -27,7 +27,7 @@ func GetFirstUrl(url string) {
 
 
 func GetPageUrlList(url string) {
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
@@ -49,7 +49,7 @@ func GetPageUrlList(url string) {
 }
 
 func GetDetailPageUrl(url string) {
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
@@ -65,7 +65,7 @@ func GetDetailPageUrl(url string) {
 
 func GetHtmlInfo(url string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
-	var pr respont.PR
+	var pr response.PR
 	r := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
@@ -74,7 +74,7 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 	fmt.Println(s[3])
 	switch s[3] {
 	case "xxgk":
-		pr = respont.PR{
+		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
 				DomainName:    "http://www.most.gov.cn/",
@@ -83,7 +83,7 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 			},
 		}
 	default:
-		pr = respont.PR{
+		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
 				DomainName:    "http://www.most.gov.cn/",

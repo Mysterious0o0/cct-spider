@@ -1,4 +1,4 @@
-package respont
+package response
 
 import (
 	"fmt"

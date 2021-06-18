@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/respont"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
 	"net/http"
 )
 
 func GetDetailPageUrl(url string) {
 	//baseUrl = "https://www.fmprc.gov.cn/web/wjb_673085/zfxxgk_674865/gknrlb/zcfg/"
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
@@ -46,7 +46,7 @@ func GetDetailPageUrl(url string) {
 
 func GetHtmlInfo(url string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
-	pr := respont.PR{
+	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
