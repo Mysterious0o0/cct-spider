@@ -38,9 +38,10 @@ func (r *Request) Visit() (b []byte, err error) {
 	client := &http.Client{Timeout: r.Timeout}
 	resp, err := client.Do(req)
 	if err != nil {
+		fmt.Println("request error:", err)
 		return
 	}
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != 521 {
 		fmt.Println(resp.StatusCode, r.Url)
 		return
 	}
