@@ -32,7 +32,7 @@ func GetDetailPageUrl(url string, baseUrl string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(j.Data.Total) //总文件数
+	//fmt.Println(j.Data.Total) //总文件数
 	for _, v := range j.Data.DataResults {
 		fmt.Println(urlprocess.UrlJoint(baseUrl, v.GroupData[0].Url))
 		//fmt.Println(baseUrl + v.GroupData[0].Url)

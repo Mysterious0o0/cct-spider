@@ -29,20 +29,24 @@ func (p Parse) GetTextByParseHtml() (title string, info []string) {
 		fmt.Println(err)
 		return
 	}
-	dom.Find(p.TitleSelector).Each(func(i int, selection *goquery.Selection) {
-		if selection.Text() != "" {
-			titleL = append(titleL, selection.Text())
-		}
-	})
-	title = strings.Join(titleL, "")
+	if p.TitleSelector != "" {
+		dom.Find(p.TitleSelector).Each(func(i int, selection *goquery.Selection) {
+			if selection.Text() != "" {
+				titleL = append(titleL, selection.Text())
+			}
+		})
+		title = strings.Join(titleL, "")
+	}
+	if p.TextSelector != "" {
+		dom.Find(p.TextSelector).Each(func(i int, selection *goquery.Selection) {
+			s := selection.Text()
+			if _, ok := key[s]; s != "" && !ok{
+				info = append(info, s)
+				key[s] = 0
+			}
+		})
+	}
 
-	dom.Find(p.TextSelector).Each(func(i int, selection *goquery.Selection) {
-		s := selection.Text()
-		if _, ok := key[s]; s != "" && !ok{
-			info = append(info, s)
-			key[s] = 0
-		}
-	})
 	return
 }
 
