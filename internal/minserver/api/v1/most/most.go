@@ -86,9 +86,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "http://www.most.gov.cn/",
-				TextSelector:  "#Zoom p",
 				TitleSelector: "#Title",
+				TextSelector:  "#Zoom p",
+				DomainName:    "http://www.most.gov.cn/",
 			},
 		}
 	}

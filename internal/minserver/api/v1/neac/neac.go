@@ -52,9 +52,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string){
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			DomainName: "https://www.neac.gov.cn",
-			TextSelector: "div[class='wzy p3']>p",
 			TitleSelector: ".p1",
+			TextSelector: "div[class='wzy p3']>p",
+			DomainName: "https://www.neac.gov.cn",
 		},
 	}
 	infoMap = pr.GetHtmlInfo()

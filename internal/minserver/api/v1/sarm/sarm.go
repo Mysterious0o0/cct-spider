@@ -54,9 +54,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string){
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			DomainName: "http://gkml.samr.gov.cn/",
-			TextSelector: ".Three_xilan_07 p",
 			TitleSelector: ".xilanboxbg td[colspan='2'] li[class='Three_xilan01_02 Three_xilan01_0201']",
+			TextSelector: ".Three_xilan_07 p",
+			DomainName: "http://gkml.samr.gov.cn/",
 		},
 	}
 	infoMap = pr.GetHtmlInfo()

@@ -75,18 +75,18 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".TRS_Editor>span, .TRS_Editor>p",
 				TitleSelector: ".TRS_Editor>div>strong>font>span, .TRS_Editor>div>span>strong, .TRS_Editor>span>div>strong, .TRS_Editor>div>font>span>strong, .TRS_Editor>p>strong>font",
+				TextSelector:  ".TRS_Editor>span, .TRS_Editor>p",
+				DomainName:    "https://www.ndrc.gov.cn/",
 			},
 		}
 	case "qt", "tz", "ghxwj":
 		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".article_l span",
 				TitleSelector: ".article_l>div div>span>strong, .article_l>div span>div>strong",
+				TextSelector:  ".article_l span",
+				DomainName:    "https://www.ndrc.gov.cn/",
 			},
 		}
 	// "fzggwl"
@@ -94,9 +94,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 		pr = response.PR{
 			Request: r,
 			Parse: parse.Parse{
-				DomainName:    "https://www.ndrc.gov.cn/",
-				TextSelector:  ".TRS_Editor>p, .article_l>div>span",
 				TitleSelector: ".article_l>div div>span>strong, .article_l>div span>div>strong",
+				TextSelector:  ".TRS_Editor>p, .article_l>div>span",
+				DomainName:    "https://www.ndrc.gov.cn/",
 			},
 		}
 	}

@@ -121,9 +121,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			DomainName:    "https://www.mps.gov.cn/",
 			TitleSelector: "div[class='bTitle w915']>p",
 			TextSelector:  "div[class='wordContent w915'] p",
+			DomainName:    "https://www.mps.gov.cn/",
 		},
 	}
 	pr.Request.Cookies.StrCookie = _cookie
