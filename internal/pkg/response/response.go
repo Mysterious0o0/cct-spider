@@ -24,7 +24,8 @@ func (pr PR)GetHtmlInfo() (infoMap map[string]string){
 	var info []string
 	infoMap = make(map[string]string)
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
-		fmt.Printf("域名：%s 网址：%s 域名不存在\n", pr.Request.Url, pr.Parse.DomainName)
+		fmt.Printf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url)
+		return
 	}
 	html, _ := pr.Request.Visit()
 	pr.Parse.Html = string(html)
