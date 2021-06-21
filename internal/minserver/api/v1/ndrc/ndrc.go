@@ -10,14 +10,14 @@ import (
 )
 
 func GetFirstUrl(url string) {
-	baseUrl := "https://www.ndrc.gov.cn/xxgk/"
+	//baseUrl := "https://www.ndrc.gov.cn/xxgk/"
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:     baseUrl,
+			BaseUrl:     url,
 			UrlSelector: "ul[class='tab-menu moremenu'] a",
 			Suffix:      "index.html",
 		},

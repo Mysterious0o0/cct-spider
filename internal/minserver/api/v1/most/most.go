@@ -10,14 +10,14 @@ import (
 )
 
 func GetFirstUrl(url string) {
-	baseUrl := "http://www.most.gov.cn/kjzc/gjkjzc/"
+	//baseUrl := "http://www.most.gov.cn/kjzc/gjkjzc/"
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			BaseUrl:     baseUrl,
+			BaseUrl:     url,
 			UrlSelector: ".list>a",
 			Suffix:      "index.html",
 		},
