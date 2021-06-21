@@ -37,7 +37,7 @@ func GetDetailPageUrl(url string) {
 		},
 		Parse:   parse.Parse{
 			BaseUrl: url,
-			UrlSelector: "#ul a[target='_blank']",
+			UrlSelector: "#ul .ffbox>a[target='_blank']",
 		},
 	}
 	pr.GetPageUrl("href")
@@ -52,9 +52,9 @@ func GetHtmlInfo(url string) (infoMap map[string]string){
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			TitleSelector: "#titl, .p1",
-			TextSelector: ".Custom_UnionStyle>p, font[face='Verdana']>p, .content>p, div[class='wzy p3']>p",
-			DomainName: "https://www.neac.gov.cn",
+			TitleSelector: "#titl, .p1, h2",
+			TextSelector: ".Custom_UnionStyle>p, font[face='Verdana']>p, #content>p, div[class='wzy p3']>p, #content>div",
+			DomainName: "http://f.mnr.gov.cn",
 		},
 	}
 	infoMap = pr.GetHtmlInfo()
