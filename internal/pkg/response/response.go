@@ -11,7 +11,7 @@ type PR struct {
 	Request request.Request
 	Parse   parse.Parse
 }
-func (pr PR)GetPageUrl(attrName string) {
+func (pr *PR)GetPageUrl(attrName string) {
 	html, err := pr.Request.Visit()
 	if err != nil {
 		return
@@ -20,7 +20,7 @@ func (pr PR)GetPageUrl(attrName string) {
 	pr.Parse.GetAllUrlByParseHtml(attrName)
 }
 
-func (pr PR)GetHtmlInfo() (infoMap map[string]string){
+func (pr *PR)GetHtmlInfo() (infoMap map[string]string){
 	var info []string
 	infoMap = make(map[string]string)
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
@@ -37,7 +37,7 @@ func (pr PR)GetHtmlInfo() (infoMap map[string]string){
 	return
 }
 
-func (pr PR)GetPageNum(r string) (num int){
+func (pr *PR)GetPageNum(r string) (num int){
 	html, _ := pr.Request.Visit()
 	pr.Parse.Html = string(html)
 	num = pr.Parse.GetPageNum(r)
@@ -45,7 +45,7 @@ func (pr PR)GetPageNum(r string) (num int){
 }
 
 
-func (pr PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
+func (pr *PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
 	html, _ := pr.Request.Visit()
 	pr.Parse.Html = string(html)
 	count, size = pr.Parse.GetCountAndSize(countR, sizeR)

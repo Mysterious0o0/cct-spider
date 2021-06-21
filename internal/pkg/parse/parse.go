@@ -20,7 +20,7 @@ type Parse struct {
 	DomainName      string
 }
 
-func (p Parse) GetTextByParseHtml() (title string, info []string) {
+func (p *Parse) GetTextByParseHtml() (title string, info []string) {
 	var titleL []string
 	var key map[string]byte
 	key = make(map[string]byte)
@@ -50,7 +50,7 @@ func (p Parse) GetTextByParseHtml() (title string, info []string) {
 	return
 }
 
-func (p Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
+func (p *Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
 		fmt.Println(err)
@@ -62,7 +62,7 @@ func (p Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 	return
 }
 
-func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
+func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
 		fmt.Println(err)
@@ -86,7 +86,7 @@ func (p Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 }
 
 
-func (p Parse) GetPageNum(r string) (num int) {
+func (p *Parse) GetPageNum(r string) (num int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
 		fmt.Println(err)
@@ -95,7 +95,7 @@ func (p Parse) GetPageNum(r string) (num int) {
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
 		if selection.Text() != "" {
 			reg := regexp.MustCompile(r)
-			numReg := regexp.MustCompile("\\d+")
+			numReg := regexp.MustCompile("[0-9]+")
 			numStr := reg.FindString(selection.Text())
 			numStr = numReg.FindString(numStr)
 			if numStr == "" {
@@ -110,7 +110,7 @@ func (p Parse) GetPageNum(r string) (num int) {
 	return
 }
 
-func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int) {
+func (p *Parse) GetCountAndSize(countR string, sizeR string) (count int, size int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
 		fmt.Println(err)
@@ -121,7 +121,7 @@ func (p Parse) GetCountAndSize(countR string, sizeR string) (count int, size int
 		if s != "" {
 			countReg := regexp.MustCompile(countR)
 			sizeReg := regexp.MustCompile(sizeR)
-			numReg := regexp.MustCompile("\\d+")
+			numReg := regexp.MustCompile("[0-9]+")
 			countStr := countReg.FindString(s)
 			countStr = numReg.FindString(countStr)
 			sizeStr := sizeReg.FindString(s)

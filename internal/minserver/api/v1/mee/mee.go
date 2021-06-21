@@ -55,7 +55,7 @@ func GetThreeUrl(url string) {
 			PageNumSelector: ".slideTxtBoxgsf script",
 		},
 	}
-	num := pr.GetPageNum("var countPage = \\d+//")
+	num := pr.GetPageNum("var countPage = [0-9]+//")
 	if num == 0 {
 		num = 40
 	}

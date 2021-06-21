@@ -36,7 +36,7 @@ func GetPageUrlList(url string) {
 			PageNumSelector: "script[language='JavaScript']",
 		},
 	}
-	num := pr.GetPageNum("var countPage = \\d+")
+	num := pr.GetPageNum("var countPage = [0-9]+")
 	fmt.Println(num)
 	if num == 0 {
 		num = 20

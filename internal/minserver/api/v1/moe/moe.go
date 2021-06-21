@@ -19,9 +19,9 @@ func GetPageUrlList(url string) {
 			PageNumSelector: "head>script",
 		},
 	}
-	// "var recordCount = \\d+", " var pageSize = \\d+"
-	countR := "var recordCount = \\d+"
-	sizeR := "var pageSize = \\d+"
+	// "var recordCount = [0-9]+", " var pageSize = [0-9]+"
+	countR := "var recordCount = [0-9]+"
+	sizeR := "var pageSize = [0-9]+"
 	count, size := pr.GetCountAndSize(countR, sizeR)
 	fmt.Println(count, size)
 	if count != 0 && size != 0 {

@@ -19,7 +19,7 @@ func GetFirstUrl(url string) {
 			PageNumSelector: ".page-bottom script",
 		},
 	}
-	num := pr.GetPageNum("var countPage = \\d+//")
+	num := pr.GetPageNum("var countPage = [0-9]+//")
 	if num == 0 {
 		num = 110
 	}

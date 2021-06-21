@@ -19,7 +19,7 @@ func GetFirstUrl(url string) {
 			PageNumSelector: "div[class='fl w100 text-center'] script",
 		},
 	}
-	num := pr.GetPageNum("\\d+")
+	num := pr.GetPageNum("[0-9]+")
 	if num == 0 {
 		num = 100
 	}
