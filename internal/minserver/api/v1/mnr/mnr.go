@@ -52,8 +52,8 @@ func GetHtmlInfo(url string) (infoMap map[string]string){
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
-			TitleSelector: "#titl",
-			TextSelector: ".Custom_UnionStyle>p, font[face='Verdana']>p, .content>p",
+			TitleSelector: "#titl, .p1",
+			TextSelector: ".Custom_UnionStyle>p, font[face='Verdana']>p, .content>p, div[class='wzy p3']>p",
 			DomainName: "https://www.neac.gov.cn",
 		},
 	}

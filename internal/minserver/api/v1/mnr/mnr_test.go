@@ -3,7 +3,6 @@ package mnr
 import "testing"
 
 func TestXpath(t *testing.T) {
-
 	url := "http://f.mnr.gov.cn/index_3553.html"
 	GetFirstUrl(url)
 	GetDetailPageUrl(url)
