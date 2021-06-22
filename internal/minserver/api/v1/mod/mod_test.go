@@ -4,7 +4,7 @@ import "testing"
 
 func TestXpath(t *testing.T) {
 	url := "http://www.mod.gov.cn/regulatory/node_47883.htm"
-	GetFirstUrl(url)
+	GetPageUrlList(url)
 	GetDetailPageUrl(url)
 	infoUrl := "http://www.mod.gov.cn/regulatory/2015-07/03/content_4643973.htm"
 	infoUrl = "http://www.mod.gov.cn/regulatory/2017-10/10/content_4794244.htm"

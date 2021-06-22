@@ -44,7 +44,7 @@ func GetSecondUrl(url string) {
 	}
 }
 
-func GetThreeUrl(url string) {
+func GetPageUrlList(url string) {
 	fmt.Println(url) // frist url
 	pr := response.PR{
 		Request: request.Request{

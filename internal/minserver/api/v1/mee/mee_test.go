@@ -18,11 +18,11 @@ func TestXpath(t *testing.T) {
 	secondUrl = "http://www.mee.gov.cn/zcwj/gwywj/"
 	secondUrl = "http://www.mee.gov.cn/zcwj/xzspwj/"
 	secondUrl = "http://www.mee.gov.cn/zcwj/bgtwj/han/"
-	GetThreeUrl(secondUrl)
-	threeUrl := "http://www.mee.gov.cn/zcwj/gwywj/index_23.shtml"
-	threeUrl = "http://www.mee.gov.cn/zcwj/xzspwj/index_20.shtml"
-	threeUrl = "http://www.mee.gov.cn/zcwj/bgtwj/han/index.shtml"
-	GetDetailPageUrl(threeUrl)
+	GetPageUrlList(secondUrl)
+	pageUrl := "http://www.mee.gov.cn/zcwj/gwywj/index_23.shtml"
+	pageUrl = "http://www.mee.gov.cn/zcwj/xzspwj/index_20.shtml"
+	pageUrl = "http://www.mee.gov.cn/zcwj/bgtwj/han/index.shtml"
+	GetDetailPageUrl(pageUrl)
 	infoUrl := "http://www.mee.gov.cn/xxgk2018/xxgk/xxgk11/201806/t20180615_630017.html"
 	infoUrl = "http://www.mee.gov.cn/zcwj/gwywj/201811/t20181129_676420.shtml"
 	infoUrl = "http://www.mee.gov.cn/xxgk2018/xxgk/xxgk06/202105/t20210518_833282.html"

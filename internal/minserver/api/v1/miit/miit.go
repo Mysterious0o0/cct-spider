@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func GetFirstUrl(url string) {
+func GetPageUrlList(url string) {
 	for i := 0; i <= 100; i++ {
 		url := fmt.Sprintf("%s%v", url, i)
 		fmt.Println(url)

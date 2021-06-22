@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetFirstUrl(url string) {
+func GetPageUrlList(url string) {
 	fmt.Println(url) // frist url
 	for i := 1; i <= 10; i++ {
 		url := fmt.Sprintf("%s_%v.html", url[:len(url)-len(".html")], i)

@@ -7,7 +7,7 @@ import (
 func TestXpath(t *testing.T) {
 
 	url := "https://xxgk.mot.gov.cn/2020/jigou/list.html"
-	GetFirstUrl(url)
+	GetPageUrlList(url)
 	GetDetailPageUrl(url)
 	infoUrl := "https://xxgk.mot.gov.cn/2020/jigou/./fgs/202106/t20210604_3605909.html"
 	infoUrl = "https://xxgk.mot.gov.cn/2020/jigou/./ysfws/202106/t20210607_3607600.html"

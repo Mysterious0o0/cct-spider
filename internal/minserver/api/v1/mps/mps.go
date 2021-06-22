@@ -82,7 +82,7 @@ func _getCookie(ck string) string {
 	return ""
 }
 
-func GetFirstUrl(url string) {
+func GetPageUrlList(url string) {
 	fmt.Println(url) // frist url
 	pr := response.PR{
 		Request: request.Request{
