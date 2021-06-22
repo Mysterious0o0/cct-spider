@@ -41,32 +41,6 @@ func GetDetailPageUrl(url string, baseUrl string) {
 
 func GetHtmlInfo(url string, baseUrl string) (infoMap map[string]string) {
 	infoMap = make(map[string]string)
-	//var info []string
-	//req := request.Request{
-	//	Url : urlprocess,
-	//	Method: http.MethodGet,
-	//}
-	//html, err := req.Visit()
-	//if err != nil {
-	//	return
-	//}
-	////fmt.Println(string(html))
-	//p := parse.Parse{
-	//	Html:     string(html),
-	//	UrlSelector: "iframe",
-	//	TitleSelector: "#con_title",
-	//	TextSelector: "#con_con>p",
-	//}
-	//title, data := p.GetTextByParseHtml()
-	//info = append(info, data...)
-	//fileurl, b := p.GetOneUrlByParseHtml("fileurl")
-	//if b {
-	//	fmt.Println(baseUrl + fileurl)
-	//	getPDFInfo(baseUrl + fileurl)
-	//}
-	//if _, ok := infoMap[title]; !ok{
-	//	infoMap[title] = strings.Join(info, "")
-	//}
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,

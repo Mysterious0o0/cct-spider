@@ -27,23 +27,6 @@ func GetDetailPageUrl(url string) {
 		},
 	}
 	pr.GetPageUrl("href")
-
-	//req := request.Request{
-	//	Url:    url,
-	//	Method: http.MethodGet,
-	//}
-	//html, err := req.Visit()
-	//if err != nil {
-	//	return
-	//}
-	//p := parse.Parse{
-	//	Html:        string(html),
-	//	UrlSelector: ".Three_zhnlist_02 a",
-	//}
-	//hrefL := p.GetAllUrlByParseHtml("href")
-	//for _, href := range hrefL{
-	//	fmt.Println(href)
-	//}
 }
 
 func GetHtmlInfo(url string) (infoMap map[string]string){
