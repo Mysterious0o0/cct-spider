@@ -1,11 +1,12 @@
-package miit
+package store
 
-type Details struct {
+
+type DetailsMiit struct {
 	Url string `json:"url"`
 }
 
 type GroupData struct {
-	Details `json:"data"`
+	DetailsMiit `json:"data"`
 }
 
 type DataResults struct {
@@ -17,10 +18,12 @@ type SearchResult struct {
 	Total       int           `json:"total"`
 }
 
-type Data struct {
+type DataMiit struct {
 	SearchResult `json:"searchResult"`
 }
 
 type JsonMiit struct {
-	Data `json:"data"`
+	DataMiit `json:"data"`
 }
+
+var BaseUrl = "https://www.miit.gov.cn"

@@ -3,14 +3,16 @@ package cbirc
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"net/http"
 	"strings"
+	"sync"
 )
 
-func GetPageUrlList(url string) {
-
+func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGroup) {
+	defer wg.Done()
 	for i := 1; i <= 1000; i++ {
 		req := request.Request{
 			Url:    fmt.Sprintf(url, i),
@@ -20,7 +22,7 @@ func GetPageUrlList(url string) {
 		if err != nil {
 			break
 		}
-		var j JsonCbirc
+		var j store.JsonCbirc
 		err = json.Unmarshal(b, &j)
 		if err != nil {
 			fmt.Println(err)
@@ -29,14 +31,18 @@ func GetPageUrlList(url string) {
 			break
 		}
 		for _, v := range j.Data.Rows {
-			fmt.Printf(DetailUrl, v.DocId)
+			//fmt.Printf(store.DetailUrl, v.DocId)
+			infoChan <- &store.InfoChan{
+				Url:      fmt.Sprintf(store.DetailUrl, v.DocId),
+				GetInfoF: GetHtmlInfo,
+			}
 		}
 	}
 }
 
 
-func GetHtmlInfo(url string) (infoMap map[string]string) {
-	infoMap = make(map[string]string)
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string) {
+	infoMap := make(map[string]string)
 	req := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
@@ -45,7 +51,7 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 	if err != nil {
 		return
 	}
-	var j JsonDetails
+	var j store.JsonDetailsCbirc
 	err = json.Unmarshal(b, &j)
 	if err != nil {
 		fmt.Println(err)
@@ -55,8 +61,15 @@ func GetHtmlInfo(url string) (infoMap map[string]string) {
 		Html: j.DocClob,
 		TextSelector:  "p",
 	}
-	_, info := p.GetTextByParseHtml()
-	infoMap[j.DocTitle] = strings.Join(info, "")
-	fmt.Println(infoMap)
-	return
+	_, data := p.GetTextByParseHtml()
+	infoMap[j.DocTitle] = strings.Join(data, "")
+	info <- infoMap
+	//if len(infoMap) == 0 {
+	//	errChan <- &store.InfoChan{
+	//		Url:      url,
+	//		GetInfoF: GetHtmlInfo,
+	//	}
+	//}else {
+	//	info <- infoMap
+	//}
 }
