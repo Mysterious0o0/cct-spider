@@ -11,13 +11,14 @@ type PR struct {
 	Request request.Request
 	Parse   parse.Parse
 }
-func (pr *PR)GetPageUrl(attrName string) {
+func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 	html, err := pr.Request.Visit()
 	if err != nil {
 		return
 	}
 	pr.Parse.Html = string(html)
-	pr.Parse.GetAllUrlByParseHtml(attrName)
+	hrefList = pr.Parse.GetAllUrlByParseHtml(attrName)
+	return hrefList
 }
 
 func (pr *PR)GetHtmlInfo() (infoMap map[string]string){

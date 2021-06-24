@@ -73,10 +73,10 @@ func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 		if b && href != "" {
 			if strings.Contains(href, "http") || strings.Contains(href, "https"){
 				hrefList = append(hrefList, urlprocess.UrlJoint(href, p.Suffix))
-				fmt.Println(urlprocess.UrlJoint(href, p.Suffix))
+				//fmt.Println(urlprocess.UrlJoint(href, p.Suffix))
 			}else {
 				hrefList = append(hrefList, urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
-				fmt.Println(urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
+				//fmt.Println(urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
 			}
 		}else {
 			fmt.Printf("b :%v, href: %s\n", b, href)
