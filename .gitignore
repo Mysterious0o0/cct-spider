@@ -18,3 +18,4 @@
 *.yaml
 *.xlsx
 /.idea
+*_test.go
