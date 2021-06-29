@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strings"
 	"sync"
-	"time"
 )
 
 func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
@@ -29,7 +28,7 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 			Url:     link,
 			GetUrlF: GetSecondUrl,
 		}
-		time.Sleep(time.Second*1)
+		//time.Sleep(time.Second*1)  // 单跑这个需要加延迟，
 	}
 
 }
