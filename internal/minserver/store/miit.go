@@ -15,6 +15,7 @@ type DataResults struct {
 
 type SearchResult struct {
 	DataResults []DataResults `json:"dataResults"`
+
 	Total       int           `json:"total"`
 }
 

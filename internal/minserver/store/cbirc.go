@@ -14,6 +14,7 @@ type JsonCbirc struct {
 
 type DataCbirc struct {
 	DocTitle string `json:"docTitle"`
+
 	DocClob  string `json:"docClob"`
 }
 
