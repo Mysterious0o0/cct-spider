@@ -9,7 +9,6 @@ import (
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
 	"log"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -138,36 +137,20 @@ func clearTransaction(tx *sql.Tx) {
 	}
 }
 
-func placeHolderBuilder(fieldNum int) (placeHolder string) {
-	s := make([]string, 0)
-	for i := 0; i < fieldNum; i++ {
-		s = append(s, "?")
-	}
-	placeHolder = "(" + strings.Join(s, ",") + ")"
-	return
-}
-
-func transaction(pre string, fieldNum int, rows [][]interface{}) (err error) {
-	placeHolders := make([]string, 0)
-	placeHolder := placeHolderBuilder(fieldNum)
-	args := make([]interface{}, 0)
-	for _, row := range rows {
-		placeHolders = append(placeHolders, placeHolder)
-		args = append(args, row...)
-	}
-	query := pre + strings.Join(placeHolders, ",")
+func Transaction(sql string) {
 	tx, err := db.Begin()
 	if err != nil {
 		return
 	}
 	defer clearTransaction(tx)
-	r, err := tx.Exec(query, args...)
+	r, err := tx.Exec(sql)
 	if err != nil {
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
 		return
 	}
+
 	if err = tx.Commit(); err != nil {
 		return
 	}
