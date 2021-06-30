@@ -11,9 +11,7 @@ func TestSet_Diff(t *testing.T) {
 		{"1991", "2"},
 	}}
 	diff, err := s.Diff([][]string{
-		{"1989", "0"},
-		{"1990", "1"},
-		{"1991", "2"},
+
 	})
 	fmt.Println(diff, err)
 }
@@ -21,13 +19,14 @@ func TestSet_Diff(t *testing.T) {
 func BenchmarkSet_Diff(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		s := Set{src: [][]string{
-			{"1990", "1"},
-			{"1991", "2"},
+
 		}}
-		_, _ = s.Diff([][]string{
+		diff, err := s.Diff([][]string{
 			{"1989", "0"},
 			{"1990", "1"},
 			{"1991", "2"},
 		})
+		fmt.Println(diff)
+		fmt.Println(err)
 	}
 }

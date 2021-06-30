@@ -8,8 +8,8 @@ type Set struct {
 	src Setter
 }
 
-// Diff
-// 差集
+// Diff return (dst-src) part
+// dst from web, src from db
 func (s Set) Diff(dst Setter) (diff [][]string, err error) {
 	m := make(map[string]string)
 	for _, i := range s.src.([][]string) {
