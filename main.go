@@ -27,6 +27,7 @@ func minConfig() *viper.Viper {
 }
 
 func ministries() {
+
 	wg := &sync.WaitGroup{}
 	urlChannel := make(chan *store.UrlChan)
 	infoChannel := make(chan *store.InfoChan)
