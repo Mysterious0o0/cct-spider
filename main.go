@@ -1,36 +1,11 @@
 package main
 
 import (
-	"github.com/spf13/viper"
-	"github.com/xiaogogonuo/cct-spider/pkg/config"
+	"fmt"
+	M "github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 )
 
-func govConfig() *viper.Viper {
-	c := config.Config{
-		ConfigName: "config",
-		ConfigType: "yaml",
-		ConfigPath: "configs/gov",
-	}
-	v, err := c.NewConfig()
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
-func minConfig() *viper.Viper {
-	c := config.Config{
-		ConfigName: "config",
-		ConfigType: "yaml",
-		ConfigPath: "configs/min",
-	}
-	v, err := c.NewConfig()
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
 func main() {
-
+	r := M.Query("SELECT * FROM t_dmaa_base_target")
+	fmt.Println(len(r))
 }

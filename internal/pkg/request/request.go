@@ -8,7 +8,7 @@ import (
 )
 
 type Request struct {
-	Url     string
+	URL     string
 	Method  string
 	Timeout time.Duration
 	Body    io.Reader
@@ -18,7 +18,7 @@ type Request struct {
 }
 
 func (r *Request) Visit() (b []byte, err error) {
-	req, err := http.NewRequest(r.Method, r.Url, r.Body)
+	req, err := http.NewRequest(r.Method, r.URL, r.Body)
 	if err != nil {
 		return
 	}
