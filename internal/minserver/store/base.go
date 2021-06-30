@@ -1,0 +1,53 @@
+package store
+
+import (
+	"sync"
+)
+
+type UrlChan struct {
+	Url      string
+	GetUrlF  func(s string, urlChan chan<- *UrlChan, infoChan chan<- *InfoChan)
+}
+
+type InfoChan struct {
+	Url      string
+	GetInfoF func(s string, infoChan chan<- *InfoChan, info chan <- map[string]string)
+}
+
+type getUrlFunc func(url string, urlChan chan<- *UrlChan, infoChan chan<- *InfoChan)
+type getInfoFunc func(url string, infoChan chan<- *InfoChan, info chan <- map[string]string)
+
+func (f getUrlFunc) callUrl(url string, urlChan chan *UrlChan, infoChan chan *InfoChan) {
+	f(url, urlChan, infoChan)
+}
+
+func (f getInfoFunc) callInfo(url string, infoChan chan *InfoChan, info chan map[string]string) {
+	f(url, infoChan, info)
+}
+
+type callUrl interface {
+	callUrl(string, chan *UrlChan, chan *InfoChan)
+}
+
+type callInfo interface {
+	callInfo(string, chan *InfoChan, chan map[string]string)
+}
+
+func callback1(url string, c callUrl, urlChan chan *UrlChan, infoChan chan *InfoChan) {
+	c.callUrl(url, urlChan, infoChan)
+}
+
+func callback2(url string, c callInfo, infoChan chan *InfoChan, info chan map[string]string) {
+	c.callInfo(url, infoChan, info)
+}
+
+func (u UrlChan) GetUrlFunc(urlChan chan *UrlChan, infoChan chan *InfoChan, wg *sync.WaitGroup) {
+	defer wg.Done()
+	callback1(u.Url, getUrlFunc(u.GetUrlF), urlChan, infoChan)
+
+}
+
+func (u InfoChan) GetInfoFunc(infoChan chan *InfoChan, info chan map[string]string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	callback2(u.Url, getInfoFunc(u.GetInfoF), infoChan, info)
+}
