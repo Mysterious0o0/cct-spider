@@ -9,6 +9,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
+	M "github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"sync"
 )
 
@@ -69,5 +70,7 @@ func ministries() {
 }
 
 func main() {
+	r := M.Query("SELECT * FROM t_dmaa_base_target")
+	fmt.Println(len(r))
 	ministries()
 }
