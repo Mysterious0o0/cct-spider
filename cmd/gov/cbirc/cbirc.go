@@ -1,6 +1,0 @@
-package cbirc
-
-func Parse() {
-
-}
-

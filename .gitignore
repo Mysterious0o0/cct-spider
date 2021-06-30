@@ -17,4 +17,5 @@
 *.DS_Store
 *.yaml
 *.xlsx
+*_test.go
 /.idea
