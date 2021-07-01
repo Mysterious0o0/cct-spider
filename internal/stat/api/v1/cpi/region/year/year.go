@@ -16,36 +16,21 @@ import (
 
 // 地区经济指标-分省年度数据-居民消费价格指数(上年=100)
 
-func prepareData(v string, diff [][]string) (data [][]string) {
+func prepareData(regionCode, indexCode string, diff [][]string) (data [][]string) {
 	data = make([][]string, 0)
 	for _, r := range diff {
 		tv := response.TargetValue{}
-		tv.AcctYEAR = r[0]
-		tv.TargetVALUE = r[1]
-		tv.TargetCODE = indexcode.StatInner[indexcode.CPICode]
-		tv.TargetGUID = md5.MD5(tv.TargetCODE)
-		tv.TargetNAME = indexcode.CodeName[indexcode.CPICode]
-		tv.SourceTargetCODE = indexcode.CPICode
-		tv.RegionCODE = v
-		tv.RegionNAME = provincecode.CodeProvince[v]
-		tv.ValueGUID = md5.MD5(tv.TargetCODE + v + tv.AcctYEAR)
+		tv.AcctYear = r[0]
+		tv.TargetValue = r[1]
+		tv.TargetCode = indexcode.StatInner[indexCode]
+		tv.TargetGUID = md5.MD5(tv.TargetCode)
+		tv.TargetName = indexcode.CodeName[indexCode]
+		tv.SourceTargetCode = indexCode
+		tv.RegionCode = regionCode
+		tv.RegionName = provincecode.CodeProvince[regionCode]
+		tv.ValueGUID = md5.MD5(tv.TargetCode + regionCode + tv.AcctYear)  // TODO: unstable
 		fmt.Println(tv)
-		data = append(data, []string{
-			tv.ValueGUID,
-			tv.TargetGUID,
-			tv.TargetCODE,
-			tv.TargetNAME,
-			tv.SourceTargetCODE,
-			tv.RegionCODE,
-			tv.RegionNAME,
-			tv.UnitTYPE,
-			tv.UnitNAME,
-			tv.AcctYEAR,
-			tv.AcctQUARTOR,
-			tv.AcctMONTH,
-			tv.AcctDate,
-			tv.TargetVALUE,
-		})
+		data = append(data, tv.Row())
 	}
 	return
 }
@@ -70,7 +55,7 @@ func Run() {
 		if err != nil {
 			continue
 		}
-		data := prepareData(v, diff)
+		data := prepareData(v, indexcode.CPICode, diff)
 		if len(data) == 0 {
 			continue
 		}

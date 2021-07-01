@@ -8,7 +8,8 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
-	"github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/year"
+	"github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/month"
+	_ "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/year"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
 	"sync"
 )
@@ -69,5 +70,6 @@ func ministries() {
 }
 
 func main() {
-	year.Run()
+	//year.Run()
+	month.Run()
 }
