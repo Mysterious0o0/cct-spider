@@ -19,10 +19,6 @@ func (r *Request) Visit() (b []byte, err error) {
 		return
 	}
 	req.Header.Add("User-Agent", ua)
-	//req.Header.Add("Host", "data.stats.gov.cn")
-	//req.Header.Add("Connection", "keep-alive")
-	//req.Header.Add("Referer", "https://data.stats.gov.cn/easyquery.htm?cn=C01&zb=A090105")
-	//req.Header.Add("X-Requested-With", "XMLHttpRequest")
 	for _, c := range r.Cookie {
 		req.AddCookie(c)
 	}
