@@ -48,5 +48,4 @@ func Executor(url urllib.Param, cn, zb string) {
 		date := end(strings.Split(node.Code, "."))
 		fmt.Println(date, StrValue)
 	}
-	fmt.Println()
 }

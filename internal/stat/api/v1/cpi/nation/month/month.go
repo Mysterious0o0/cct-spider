@@ -19,9 +19,7 @@ func Run() {
 		RowCode:        "zb",
 		ColCode:        "sj",
 		DfWdsWdCode:    "sj",
-		DfWdsValueCode: last.Months(indexcode.CPI2StartYear),
-	}.Encode()
-	executor.Executor(url, typecode.MonthDataCode, indexcode.CPI2Code)
-	//executor.Executor(url, typecode.MonthDataCode, indexcode.CPI3Code)
-	//executor.Executor(url, typecode.MonthDataCode, indexcode.CPI4Code)
+		DfWdsValueCode: last.Months(indexcode.CPI3StartYear, 1),
+	}
+	executor.Executor(url, typecode.MonthDataCode, indexcode.CPI3Code)
 }
