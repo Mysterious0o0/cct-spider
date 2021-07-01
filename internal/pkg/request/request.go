@@ -53,6 +53,7 @@ func (r *Request) request() (resp *http.Response, err error) {
 	for key, val := range r.Param {
 		q.Add(key, val)
 	}
+
 	req.URL.RawQuery = q.Encode()
 	for k, v := range r.Header {
 		req.Header.Set(k, v)
