@@ -110,10 +110,8 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	//fmt.Println(_cookie)
 	req.Cookies.StrCookie = _cookie
 	b, err := req.Visit()
-	//fmt.Println(string(b))
 	if err != nil {
 		return
 	}
@@ -123,10 +121,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		fmt.Println(url, err)
 		return
 	}
-	//fmt.Println(j.Data.Total) //总文件数
 	for _, v := range j.DataMiit.DataResults {
-		//fmt.Println(urlprocess.UrlJoint(store.BaseUrl, v.GroupData[0].Url))
-		//fmt.Println(baseUrl + v.GroupData[0].Url)
 		infoChan <- &store.InfoChan{
 			Url:      urlprocess.UrlJoint(store.BaseUrl, v.GroupData[0].Url),
 			GetInfoF: GetHtmlInfo,
@@ -141,7 +136,6 @@ func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[st
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			//UrlSelector:   "iframe",
 			TitleSelector: "#con_title",
 			TextSelector:  "#con_con>p",
 			DomainName:    "https://www.miit.gov.cn/",
