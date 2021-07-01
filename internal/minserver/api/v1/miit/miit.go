@@ -18,18 +18,17 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-	"time"
 )
 
 var _cookie = _getCookie()
 
-func init()  {
-	go func() {
-		for range time.Tick(time.Minute * 1) {
-			_cookie = _getCookie()
-		}
-	}()
-}
+//func init()  {
+//	go func() {
+//		for range time.Tick(time.Minute * 5) {
+//			_cookie = _getCookie()
+//		}
+//	}()
+//}
 
 func _getCookie() (cookie string) {
 	url := "https://www.miit.gov.cn/search-front-server/api/search/info"
@@ -94,10 +93,10 @@ func _getjsluid(ck string) string {
 	return ""
 }
 
-func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for i := 0; i <= 100; i++ {
-		urlChan <- &store.UrlChan{
+		urlChan <- store.UrlChan{
 			Url:     fmt.Sprintf("%s%v", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
@@ -105,7 +104,7 @@ func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGrou
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
 	req := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
@@ -122,28 +121,29 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		return
 	}
 	for _, v := range j.DataMiit.DataResults {
-		infoChan <- &store.InfoChan{
+		infoChan <- store.InfoChan{
 			Url:      urlprocess.UrlJoint(store.BaseUrl, v.GroupData[0].Url),
 			GetInfoF: GetHtmlInfo,
 		}
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string){
+func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
+			Source: "工业和信息化部",
+			DateSelector: "#con_time, .xxgk-span4",
 			TitleSelector: "#con_title",
 			TextSelector:  "#con_con>p",
 			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
-	//fmt.Println(_cookie)
 	pr.Request.Cookies.StrCookie = _cookie
-	info <- pr.GetHtmlInfo()
+	message <- pr.GetHtmlInfo()
 
 	//infoMap := pr.GetHtmlInfo()
 	//if len(infoMap) == 0 {

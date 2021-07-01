@@ -14,7 +14,7 @@ type JsonCbirc struct {
 
 type DataCbirc struct {
 	DocTitle string `json:"docTitle"`
-
+	DocDate  string `json:"publishDate"`
 	DocClob  string `json:"docClob"`
 }
 

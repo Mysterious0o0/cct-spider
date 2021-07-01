@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
+func GetFirstUrl(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	pr := response.PR{
 		Request: request.Request{
@@ -24,21 +24,22 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 		},
 	}
 	for _, link := range pr.GetPageUrl("href"){
-		urlChan <- &store.UrlChan{
+		urlChan <- store.UrlChan{
 			Url:     link,
 			GetUrlF: GetSecondUrl,
 		}
 		//time.Sleep(time.Second*1)  // 单跑这个需要加延迟，
 	}
+	fmt.Println("first end")
 
 }
 
-func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetSecondUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
 	s := strings.Split(url, "/")
 	//fmt.Println(s[4])
 	switch s[4] {
 	case "zyygwj", "gwywj", "xzspwj":
-		urlChan <- &store.UrlChan{
+		urlChan <- store.UrlChan{
 			Url:     url,
 			GetUrlF: GetPageUrlList,
 		}
@@ -55,8 +56,7 @@ func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *st
 			},
 		}
 		for _, link := range pr.GetPageUrl("href"){
-			fmt.Println(link)
-			urlChan <- &store.UrlChan{
+			urlChan <- store.UrlChan{
 				Url:     link,
 				GetUrlF: GetPageUrlList,
 			}
@@ -64,9 +64,8 @@ func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *st
 	}
 }
 
-func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
-	//fmt.Println(url) // frist url
-	urlChan <- &store.UrlChan{
+func GetPageUrlList(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
+	urlChan <- store.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
 	}
@@ -84,16 +83,14 @@ func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *
 		num = 40
 	}
 	for i := 1; i < num; i++ {
-		//url := fmt.Sprintf("%sindex_%v.shtml", url, i)
-		//fmt.Println(url) // other url
-		urlChan <- &store.UrlChan{
+		urlChan <- store.UrlChan{
 			Url:     fmt.Sprintf("%sindex_%v.shtml", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
@@ -104,9 +101,8 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 			UrlSelector: "#div>li>a",
 		},
 	}
-	//pr.GetPageUrl("href")
 	for _, link := range pr.GetPageUrl("href") {
-		infoChan <- &store.InfoChan{
+		infoChan <- store.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
 		}
@@ -114,19 +110,21 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 }
 
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string){
+func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url : url,
 			Method: http.MethodGet,
 		},
 		Parse:   parse.Parse{
+			Source: "生态环境部",
+			DateSelector: ".wjkFontBox>em, .content_top_box",
 			TitleSelector: "h1, h2",
 			TextSelector: ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box>p, .content_body_box>div, .neiright_JPZ_GK_CP>p",
 			DomainName: "http://www.mee.gov.cn",
 		},
 	}
-	info <- pr.GetHtmlInfo()
+	message <- pr.GetHtmlInfo()
 
 	//infoMap := pr.GetHtmlInfo()
 	//if len(infoMap) == 0 {

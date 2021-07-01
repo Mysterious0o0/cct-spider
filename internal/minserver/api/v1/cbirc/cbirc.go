@@ -6,16 +6,21 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
 	"net/http"
 	"strings"
 	"sync"
 )
 
-func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, infoChan chan<- store.InfoChan, wg *sync.WaitGroup) {
 	defer wg.Done()
-	for i := 1; i <= 1000; i++ {
+	num := 1
+	if urlprocess.GetParseQuery(url, "itemId") == "928"{
+		num = 100
+	}
+	for i := 1; i <= num; i++ {
 		req := request.Request{
-			Url:    fmt.Sprintf(url, i),
+			Url:    fmt.Sprintf("%s%v", url, i),
 			Method: http.MethodGet,
 		}
 		b, err := req.Visit()
@@ -32,7 +37,7 @@ func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGr
 		}
 		for _, v := range j.Data.Rows {
 			//fmt.Printf(store.DetailUrl, v.DocId)
-			infoChan <- &store.InfoChan{
+			infoChan <- store.InfoChan{
 				Url:      fmt.Sprintf(store.DetailUrl, v.DocId),
 				GetInfoF: GetHtmlInfo,
 			}
@@ -41,7 +46,7 @@ func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGr
 }
 
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string) {
+func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message) {
 	infoMap := make(map[string]string)
 	req := request.Request{
 		Url:    url,
@@ -61,9 +66,16 @@ func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[st
 		Html: j.DocClob,
 		TextSelector:  "p",
 	}
-	_, data := p.GetTextByParseHtml()
+	_, data, _ := p.GetTextByParseHtml()
 	infoMap[j.DocTitle] = strings.Join(data, "")
-	info <- infoMap
+	date := strings.Replace(strings.Split(j.DocDate, " ")[0], "-", "", -1)
+	message <- store.Message{
+		Title:   j.DocTitle,
+		Content: strings.Join(data, ""),
+		Source:  "银保监会",
+		Date:    date,
+	}
+
 	//if len(infoMap) == 0 {
 	//	errChan <- &store.InfoChan{
 	//		Url:      url,
