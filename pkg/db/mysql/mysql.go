@@ -14,6 +14,7 @@ import (
 
 const (
 	queryTimeOut time.Duration = 30
+	transactionTimeOut time.Duration = 60
 )
 
 var db *sql.DB
@@ -63,7 +64,7 @@ func init() {
 	db = _db
 }
 
-func queryDB(query string, result chan []string, stop chan struct{}) {
+func scan(query string, result chan []string, stop chan struct{}) {
 	rows, err := db.Query(query)
 	if err != nil {
 		fmt.Println(err)
@@ -101,9 +102,9 @@ func queryDB(query string, result chan []string, stop chan struct{}) {
 	return
 }
 
-func QueryDB(ctx context.Context, sql string, result chan []string) {
+func query(ctx context.Context, sql string, result chan []string) {
 	stop := make(chan struct{})
-	go queryDB(sql, result, stop)
+	go scan(sql, result, stop)
 	select {
 	case <-ctx.Done():
 	case <-stop:
@@ -115,7 +116,7 @@ func Query(sql string) (row [][]string) {
 	result := make(chan []string)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*queryTimeOut)
 	defer cancel()
-	go QueryDB(ctx, sql, result)
+	go query(ctx, sql, result)
 	for {
 		select {
 		case <-ctx.Done():
@@ -137,7 +138,8 @@ func clearTransaction(tx *sql.Tx) {
 	}
 }
 
-func Transaction(sql string) {
+func exec(sql string, stop chan struct{}) {
+	defer close(stop)
 	tx, err := db.Begin()
 	if err != nil {
 		return
@@ -150,9 +152,29 @@ func Transaction(sql string) {
 	if _, err = r.RowsAffected(); err != nil {
 		return
 	}
-
 	if err = tx.Commit(); err != nil {
 		return
 	}
 	return
+}
+
+func transaction(ctx context.Context, sql string, sig chan struct{}) {
+	stop := make(chan struct{})
+	go exec(sql, stop)
+	select {
+	case <-ctx.Done():
+	case <-stop:
+		sig<- struct{}{}
+	}
+}
+
+func Transaction(sql string) {
+	sig := make(chan struct{})
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*transactionTimeOut)
+	defer cancel()
+	go transaction(ctx, sql, sig)
+	select {
+	case <-ctx.Done():
+	case <-sig:
+	}
 }
