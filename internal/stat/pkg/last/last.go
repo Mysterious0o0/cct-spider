@@ -8,7 +8,7 @@ import (
 
 // Years return years from startYear to current year
 func Years(startYear int) int {
-	return time.Now().Year() - startYear + 1
+	return time.Now().Year() - startYear
 }
 
 // Seasons return seasons from startYear to current year

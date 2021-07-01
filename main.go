@@ -8,8 +8,8 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/year"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
-	M "github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"sync"
 )
 
@@ -69,38 +69,5 @@ func ministries() {
 }
 
 func main() {
-	sql := `
-INSERT INTO  t_dmaa_base_target_value
-    (
-     VALUE_GUID,
-     TARGET_GUID,
-     TARGET_CODE,
-     TARGET_NAME,
-     SOURCE_TARGET_CODE,
-     REGION_CODE,
-     UNIT_TYPE,
-     UNIT_NAME,
-     ACCT_YEAR,
-     ACCT_QUARTOR,
-     ACCT_MONTH,
-     TARGET_VALUE
-     )
-VALUES
-       ('1', '2c20e4831b1f334fd58d685e32de2f8c', 'HG00001', '国内生产总值', 'A020102', '', '人民币' ,'亿元', '2021', '', '', '102'),
-       ('2', '19dfc1ebad7e4c9c2cb39fd884bbe9dc', 'HG00002', '地区生产总值', 'A020101', '310000', '人民币' ,'亿元', '2021', '', '6', '5000')
-ON DUPLICATE KEY UPDATE
-    VALUE_GUID = VALUES(VALUE_GUID),
-    TARGET_GUID = VALUES(TARGET_GUID),
-    TARGET_CODE = VALUES(TARGET_CODE),
-    TARGET_NAME = VALUES(TARGET_NAME),
-    SOURCE_TARGET_CODE = VALUES(SOURCE_TARGET_CODE),
-    REGION_CODE = VALUES(REGION_CODE),
-    UNIT_TYPE = VALUES(UNIT_TYPE),
-    UNIT_NAME = VALUES(UNIT_NAME),
-    ACCT_YEAR = VALUES(ACCT_YEAR),
-    ACCT_QUARTOR = VALUES(ACCT_QUARTOR),
-    ACCT_MONTH = VALUES(ACCT_MONTH),
-    TARGET_VALUE = VALUES(TARGET_VALUE);
-`
-	M.Transaction(sql)
+	year.Run()
 }
