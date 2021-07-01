@@ -19,6 +19,6 @@ func Run() {
 		ColCode:        "sj",
 		DfWdsWdCode:    "sj",
 		DfWdsValueCode: last.Years(indexcode.CPIStartYear),
-	}.Encode()
+	}
 	executor.Executor(url, typecode.YearDataCode, indexcode.CPICode)
 }
