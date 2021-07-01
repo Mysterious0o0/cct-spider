@@ -35,7 +35,7 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 
 func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	s := strings.Split(url, "/")
-	fmt.Println(s[4])
+	//fmt.Println(s[4])
 	switch s[4] {
 	case "zyygwj", "gwywj", "xzspwj":
 		urlChan <- &store.UrlChan{
@@ -65,7 +65,11 @@ func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *st
 }
 
 func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
-	fmt.Println(url) // frist url
+	//fmt.Println(url) // frist url
+	urlChan <- &store.UrlChan{
+		Url:     url,
+		GetUrlF: GetDetailPageUrl,
+	}
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,

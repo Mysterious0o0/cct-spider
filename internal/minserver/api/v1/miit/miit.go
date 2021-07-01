@@ -141,8 +141,19 @@ func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[st
 			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
+	//fmt.Println(_cookie)
 	pr.Request.Cookies.StrCookie = _cookie
 	info <- pr.GetHtmlInfo()
+
+	//infoMap := pr.GetHtmlInfo()
+	//if len(infoMap) == 0 {
+	//	errChan <- &store.InfoChan{
+	//		Url:      url,
+	//		GetInfoF: GetHtmlInfo,
+	//	}
+	//}else {
+	//	info <- infoMap
+	//}
 }
 
 func getPDFInfo(url string) (info []string) {
