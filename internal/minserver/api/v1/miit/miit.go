@@ -13,6 +13,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"hash"
 	"net/http"
 	"regexp"
@@ -104,6 +105,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 	//req.Cookies.StrCookie = _cookie
 	b, err := req.Visit()
 	if err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
@@ -115,7 +117,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 	var j store.JsonMiit
 	err = json.Unmarshal(b, &j)
 	if err != nil {
-		fmt.Println(url, err)
+		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	for _, v := range j.DataMiit.DataResults {

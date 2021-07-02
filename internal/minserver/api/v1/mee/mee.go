@@ -30,20 +30,17 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 		}
 		//time.Sleep(time.Second*1)  // 单跑这个需要加延迟，
 	}
-	//fmt.Println("first end")
 
 }
 
 func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	s := strings.Split(url, "/")
-	//fmt.Println(s[4])
 	switch s[4] {
 	case "zyygwj", "gwywj", "xzspwj":
 		urlChan <- &store.UrlChan{
 			Url:     url,
 			GetUrlF: GetPageUrlList,
 		}
-		//fmt.Println(url)
 	default:
 		pr := response.PR{
 			Request: request.Request{
