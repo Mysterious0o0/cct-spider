@@ -3,11 +3,10 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
-	"log"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"strconv"
 	"time"
 )
@@ -27,7 +26,7 @@ func dbConfig() *viper.Viper {
 	}
 	v, err := c.NewConfig()
 	if err != nil {
-		panic(err)
+		logger.DPanic(err.Error())
 	}
 	return v
 }
@@ -42,23 +41,23 @@ func init() {
 
 	_db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		panic(err)
+		logger.DPanic(err.Error())
 	}
 
 	maxOpenConn, err := strconv.Atoi(mysql["maxopenconn"])
 	if err != nil {
-		panic(err)
+		logger.DPanic(err.Error())
 	}
 	_db.SetMaxOpenConns(maxOpenConn)
 
 	maxIdleConn, err := strconv.Atoi(mysql["maxidleconn"])
 	if err != nil {
-		panic(err)
+		logger.DPanic(err.Error())
 	}
 	_db.SetMaxIdleConns(maxIdleConn)
 
 	if err = _db.Ping(); err != nil {
-		panic(err)
+		logger.DPanic(err.Error())
 	}
 
 	db = _db
@@ -67,13 +66,13 @@ func init() {
 func scan(query string, result chan []string, stop chan struct{}) {
 	rows, err := db.Query(query)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	defer rows.Close()
 	cols, err := rows.Columns()
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	vars := make([]sql.NullString, len(cols))
@@ -120,7 +119,7 @@ func Query(sql string) (row [][]string) {
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Println(ctx.Err())
+			logger.Error(ctx.Err().Error())
 			return
 		case res, ok := <-result:
 			if !ok {
@@ -134,7 +133,7 @@ func Query(sql string) (row [][]string) {
 func clearTransaction(tx *sql.Tx) {
 	err := tx.Rollback()
 	if err != sql.ErrTxDone && err != nil {
-		log.Fatalln(err)
+		logger.Error(err.Error())
 	}
 }
 
@@ -142,17 +141,21 @@ func exec(sql string, stop chan struct{}) {
 	defer close(stop)
 	tx, err := db.Begin()
 	if err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	defer clearTransaction(tx)
 	r, err := tx.Exec(sql)
 	if err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	if err = tx.Commit(); err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	return
