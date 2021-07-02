@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"net/http"
 	"strings"
 	"sync"
@@ -30,7 +31,7 @@ func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGr
 		var j store.JsonCbirc
 		err = json.Unmarshal(b, &j)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err.Error())
 		}
 		if len(j.Data.Rows) == 0 {
 			break
@@ -58,7 +59,7 @@ func GetHtmlInfo(url string, errChan chan<- *store.InfoChan, message chan<- *sto
 	var j store.JsonDetailsCbirc
 	err = json.Unmarshal(b, &j)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 	}
 
 	p := parse.Parse{

@@ -5,6 +5,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"strings"
 )
 
@@ -15,6 +16,7 @@ type PR struct {
 func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 	html, err := pr.Request.Visit()
 	if err != nil {
+		logger.Error(err.Error())
 		return
 	}
 	pr.Parse.Html = string(html)
@@ -26,11 +28,11 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 	message = &store.Message{}
 	var info []string
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
-		fmt.Printf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url)
+		logger.Info(fmt.Sprintf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url))
 		return
 	}
 	if !strings.Contains(pr.Request.Url, pr.Parse.Suffix) {
-		fmt.Printf("后缀：%s 网址：%s 后缀不存在\n", pr.Parse.Suffix, pr.Request.Url)
+		logger.Info(fmt.Sprintf("后缀：%s 网址：%s 后缀不存在\n", pr.Parse.Suffix, pr.Request.Url))
 		return
 	}
 	html, _ := pr.Request.Visit()
@@ -56,7 +58,10 @@ func (pr *PR)GetPageNum(r string) (num int){
 
 
 func (pr *PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
-	html, _ := pr.Request.Visit()
+	html, err := pr.Request.Visit()
+	if err != nil{
+		logger.Error(err.Error())
+	}
 	pr.Parse.Html = string(html)
 	count, size = pr.Parse.GetCountAndSize(countR, sizeR)
 	return
