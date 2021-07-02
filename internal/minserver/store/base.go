@@ -5,17 +5,17 @@ import (
 )
 
 type UrlChan struct {
-	Url      string
-	GetUrlF  func(s string, urlChan chan<- *UrlChan, infoChan chan<- *InfoChan)
+	Url     string
+	GetUrlF func(s string, urlChan chan<- *UrlChan, infoChan chan<- *InfoChan)
 }
 
 type InfoChan struct {
 	Url      string
-	GetInfoF func(s string, infoChan chan<- *InfoChan, info chan <- *Message)
+	GetInfoF func(s string, infoChan chan<- *InfoChan, info chan<- *Message)
 }
 
 type getUrlFunc func(url string, urlChan chan<- *UrlChan, infoChan chan<- *InfoChan)
-type getInfoFunc func(url string, infoChan chan<- *InfoChan, info chan <- *Message)
+type getInfoFunc func(url string, infoChan chan<- *InfoChan, info chan<- *Message)
 
 func (f getUrlFunc) callUrl(url string, urlChan chan *UrlChan, infoChan chan *InfoChan) {
 	f(url, urlChan, infoChan)
@@ -54,6 +54,7 @@ func (u InfoChan) GetInfoFunc(infoChan chan *InfoChan, message chan *Message, wg
 }
 
 type Message struct {
+	Url     string
 	Title   string
 	Content string
 	Source  string

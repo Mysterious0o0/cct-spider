@@ -23,6 +23,7 @@ func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 }
 
 func (pr *PR)GetHtmlInfo() (message *store.Message){
+	message = &store.Message{}
 	var info []string
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
 		fmt.Printf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url)
@@ -37,6 +38,7 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 	title, content, date := pr.Parse.GetTextByParseHtml()
 	info = append(info, content...)
 	message = &store.Message{
+		Url: 	 pr.Request.Url,
 		Title:   title,
 		Content: strings.Join(info, ""),
 		Source:  pr.Parse.Source,
