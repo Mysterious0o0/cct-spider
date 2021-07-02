@@ -27,11 +27,11 @@ func minConfig() *viper.Viper {
 func ministries() {
 
 	wg := &sync.WaitGroup{}
-	urlChannel := make(chan *store.UrlChan)
-	infoChannel := make(chan *store.InfoChan)
+	urlChannel := make(chan *store.UrlChan, 200)
+	infoChannel := make(chan *store.InfoChan, 200)
 	errChannel := make(chan *store.InfoChan)
 	//infoMap := make(chan map[string]string)
-	message := make(chan *store.Message)
+	message := make(chan *store.Message, 200)
 	minV := minConfig()
 	wg.Add(6)
 	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
