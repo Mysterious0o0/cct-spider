@@ -16,7 +16,7 @@ type PR struct {
 func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 	html, err := pr.Request.Visit()
 	if err != nil {
-		logger.Error(err.Error())
+		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
 		return
 	}
 	pr.Parse.Html = string(html)
@@ -41,8 +41,8 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 	info = append(info, content...)
 	message = &store.Message{
 		Url: 	 pr.Request.Url,
-		Title:   title,
-		Content: strings.Join(info, ""),
+		Title:   _replace(title),
+		Content: _replace(strings.Join(info, "")),
 		Source:  pr.Parse.Source,
 		Date:    date,
 	}
@@ -50,7 +50,11 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 }
 
 func (pr *PR)GetPageNum(r string) (num int){
-	html, _ := pr.Request.Visit()
+	html, err := pr.Request.Visit()
+	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+		return
+	}
 	pr.Parse.Html = string(html)
 	num = pr.Parse.GetPageNum(r)
 	return
@@ -59,11 +63,15 @@ func (pr *PR)GetPageNum(r string) (num int){
 
 func (pr *PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
 	html, err := pr.Request.Visit()
-	if err != nil{
-		logger.Error(err.Error())
+	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+		return
 	}
 	pr.Parse.Html = string(html)
 	count, size = pr.Parse.GetCountAndSize(countR, sizeR)
 	return
 }
 
+func _replace(s string) string {
+	return strings.Replace(s, `'`, `"`, -1)
+}
