@@ -33,9 +33,8 @@ var levelPool = map[string]zapcore.Level{
 }
 
 func init() {
-	var syncer zapcore.WriteSyncer
-
 	writer := writerSyncer()
+	var syncer zapcore.WriteSyncer
 	if logConsole {
 		syncer = zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), writer)
 	} else {
