@@ -12,15 +12,17 @@ import (
 type Parse struct {
 	Html            string
 	BaseUrl         string
+	Source          string
 	UrlSelector     string
 	TitleSelector   string
 	TextSelector    string
+	DateSelector    string
 	PageNumSelector string
 	Suffix          string
 	DomainName      string
 }
 
-func (p *Parse) GetTextByParseHtml() (title string, info []string) {
+func (p *Parse) GetTextByParseHtml() (title string, info []string, date string) {
 	var titleL []string
 	var key map[string]byte
 	key = make(map[string]byte)
@@ -44,6 +46,25 @@ func (p *Parse) GetTextByParseHtml() (title string, info []string) {
 				info = append(info, s)
 				key[s] = 0
 			}
+		})
+	}
+	if p.DateSelector != "" {
+		dom.Find(p.DateSelector).Each(func(i int, selection *goquery.Selection) {
+			t := ""
+			timeReg := regexp.MustCompile("([0-9]{4})[\\.\\-\\/年]([0-9]{1,2})[\\.\\-\\/月]([0-9]{1,2})")
+			timeStr := timeReg.FindStringSubmatch(selection.Text())
+			if len(timeStr) == 0{
+				return
+			}
+			for j, d := range timeStr[1:]{
+
+				if j >= 1 && len(d) == 1{
+					t += "0" + d
+				}else{
+					t += d
+				}
+			}
+			date = t
 		})
 	}
 
@@ -73,10 +94,8 @@ func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 		if b && href != "" {
 			if strings.Contains(href, "http") || strings.Contains(href, "https"){
 				hrefList = append(hrefList, urlprocess.UrlJoint(href, p.Suffix))
-				//fmt.Println(urlprocess.UrlJoint(href, p.Suffix))
 			}else {
 				hrefList = append(hrefList, urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
-				//fmt.Println(urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
 			}
 		}else {
 			fmt.Printf("b :%v, href: %s\n", b, href)

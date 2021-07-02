@@ -2,6 +2,7 @@ package response
 
 import (
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"strings"
@@ -21,9 +22,9 @@ func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 	return hrefList
 }
 
-func (pr *PR)GetHtmlInfo() (infoMap map[string]string){
+func (pr *PR)GetHtmlInfo() (message *store.Message){
+	message = &store.Message{}
 	var info []string
-	infoMap = make(map[string]string)
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
 		fmt.Printf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url)
 		return
@@ -34,10 +35,14 @@ func (pr *PR)GetHtmlInfo() (infoMap map[string]string){
 	}
 	html, _ := pr.Request.Visit()
 	pr.Parse.Html = string(html)
-	title, data := pr.Parse.GetTextByParseHtml()
-	info = append(info, data...)
-	if _, ok := infoMap[title]; !ok{
-		infoMap[title] = strings.Join(info, "")
+	title, content, date := pr.Parse.GetTextByParseHtml()
+	info = append(info, content...)
+	message = &store.Message{
+		Url: 	 pr.Request.Url,
+		Title:   title,
+		Content: strings.Join(info, ""),
+		Source:  pr.Parse.Source,
+		Date:    date,
 	}
 	return
 }

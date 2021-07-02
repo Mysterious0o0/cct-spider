@@ -18,30 +18,21 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-	"time"
 )
 
-var _cookie = _getCookie()
+//var _cookie = _getCookie()
 
-func init()  {
-	go func() {
-		for range time.Tick(time.Minute * 1) {
-			_cookie = _getCookie()
-		}
-	}()
-}
+//func init()  {
+//	go func() {
+//		for range time.Tick(time.Minute * 5) {
+//			_cookie = _getCookie()
+//		}
+//	}()
+//}
 
-func _getCookie() (cookie string) {
-	url := "https://www.miit.gov.cn/search-front-server/api/search/info"
-	req := request.Request{
-		Url:    url,
-		Method: http.MethodGet,
-	}
-	b, _ := req.Visit()
-	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
-	jslClearances := reg.FindStringSubmatch(string(b))
+func _getCookie(req request.Request, bCK string) (cookie string) {
 	vm := otto.New()
-	v, err := vm.Run(jslClearances[1])
+	v, err := vm.Run(bCK)
 	if err != nil {
 		fmt.Println("otto run js error:", err)
 		return
@@ -50,8 +41,8 @@ func _getCookie() (cookie string) {
 	ck := req.GetCookie("__jsluid_s")
 	req.Cookies.StrCookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, cookiePro)
 
-	b, _ = req.Visit()
-	reg = regexp.MustCompile(`;go\((.*?)\)`)
+	b, _ := req.Visit()
+	reg := regexp.MustCompile(`;go\((.*?)\)`)
 	data := reg.FindStringSubmatch(string(b))
 	c := _getjsluid(data[1])
 	if c == "" {
@@ -110,10 +101,16 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	req.Cookies.StrCookie = _cookie
+	//req.Cookies.StrCookie = _cookie
 	b, err := req.Visit()
 	if err != nil {
 		return
+	}
+	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
+	cookie := reg.FindStringSubmatch(string(b))
+	if len(cookie) > 0{
+		req.Cookies.StrCookie = _getCookie(req, cookie[1])
+		b, err = req.Visit()
 	}
 	var j store.JsonMiit
 	err = json.Unmarshal(b, &j)
@@ -129,20 +126,33 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string){
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
+			Source: "工业和信息化部",
+			DateSelector: "#con_time, .xxgk-span4",
 			TitleSelector: "#con_title",
 			TextSelector:  "#con_con>p",
 			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
-	pr.Request.Cookies.StrCookie = _cookie
-	info <- pr.GetHtmlInfo()
+	//fmt.Println(_cookie)
+	//pr.Request.Cookies.StrCookie = _cookie
+	message <- pr.GetHtmlInfo()
+
+	//infoMap := pr.GetHtmlInfo()
+	//if len(infoMap) == 0 {
+	//	errChan <- &store.InfoChan{
+	//		Url:      url,
+	//		GetInfoF: GetHtmlInfo,
+	//	}
+	//}else {
+	//	info <- infoMap
+	//}
 }
 
 func getPDFInfo(url string) (info []string) {

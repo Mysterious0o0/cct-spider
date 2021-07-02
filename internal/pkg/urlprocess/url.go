@@ -17,3 +17,16 @@ func UrlJoint(baseUrl string, tailUrl string) string{
 	//fmt.Println(base.ResolveReference(u))
 	return base.ResolveReference(u).String()
 }
+
+
+func GetParseQuery(baseUrl string, parse string) string {
+	u, err := url.Parse(baseUrl)
+	if err != nil{
+		return ""
+	}
+	m, err := url.ParseQuery(u.RawQuery)
+	if err != nil{
+		return ""
+	}
+	return m.Get(parse)
+}

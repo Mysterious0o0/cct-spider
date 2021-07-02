@@ -62,7 +62,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 	//fmt.Println(urlList)
 }
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[string]string){
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
 	//fmt.Println(url)
 	pr := response.PR{
 		Request: request.Request{
@@ -70,12 +70,14 @@ func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, info chan <-map[st
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
+			Source: "国家市场监督管理总局",
+			DateSelector: "li[class='Three_xilan01_02 Three_xilan01_0201']",
 			TitleSelector: ".xilanboxbg td[colspan='2'] li[class='Three_xilan01_02 Three_xilan01_0201']",
 			TextSelector:  ".Three_xilan_07 p",
 			DomainName:    "http://gkml.samr.gov.cn/",
 		},
 	}
-	info <- pr.GetHtmlInfo()
+	message <- pr.GetHtmlInfo()
 
 	//infoMap := pr.GetHtmlInfo()
 	//if len(infoMap) == 0 {
