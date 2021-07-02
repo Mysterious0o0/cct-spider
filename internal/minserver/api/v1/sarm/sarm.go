@@ -10,9 +10,9 @@ import (
 	"sync"
 )
 
-func GetPageUrlList(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
-	urlChan <- store.UrlChan{
+	urlChan <- &store.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
 	}
@@ -35,14 +35,14 @@ func GetPageUrlList(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup
 		num = count/size + 1
 	}
 	for i := 1; i < num; i++ {
-		urlChan <- store.UrlChan{
+		urlChan <- &store.UrlChan{
 			Url:     fmt.Sprintf("%s_%v.html", url[:len(url)-len(".html")], i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
@@ -54,7 +54,7 @@ func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- 
 	}
 	urlList := pr.GetPageUrl("href")
 	for _, link := range urlList {
-		infoChan <- store.InfoChan{
+		infoChan <- &store.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
 		}
@@ -62,7 +62,7 @@ func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- 
 	//fmt.Println(urlList)
 }
 
-func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message){
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
 	//fmt.Println(url)
 	pr := response.PR{
 		Request: request.Request{

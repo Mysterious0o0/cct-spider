@@ -93,10 +93,10 @@ func _getjsluid(ck string) string {
 	return ""
 }
 
-func GetPageUrlList(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for i := 0; i <= 100; i++ {
-		urlChan <- store.UrlChan{
+		urlChan <- &store.UrlChan{
 			Url:     fmt.Sprintf("%s%v", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
@@ -104,7 +104,7 @@ func GetPageUrlList(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	req := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
@@ -121,14 +121,14 @@ func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- 
 		return
 	}
 	for _, v := range j.DataMiit.DataResults {
-		infoChan <- store.InfoChan{
+		infoChan <- &store.InfoChan{
 			Url:      urlprocess.UrlJoint(store.BaseUrl, v.GroupData[0].Url),
 			GetInfoF: GetHtmlInfo,
 		}
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message){
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
