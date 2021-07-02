@@ -21,7 +21,7 @@ import (
 	"sync"
 )
 
-//var _cookie = _getCookie()
+var _cookie = _getCookie()
 
 //func init()  {
 //	go func() {
@@ -31,23 +31,46 @@ import (
 //	}()
 //}
 
-func _getCookie(req request.Request, bCK string) (cookie string) {
-	vm := otto.New()
-	v, err := vm.Run(bCK)
+func _getCookie() (cookie string) {
+	url := "https://www.miit.gov.cn/search-front-server/api/search/info"
+	req := request.Request{
+		Url:    url,
+		Method: http.MethodGet,
+	}
+	b, err := req.Visit()
 	if err != nil {
-		fmt.Println("otto run js error:", err)
+		logger.Error(err.Error(), logger.Field("url", url))
+		return
+	}
+	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
+	jslClearances := reg.FindStringSubmatch(string(b))
+	if len(jslClearances) == 0 {
+		logger.Error("first request error", logger.Field("b", string(b)))
+		return
+	}
+	vm := otto.New()
+	v, err := vm.Run(jslClearances[1])
+	if err != nil {
+		logger.Error(err.Error(), logger.Field("mes", "otto run js error"))
 		return
 	}
 	cookiePro := strings.Split(strings.Split(v.String(), "=")[1], ";")[0]
 	ck := req.GetCookie("__jsluid_s")
 	req.Cookies.StrCookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, cookiePro)
 
-	b, _ := req.Visit()
-	reg := regexp.MustCompile(`;go\((.*?)\)`)
+	b, err = req.Visit()
+	if err != nil{
+		logger.Error(err.Error())
+	}
+	reg = regexp.MustCompile(`;go\((.*?)\)`)
 	data := reg.FindStringSubmatch(string(b))
+	if len(data) == 0{
+		logger.Warn("getCookie error", logger.Field("b", string(b)))
+		return
+	}
 	c := _getjsluid(data[1])
 	if c == "" {
-		fmt.Println("getCookie error")
+		logger.Warn("getCookie error", logger.Field("data", data))
 		return
 	}
 	cookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, c)
@@ -58,7 +81,7 @@ func _getjsluid(ck string) string {
 	var data map[string]interface{}
 	err := json.Unmarshal([]byte(ck), &data)
 	if err != nil {
-		fmt.Println("[]byte -> map err,", err)
+		logger.Error(err.Error(), logger.Field("mes", "[]byte -> map err"))
 		return ""
 	}
 	chars := fmt.Sprintf("%s", data["chars"].(string))
@@ -102,17 +125,11 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	//req.Cookies.StrCookie = _cookie
+	req.Cookies.StrCookie = _cookie
 	b, err := req.Visit()
 	if err != nil {
-		logger.Error(err.Error())
+		logger.Error(err.Error(), logger.Field("url", url))
 		return
-	}
-	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
-	cookie := reg.FindStringSubmatch(string(b))
-	if len(cookie) > 0{
-		req.Cookies.StrCookie = _getCookie(req, cookie[1])
-		b, err = req.Visit()
 	}
 	var j store.JsonMiit
 	err = json.Unmarshal(b, &j)
@@ -143,7 +160,7 @@ func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *s
 		},
 	}
 	//fmt.Println(_cookie)
-	//pr.Request.Cookies.StrCookie = _cookie
+	pr.Request.Cookies.StrCookie = _cookie
 	message <- pr.GetHtmlInfo()
 
 	//infoMap := pr.GetHtmlInfo()
@@ -164,6 +181,7 @@ func getPDFInfo(url string) (info []string) {
 	}
 	html, err := req.Visit()
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	fmt.Println(string(html))
