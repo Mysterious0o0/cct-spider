@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-func GetPageUrlList(url string, infoChan chan<- store.InfoChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, infoChan chan <- *store.InfoChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	num := 1
 	if urlprocess.GetParseQuery(url, "itemId") == "928"{
@@ -37,7 +37,7 @@ func GetPageUrlList(url string, infoChan chan<- store.InfoChan, wg *sync.WaitGro
 		}
 		for _, v := range j.Data.Rows {
 			//fmt.Printf(store.DetailUrl, v.DocId)
-			infoChan <- store.InfoChan{
+			infoChan <- &store.InfoChan{
 				Url:      fmt.Sprintf(store.DetailUrl, v.DocId),
 				GetInfoF: GetHtmlInfo,
 			}
@@ -46,7 +46,7 @@ func GetPageUrlList(url string, infoChan chan<- store.InfoChan, wg *sync.WaitGro
 }
 
 
-func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message) {
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message) {
 	infoMap := make(map[string]string)
 	req := request.Request{
 		Url:    url,
@@ -69,7 +69,7 @@ func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- sto
 	_, data, _ := p.GetTextByParseHtml()
 	infoMap[j.DocTitle] = strings.Join(data, "")
 	date := strings.Replace(strings.Split(j.DocDate, " ")[0], "-", "", -1)
-	message <- store.Message{
+	message <- &store.Message{
 		Title:   j.DocTitle,
 		Content: strings.Join(data, ""),
 		Source:  "银保监会",

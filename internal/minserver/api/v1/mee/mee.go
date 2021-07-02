@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func GetFirstUrl(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
+func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	pr := response.PR{
 		Request: request.Request{
@@ -24,22 +24,22 @@ func GetFirstUrl(url string, urlChan chan<- store.UrlChan, wg *sync.WaitGroup) {
 		},
 	}
 	for _, link := range pr.GetPageUrl("href"){
-		urlChan <- store.UrlChan{
+		urlChan <- &store.UrlChan{
 			Url:     link,
 			GetUrlF: GetSecondUrl,
 		}
 		//time.Sleep(time.Second*1)  // 单跑这个需要加延迟，
 	}
-	fmt.Println("first end")
+	//fmt.Println("first end")
 
 }
 
-func GetSecondUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
+func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	s := strings.Split(url, "/")
 	//fmt.Println(s[4])
 	switch s[4] {
 	case "zyygwj", "gwywj", "xzspwj":
-		urlChan <- store.UrlChan{
+		urlChan <- &store.UrlChan{
 			Url:     url,
 			GetUrlF: GetPageUrlList,
 		}
@@ -56,7 +56,7 @@ func GetSecondUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- stor
 			},
 		}
 		for _, link := range pr.GetPageUrl("href"){
-			urlChan <- store.UrlChan{
+			urlChan <- &store.UrlChan{
 				Url:     link,
 				GetUrlF: GetPageUrlList,
 			}
@@ -64,8 +64,9 @@ func GetSecondUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- stor
 	}
 }
 
-func GetPageUrlList(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
-	urlChan <- store.UrlChan{
+
+func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+	urlChan <- &store.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
 	}
@@ -83,14 +84,14 @@ func GetPageUrlList(url string, urlChan chan<- store.UrlChan, infoChan chan<- st
 		num = 40
 	}
 	for i := 1; i < num; i++ {
-		urlChan <- store.UrlChan{
+		urlChan <- &store.UrlChan{
 			Url:     fmt.Sprintf("%sindex_%v.shtml", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
@@ -102,7 +103,7 @@ func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- 
 		},
 	}
 	for _, link := range pr.GetPageUrl("href") {
-		infoChan <- store.InfoChan{
+		infoChan <- &store.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
 		}
@@ -110,7 +111,7 @@ func GetDetailPageUrl(url string, urlChan chan<- store.UrlChan, infoChan chan<- 
 }
 
 
-func GetHtmlInfo(url string, errChan chan <- store.InfoChan, message chan <- store.Message){
+func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url : url,
