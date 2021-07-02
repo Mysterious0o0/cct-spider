@@ -13,7 +13,7 @@ const (
 	Filename   = "log/cct-spider.log" // 日志保存路径
 	MaxSize    = 10                   // 每个日志文件保存10M，默认100M
 	MaxBackups = 30                   // 保留30个备份，默认不限
-	MaxAge     = 30                   // 保留30天，默认不限
+	MaxAge     = 0                    // 保留多少天，默认不限
 	Compress   = false                // 是否压缩，默认不压缩
 )
 
@@ -65,11 +65,17 @@ func init() {
 
 func writerSyncer() zapcore.WriteSyncer {
 	hook := &lumberjack.Logger{
-		Filename:   Filename,   // 日志保存路径
-		MaxSize:    MaxSize,    // 每个日志文件保存10M，默认100M
-		MaxBackups: MaxBackups, // 保留30个备份，默认不限
-		MaxAge:     MaxAge,     // 保留7天，默认不限
-		Compress:   Compress,   // 是否压缩，默认不压缩
+		Filename:   Filename,
+		Compress:   Compress,
+	}
+	if MaxBackups > 0 {
+		hook.MaxBackups = MaxBackups
+	}
+	if MaxSize > 0 {
+		hook.MaxSize = MaxSize
+	}
+	if MaxAge > 0 {
+		hook.MaxAge = MaxAge
 	}
 	return zapcore.AddSync(hook)
 }
