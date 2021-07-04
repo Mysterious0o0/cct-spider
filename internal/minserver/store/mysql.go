@@ -5,7 +5,6 @@ import (
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"strings"
-	"sync"
 )
 
 var (
@@ -15,8 +14,7 @@ var (
 	epilogue  = `ON DUPLICATE KEY UPDATE ID = VALUES(ID), URL = VALUES(URL), SOURCE = VALUES(SOURCE), TITLE = VALUES(TITLE), CONTEXT = VALUES(CONTEXT), FILE_DATE = VALUES(FILE_DATE);`
 )
 
-func InsertIntoSQL(message <- chan *Message, wg *sync.WaitGroup) {
-	defer wg.Done()
+func InsertIntoSQL(message <- chan *Message) {
 	for mes := range message {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
@@ -37,4 +35,7 @@ func InsertIntoSQL(message <- chan *Message, wg *sync.WaitGroup) {
 			valuesLen = mesLen
 		}
 	}
+	v := strings.Join(values, ",")
+	sqlCode := strings.Join([]string{preamble, v, epilogue}, " ")
+	mysql.Transaction(sqlCode)
 }
