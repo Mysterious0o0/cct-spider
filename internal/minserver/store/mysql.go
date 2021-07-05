@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"strings"
 )
 
@@ -19,6 +20,7 @@ func InsertIntoSQL(message <- chan *Message) {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
 		}
+		logger.Info("Success", logger.Field("url", mes.Url))
 		id := md5.MD5(mes.Date + mes.Title)
 		mesLen := len(id) + len(mes.Title) + len(mes.Content) + len(mes.Source) + len(mes.Date)
 		if valuesLen + len(preamble) + len(epilogue) + mesLen < 100000 || valuesLen == 0 {
