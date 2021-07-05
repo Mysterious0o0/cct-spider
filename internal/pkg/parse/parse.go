@@ -92,15 +92,16 @@ func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 	}
 	dom.Find(p.UrlSelector).Each(func(i int, selection *goquery.Selection) {
 		href, b := selection.Attr(attrName)
-		if b && href != "" {
-			if strings.Contains(href, "http") || strings.Contains(href, "https"){
-				hrefList = append(hrefList, urlprocess.UrlJoint(href, p.Suffix))
-			}else {
-				hrefList = append(hrefList, urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
-			}
-		}else {
-			logger.Info(fmt.Sprintf("b :%v, href: %s\n", b, href))
+		if !b || href == ""{
+			logger.Warn(fmt.Sprintf("b :%v, href: %s\n", b, href))
+			return
 		}
+		if strings.Contains(href, "http") || strings.Contains(href, "https"){
+			hrefList = append(hrefList, urlprocess.UrlJoint(href, p.Suffix))
+		}else {
+			hrefList = append(hrefList, urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
+		}
+
 	})
 	return
 }
@@ -152,7 +153,7 @@ func (p *Parse) GetCountAndSize(countR string, sizeR string) (count int, size in
 					logger.Error(err.Error())
 				}
 			}else {
-				logger.Info("count is nil")
+				logger.Warn("count is nil")
 			}
 
 			if sizeStr != ""{
@@ -161,7 +162,7 @@ func (p *Parse) GetCountAndSize(countR string, sizeR string) (count int, size in
 					logger.Error(err.Error())
 				}
 			}else {
-				logger.Info("size is nil")
+				logger.Warn("size is nil")
 			}
 		}
 	})
