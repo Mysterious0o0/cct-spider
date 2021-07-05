@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -64,11 +65,10 @@ func (r *Request) request() (resp *http.Response, err error) {
 	client := &http.Client{Timeout: r.Timeout}
 	resp, err = client.Do(req)
 	if err != nil {
-		fmt.Println("request error:", err)
 		return
 	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != 521 {
-		fmt.Println(resp.StatusCode, r.Url)
+		logger.Warn(fmt.Sprintf("StatusCode: %v, Url: %s", resp.StatusCode, r.Url))
 		return
 	}
 	r.Cookies.HttpCookie = resp.Cookies()

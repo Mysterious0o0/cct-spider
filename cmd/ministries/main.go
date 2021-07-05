@@ -11,6 +11,8 @@ import (
 	"sync"
 )
 
+var minV *viper.Viper
+
 func minConfig() *viper.Viper {
 	c := config.Config{
 		ConfigName: "config",
@@ -24,23 +26,24 @@ func minConfig() *viper.Viper {
 	return v
 }
 
-func ministries() {
+func init() {
+	minV = minConfig()
+}
 
+func ministries() {
 	wg := &sync.WaitGroup{}
-	urlChannel := make(chan *store.UrlChan)
-	infoChannel := make(chan *store.InfoChan)
-	errChannel := make(chan *store.InfoChan)
-	//infoMap := make(chan map[string]string)
-	message := make(chan *store.Message)
-	minV := minConfig()
-	wg.Add(6)
+	urlChannel := make(chan *store.UrlChan)   // url请求池
+	infoChannel := make(chan *store.InfoChan) // info请求池
+	errChannel := make(chan *store.InfoChan)  // 异常池
+	message := make(chan *store.Message)      // 数据池
+	save := store.InsertIntoSQL               // 保存数据的函数
+
+	wg.Add(5)
 	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
 	go sarm.GetPageUrlList(minV.GetString("国家市场监督管理总局"), urlChannel, wg)
 	go mee.GetFirstUrl(minV.GetString("生态环境部"), urlChannel, wg)
 	go cbirc.GetPageUrlList(minV.GetString("银保监会928"), infoChannel, wg)
 	go cbirc.GetPageUrlList(minV.GetString("银保监会927"), infoChannel, wg)
-	go store.InsertIntoSQL(message, wg)
-
 
 	go func() {
 		for v := range urlChannel {
@@ -54,11 +57,14 @@ func ministries() {
 			go v.GetInfoFunc(errChannel, message, wg)
 		}
 	}()
+	go func() {
+		wg.Wait()
+		close(urlChannel)
+		close(infoChannel)
+		close(message)
+	}()
 
-	wg.Wait()
-	close(urlChannel)
-	close(infoChannel)
-	close(message)
+	save(message)
 
 }
 

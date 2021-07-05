@@ -59,11 +59,9 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 			GetInfoF: GetHtmlInfo,
 		}
 	}
-	//fmt.Println(urlList)
 }
 
 func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
-	//fmt.Println(url)
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,

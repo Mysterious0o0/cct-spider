@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"regexp"
 	"strconv"
 	"strings"
@@ -28,7 +29,7 @@ func (p *Parse) GetTextByParseHtml() (title string, info []string, date string) 
 	key = make(map[string]byte)
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	if p.TitleSelector != "" {
@@ -74,7 +75,7 @@ func (p *Parse) GetTextByParseHtml() (title string, info []string, date string) 
 func (p *Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	dom.Find(p.UrlSelector).Each(func(i int, selection *goquery.Selection) {
@@ -86,7 +87,7 @@ func (p *Parse) GetOneUrlByParseHtml(attrName string) (src string, b bool) {
 func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	dom.Find(p.UrlSelector).Each(func(i int, selection *goquery.Selection) {
@@ -98,7 +99,7 @@ func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 				hrefList = append(hrefList, urlprocess.UrlJoint(p.BaseUrl, href+p.Suffix))
 			}
 		}else {
-			fmt.Printf("b :%v, href: %s\n", b, href)
+			logger.Info(fmt.Sprintf("b :%v, href: %s\n", b, href))
 		}
 	})
 	return
@@ -108,7 +109,7 @@ func (p *Parse) GetAllUrlByParseHtml(attrName string) (hrefList []string) {
 func (p *Parse) GetPageNum(r string) (num int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
@@ -122,7 +123,7 @@ func (p *Parse) GetPageNum(r string) (num int) {
 			}
 			num, err = strconv.Atoi(numStr)
 			if err != nil {
-				fmt.Println(err)
+				logger.Error(err.Error())
 			}
 		}
 	})
@@ -132,7 +133,7 @@ func (p *Parse) GetPageNum(r string) (num int) {
 func (p *Parse) GetCountAndSize(countR string, sizeR string) (count int, size int) {
 	dom, err := goquery.NewDocumentFromReader(strings.NewReader(p.Html))
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	dom.Find(p.PageNumSelector).Each(func(i int, selection *goquery.Selection) {
@@ -148,19 +149,19 @@ func (p *Parse) GetCountAndSize(countR string, sizeR string) (count int, size in
 			if countStr != ""{
 				count, err = strconv.Atoi(countStr)
 				if err != nil {
-					fmt.Println(err)
+					logger.Error(err.Error())
 				}
 			}else {
-				fmt.Println("count is nil")
+				logger.Info("count is nil")
 			}
 
 			if sizeStr != ""{
 				size, err = strconv.Atoi(sizeStr)
 				if err != nil {
-					fmt.Println(err)
+					logger.Error(err.Error())
 				}
 			}else {
-				fmt.Println("size is nil")
+				logger.Info("size is nil")
 			}
 		}
 	})
