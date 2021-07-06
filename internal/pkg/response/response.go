@@ -13,7 +13,8 @@ type PR struct {
 	Request request.Request
 	Parse   parse.Parse
 }
-func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
+
+func (pr *PR) GetPageUrl(attrName string) (hrefList []string) {
 	html, err := pr.Request.Visit()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
@@ -24,15 +25,15 @@ func (pr *PR)GetPageUrl(attrName string) (hrefList []string) {
 	return hrefList
 }
 
-func (pr *PR)GetHtmlInfo() (message *store.Message){
+func (pr *PR) GetHtmlInfo() (message *store.Message) {
 	message = &store.Message{}
 	var info []string
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
-		logger.Info(fmt.Sprintf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url))
+		logger.Warn(fmt.Sprintf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url))
 		return
 	}
 	if !strings.Contains(pr.Request.Url, pr.Parse.Suffix) {
-		logger.Info(fmt.Sprintf("后缀：%s 网址：%s 后缀不存在\n", pr.Parse.Suffix, pr.Request.Url))
+		logger.Warn(fmt.Sprintf("后缀：%s 网址：%s 后缀不存在\n", pr.Parse.Suffix, pr.Request.Url))
 		return
 	}
 	html, _ := pr.Request.Visit()
@@ -40,7 +41,7 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 	title, content, date := pr.Parse.GetTextByParseHtml()
 	info = append(info, content...)
 	message = &store.Message{
-		Url: 	 pr.Request.Url,
+		Url:     pr.Request.Url,
 		Title:   _replace(title),
 		Content: _replace(strings.Join(info, "")),
 		Source:  pr.Parse.Source,
@@ -49,7 +50,7 @@ func (pr *PR)GetHtmlInfo() (message *store.Message){
 	return
 }
 
-func (pr *PR)GetPageNum(r string) (num int){
+func (pr *PR) GetPageNum(r string) (num int) {
 	html, err := pr.Request.Visit()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
@@ -60,8 +61,7 @@ func (pr *PR)GetPageNum(r string) (num int){
 	return
 }
 
-
-func (pr *PR)GetCountAndSize(countR string, sizeR string) (count int, size int){
+func (pr *PR) GetCountAndSize(countR string, sizeR string) (count int, size int) {
 	html, err := pr.Request.Visit()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))

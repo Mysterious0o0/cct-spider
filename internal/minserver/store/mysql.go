@@ -4,38 +4,127 @@ import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"reflect"
+	"strconv"
 	"strings"
+	"time"
 )
 
 var (
-	values    []string
-	valuesLen = 0
-	preamble  = `INSERT INTO ministries.laws (ID, URL, TITLE, CONTEXT, SOURCE, FILE_DATE) VALUES`
-	epilogue  = `ON DUPLICATE KEY UPDATE ID = VALUES(ID), URL = VALUES(URL), SOURCE = VALUES(SOURCE), TITLE = VALUES(TITLE), CONTEXT = VALUES(CONTEXT), FILE_DATE = VALUES(FILE_DATE);`
+	s                               = &SqlValues{}
+	preamble, epilogue, oneQuoteSql = _getSQL(s)
 )
 
-func InsertIntoSQL(message <- chan *Message) {
+func InsertIntoSQL(message <-chan *Message) {
+	var (
+		quotes       []string
+		insertValues []interface{}
+		beginLen     = len(preamble) + len(epilogue)
+	)
 	for mes := range message {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
 		}
-		id := md5.MD5(mes.Date + mes.Title)
-		mesLen := len(id) + len(mes.Title) + len(mes.Content) + len(mes.Source) + len(mes.Date)
-		if valuesLen + len(preamble) + len(epilogue) + mesLen < 100000 || valuesLen == 0 {
-			values = append(values, fmt.Sprintf(`('%s', '%s', '%s', '%s', '%s', '%s')`,
-				id, mes.Url, mes.Title, mes.Content, mes.Source, mes.Date))
-			valuesLen += mesLen
+		if mes.Date == "" {
+			mes.Date = time.Now().Format("20210101")
+		}
+		if len(mes.Content) > 65536 {
+			mes.Content = mes.Content[:65535]
+		}
+		sqlValues := &SqlValues{
+			NEWS_GUID:        md5.MD5(mes.Date + mes.Title),
+			NEWS_TITLE:       mes.Title,
+			NEWS_TS:          mes.Date,
+			NEWS_URL:         mes.Url,
+			NEWS_SOURCE:      mes.Source,
+			NEWS_SUMMARY:     mes.Content,
+			POLICY_TYPE:      "10",
+			POLICY_TYPE_NAME: "国家政策",
+			IS_CONTROL:       "否",
+			IS_INVEST:        "否",
+			IS_DEPOSIT:       "否",
+			IS_FUND:          "否",
+			IS_STOCK:         "否",
+			IS_FINANCE:       "否",
+			IS_INDUSTRY:      "否",
+			IS_CAPITAL:       "否",
+		}
+		logger.Info("Success", logger.Field("url", mes.Url))
+		v, l := _getQuotesAndValues(sqlValues)
+		if beginLen+l+len(oneQuoteSql) < 500000 {
+			insertValues = append(insertValues, v...)
+			quotes = append(quotes, oneQuoteSql)
+			beginLen += len(oneQuoteSql) + l
 
 		} else {
-			v := strings.Join(values, ",")
-			sqlCode := strings.Join([]string{preamble, v, epilogue}, " ")
-			mysql.Transaction(sqlCode)
-			values = append([]string{}, fmt.Sprintf(`('%s', '%s', '%s', '%s', '%s', '%s')`,
-				id, mes.Url, mes.Title, mes.Content, mes.Source, mes.Date))
-			valuesLen = mesLen
+			SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+			mysql.Transaction(SQl, insertValues...)
+			insertValues = append([]interface{}{}, v...)
+			quotes = append([]string{}, oneQuoteSql)
+			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
 		}
 	}
-	v := strings.Join(values, ",")
-	sqlCode := strings.Join([]string{preamble, v, epilogue}, " ")
-	mysql.Transaction(sqlCode)
+	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+	mysql.Transaction(SQl, insertValues...)
+}
+
+func _getQuotesAndValues(v interface{}) (insertValues []interface{}, strLen int) {
+	insertValues = make([]interface{}, 0)
+
+	elem := reflect.ValueOf(v)
+
+	if elem.Kind() == reflect.Ptr {
+		elem = elem.Elem()
+	}
+	for i := 0; i < elem.NumField(); i++ {
+		curField := elem.Field(i)
+		val, valLen := _parseField(curField)
+		strLen += valLen
+		insertValues = append(insertValues, val)
+	}
+	return
+}
+
+func _parseField(v reflect.Value) (fieldValue interface{}, valLen int) {
+
+	switch v.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		fieldValue = v.Int()
+		valLen = len(strconv.FormatInt(v.Int(), 10))
+
+	case reflect.String:
+		fieldValue = v.String()
+		valLen = v.Len()
+	}
+	return
+
+}
+
+func _getSQL(v interface{}) (preambleSql string, epilogueSql string, oneQuoteSql string) {
+
+	elem := reflect.ValueOf(v)
+	if elem.Kind() == reflect.Ptr {
+		elem = elem.Elem()
+	}
+
+	elemType := elem.Type()
+	numFields := elem.NumField()
+
+	quotes := strings.Repeat("?,", numFields)
+	quotes = quotes[0 : len(quotes)-1]
+
+	insertFields := make([]string, 0, numFields)
+	epilogues := make([]string, 0, numFields)
+
+	for i := 0; i < numFields; i++ {
+		field := elemType.Field(i).Name
+		insertFields = append(insertFields, field)
+		epilogues = append(epilogues, fmt.Sprintf("%s = VALUES(%s)", field, field))
+
+	}
+	oneQuoteSql = fmt.Sprintf("(%s)", quotes)
+	preambleSql = fmt.Sprintf("INSERT INTO ministries.t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
+	epilogueSql = fmt.Sprintf("ON DUPLICATE KEY UPDATE %s", strings.Join(epilogues, ", "))
+	return
 }

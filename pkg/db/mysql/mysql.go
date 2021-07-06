@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
@@ -137,7 +138,7 @@ func clearTransaction(tx *sql.Tx) {
 	}
 }
 
-func exec(sql string, stop chan struct{}) {
+func exec(sql string, stop chan struct{}, data ...interface{}) {
 	defer close(stop)
 	tx, err := db.Begin()
 	if err != nil {
@@ -145,9 +146,10 @@ func exec(sql string, stop chan struct{}) {
 		return
 	}
 	defer clearTransaction(tx)
-	r, err := tx.Exec(sql)
+	r, err := tx.Exec(sql, data...)
 	if err != nil {
 		logger.Error(err.Error())
+		fmt.Println(sql, data)
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
@@ -161,9 +163,9 @@ func exec(sql string, stop chan struct{}) {
 	return
 }
 
-func transaction(ctx context.Context, sql string, sig chan struct{}) {
+func transaction(ctx context.Context, sql string, sig chan struct{}, data ...interface{}) {
 	stop := make(chan struct{})
-	go exec(sql, stop)
+	go exec(sql, stop, data...)
 	select {
 	case <-ctx.Done():
 	case <-stop:
@@ -171,11 +173,11 @@ func transaction(ctx context.Context, sql string, sig chan struct{}) {
 	}
 }
 
-func Transaction(sql string) {
+func Transaction(sql string, data ...interface{}) {
 	sig := make(chan struct{})
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*transactionTimeOut)
 	defer cancel()
-	go transaction(ctx, sql, sig)
+	go transaction(ctx, sql, sig, data...)
 	select {
 	case <-ctx.Done():
 	case <-sig:

@@ -33,14 +33,7 @@ var levelPool = map[string]zapcore.Level{
 }
 
 func init() {
-	var syncer zapcore.WriteSyncer
-
-	writer := writerSyncer()
-	if logConsole {
-		syncer = zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), writer)
-	} else {
-		syncer = zapcore.AddSync(writer)
-	}
+	var allCore []zapcore.Core
 
 	config := encoderConfig()
 	var encoder zapcore.Encoder
@@ -50,11 +43,28 @@ func init() {
 		encoder = zapcore.NewConsoleEncoder(config)
 	}
 
-	core := zapcore.NewCore(
+	var syncer zapcore.WriteSyncer
+
+	fileWriter := fileHook()
+	syncer = zapcore.AddSync(fileWriter)
+	coreFile := zapcore.NewCore(
 		encoder,
 		syncer,
-		defaultLevel,
-	)
+		zap.NewAtomicLevelAt(zapcore.ErrorLevel),
+		)
+	allCore = append(allCore, coreFile)
+
+	if logConsole {
+		syncer = zapcore.AddSync(os.Stdout)
+		coreConsole := zapcore.NewCore(
+			encoder,
+			syncer,
+			zap.NewAtomicLevelAt(zapcore.InfoLevel),
+			)
+		allCore = append(allCore, coreConsole)
+	}
+
+	core := zapcore.NewTee(allCore...)
 
 	logger = zap.New(core).WithOptions(
 		zap.AddCaller(),
@@ -63,7 +73,7 @@ func init() {
 	)
 }
 
-func writerSyncer() zapcore.WriteSyncer {
+func fileHook() zapcore.WriteSyncer {
 	hook := &lumberjack.Logger{
 		Filename: Filename,
 		Compress: Compress,
