@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
@@ -148,6 +149,7 @@ func exec(sql string, stop chan struct{}, data ...interface{}) {
 	r, err := tx.Exec(sql, data...)
 	if err != nil {
 		logger.Error(err.Error())
+		fmt.Println(sql, data)
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
