@@ -8,10 +8,14 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
+	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"sync"
 )
 
-var minV *viper.Viper
+var (
+	minV *viper.Viper
+	filter *store.Filter
+)
 
 func minConfig() *viper.Viper {
 	c := config.Config{
@@ -28,6 +32,10 @@ func minConfig() *viper.Viper {
 
 func init() {
 	minV = minConfig()
+	filter = &store.Filter{
+		Filepath: "urlKey.txt",
+	}
+	filter.ReadUrlKey()
 }
 
 func ministries() {
@@ -47,12 +55,18 @@ func ministries() {
 
 	go func() {
 		for v := range urlChannel {
+			if _, ok := filter.UrlKey[md5.MD5(v.Url)]; ok{
+				continue
+			}
 			wg.Add(1)
 			go v.GetUrlFunc(urlChannel, infoChannel, wg)
 		}
 	}()
 	go func() {
 		for v := range infoChannel {
+			if _, ok := filter.UrlKey[md5.MD5(v.Url)]; ok{
+				continue
+			}
 			wg.Add(1)
 			go v.GetInfoFunc(errChannel, message, wg)
 		}
@@ -63,8 +77,7 @@ func ministries() {
 		close(infoChannel)
 		close(message)
 	}()
-
-	save(message)
+	save(filter, message)
 
 }
 
