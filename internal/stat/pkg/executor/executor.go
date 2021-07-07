@@ -2,11 +2,11 @@ package executor
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/cook"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/response"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"strings"
 )
 
@@ -29,12 +29,12 @@ func Executor(url urllib.Param, cn, zb string) (row [][]string) {
 	}
 	resBody, err := req.Visit()
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	var res response.Response
 	if err = json.Unmarshal(resBody, &res); err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		return
 	}
 	nodes := res.ReturnData.DataNodes

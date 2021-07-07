@@ -5,37 +5,19 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/code/indexcode"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/code/provincecode"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/code/typecode"
+	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/executor"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/response"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
-	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"github.com/xiaogogonuo/cct-spider/pkg/set"
 )
 
 // 地区经济指标-分省年度数据-居民消费价格指数(上年=100)
 
-func prepareData(regionCode, indexCode string, diff [][]string) (data [][]string) {
-	data = make([][]string, 0)
-	for _, r := range diff {
-		tv := response.TargetValue{}
-		tv.AcctYear = r[0]
-		tv.TargetValue = r[1]
-		tv.TargetCode = indexcode.StatInner[indexCode]
-		tv.TargetGUID = md5.MD5(tv.TargetCode)
-		tv.TargetName = indexcode.CodeName[indexCode]
-		tv.SourceTargetCode = indexCode
-		tv.RegionCode = regionCode
-		tv.RegionName = provincecode.CodeProvince[regionCode]
-		tv.ValueGUID = md5.MD5(tv.TargetCode + regionCode + tv.AcctYear)  // TODO: unstable
-		fmt.Println(tv)
-		data = append(data, tv.Row())
-	}
-	return
-}
-
-func Run() {
+func runCPI(indexCode, typeCode string, startYear int) {
 	for _, v := range provincecode.ProvinceCode {
 		url := urllib.Param{
 			M:              "QueryData",
@@ -45,21 +27,59 @@ func Run() {
 			WdsWdCode:      "reg",
 			WdsWdValueCode: v,  // 省、市编码
 			DfWdsWdCode:    "sj",
-			DfWdsValueCode: last.Years(indexcode.CPIStartYear),
+			DfWdsValueCode: last.Years(startYear),
 		}
 		querySQL := `SELECT ACCT_YEAR, TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
                 WHERE SOURCE_TARGET_CODE = '%s' AND REGION_CODE = '%s'`
-		queryRow := mysql.Query(fmt.Sprintf(querySQL, indexcode.CPICode, v))
-		row := executor.Executor(url, typecode.ProvinceYearDataCode, indexcode.CPICode)
+		queryRow := mysql.Query(fmt.Sprintf(querySQL, indexCode, v))
+		row := executor.Executor(url, typeCode, indexCode)
 		diff, err := set.Set{Src: queryRow}.Diff(row)
 		if err != nil {
+			logger.Error(err.Error())
 			continue
 		}
-		data := prepareData(v, indexcode.CPICode, diff)
+		dataBuilder := response.DataBuilder{
+			IndexCode: indexCode,
+			RegionCode: v,
+			IsYear: true,
+		}
+		data := dataBuilder.Build(diff)
 		if len(data) == 0 {
+			logger.Info(fmt.Sprintf("%s has no new data to update",indexcode.CodeName[indexCode]))
 			continue
 		}
 		tranSQL := mysql.Generator(data)
 		mysql.Transaction(tranSQL)
 	}
+}
+
+func runCPIRegionYear() {
+	runCPI(indexcode.CPICode, typecode.ProvinceYearDataCode, indexcode.CPIStartYear)
+
+	sql := `SELECT ACCT_YEAR, TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
+                WHERE SOURCE_TARGET_CODE = '%s' AND REGION_CODE = '%s'`
+
+	for _, v := range provincecode.ProvinceCode {
+		coreCPI := core.Core{
+			TL: "year",
+			SQL: fmt.Sprintf(sql, indexcode.CPICode, v),
+			IndexCode: indexcode.CPICode,
+			TypeCode: typecode.ProvinceYearDataCode,
+			URL: urllib.Param{
+				M:              "QueryData",
+				DBCode:         "fsnd",
+				RowCode:        "zb",
+				ColCode:        "sj",
+				WdsWdCode:      "reg",
+				WdsWdValueCode: v,  // 省、市编码
+				DfWdsWdCode:    "sj",
+				DfWdsValueCode: last.Years(indexcode.CPIStartYear),
+			},
+		}
+		coreCPI.Run()
+	}
+}
+
+func Run() {
+	runCPIRegionYear()
 }
