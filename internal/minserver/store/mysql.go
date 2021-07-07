@@ -16,7 +16,7 @@ var (
 	preamble, epilogue, oneQuoteSql = _getSQL(s)
 )
 
-func InsertIntoSQL(message <-chan *Message) {
+func InsertIntoSQL(f *Filter, message <-chan *Message) {
 	var (
 		quotes       []string
 		insertValues []interface{}
@@ -29,7 +29,7 @@ func InsertIntoSQL(message <-chan *Message) {
 		if mes.Date == "" {
 			mes.Date = time.Now().Format("20210101")
 		}
-		if len(mes.Content) > 65536 {
+		if len(mes.Content) > 65535 {
 			mes.Content = mes.Content[:65535]
 		}
 		sqlValues := &SqlValues{
@@ -51,6 +51,7 @@ func InsertIntoSQL(message <-chan *Message) {
 			IS_CAPITAL:       "否",
 		}
 		logger.Info("Success", logger.Field("url", mes.Url))
+		f.SaveUrlKey([]byte(md5.MD5(mes.Url) + "\n"))
 		v, l := _getQuotesAndValues(sqlValues)
 		if beginLen+l+len(oneQuoteSql) < 500000 {
 			insertValues = append(insertValues, v...)
@@ -124,7 +125,7 @@ func _getSQL(v interface{}) (preambleSql string, epilogueSql string, oneQuoteSql
 
 	}
 	oneQuoteSql = fmt.Sprintf("(%s)", quotes)
-	preambleSql = fmt.Sprintf("INSERT INTO ministries.t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
+	preambleSql = fmt.Sprintf("INSERT INTO chengtong.t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
 	epilogueSql = fmt.Sprintf("ON DUPLICATE KEY UPDATE %s", strings.Join(epilogues, ", "))
 	return
 }
