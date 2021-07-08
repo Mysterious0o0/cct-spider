@@ -1,4 +1,4 @@
-package store
+package filter
 
 import (
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
