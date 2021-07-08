@@ -2,6 +2,9 @@ package store
 
 import (
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/subString"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
@@ -12,11 +15,11 @@ import (
 )
 
 var (
-	s                               = &SqlValues{}
+	s                               = &callback.SqlValues{}
 	preamble, epilogue, oneQuoteSql = _getSQL(s)
 )
 
-func InsertIntoSQL(f *Filter, message <-chan *Message) {
+func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 	var (
 		quotes       []string
 		insertValues []interface{}
@@ -30,9 +33,10 @@ func InsertIntoSQL(f *Filter, message <-chan *Message) {
 			mes.Date = time.Now().Format("20210101")
 		}
 		if len(mes.Content) > 65535 {
-			mes.Content = mes.Content[:65535]
+			n, _ := subString.RuneIndex([]byte(mes.Content), 65535/3)
+			mes.Content = mes.Content[:n]
 		}
-		sqlValues := &SqlValues{
+		sqlValues := &callback.SqlValues{
 			NEWS_GUID:        md5.MD5(mes.Date + mes.Title),
 			NEWS_TITLE:       mes.Title,
 			NEWS_TS:          mes.Date,
