@@ -2,7 +2,7 @@ package mee
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
+func GetFirstUrl(url string, urlChan chan<- *callback.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	pr := response.PR{
 		Request: request.Request{
@@ -24,7 +24,7 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 		},
 	}
 	for _, link := range pr.GetPageUrl("href"){
-		urlChan <- &store.UrlChan{
+		urlChan <- &callback.UrlChan{
 			Url:     link,
 			GetUrlF: GetSecondUrl,
 		}
@@ -33,11 +33,11 @@ func GetFirstUrl(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) 
 
 }
 
-func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
 	s := strings.Split(url, "/")
 	switch s[4] {
 	case "zyygwj", "gwywj", "xzspwj":
-		urlChan <- &store.UrlChan{
+		urlChan <- &callback.UrlChan{
 			Url:     url,
 			GetUrlF: GetPageUrlList,
 		}
@@ -53,7 +53,7 @@ func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *st
 			},
 		}
 		for _, link := range pr.GetPageUrl("href"){
-			urlChan <- &store.UrlChan{
+			urlChan <- &callback.UrlChan{
 				Url:     link,
 				GetUrlF: GetPageUrlList,
 			}
@@ -62,8 +62,8 @@ func GetSecondUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *st
 }
 
 
-func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
-	urlChan <- &store.UrlChan{
+func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
+	urlChan <- &callback.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
 	}
@@ -81,14 +81,14 @@ func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *
 		num = 40
 	}
 	for i := 1; i < num; i++ {
-		urlChan <- &store.UrlChan{
+		urlChan <- &callback.UrlChan{
 			Url:     fmt.Sprintf("%sindex_%v.shtml", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
@@ -100,7 +100,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		},
 	}
 	for _, link := range pr.GetPageUrl("href") {
-		infoChan <- &store.InfoChan{
+		infoChan <- &callback.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
 		}
@@ -108,7 +108,7 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 }
 
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
+func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url : url,
