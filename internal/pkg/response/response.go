@@ -2,7 +2,7 @@ package response
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
@@ -25,8 +25,8 @@ func (pr *PR) GetPageUrl(attrName string) (hrefList []string) {
 	return hrefList
 }
 
-func (pr *PR) GetHtmlInfo() (message *store.Message) {
-	message = &store.Message{}
+func (pr *PR) GetHtmlInfo() (message *callback.Message) {
+	message = &callback.Message{}
 	var info []string
 	if !strings.Contains(pr.Request.Url, pr.Parse.DomainName) {
 		logger.Warn(fmt.Sprintf("域名：%s 网址：%s 域名不存在\n", pr.Parse.DomainName, pr.Request.Url))
@@ -40,7 +40,7 @@ func (pr *PR) GetHtmlInfo() (message *store.Message) {
 	pr.Parse.Html = string(html)
 	title, content, date := pr.Parse.GetTextByParseHtml()
 	info = append(info, content...)
-	message = &store.Message{
+	message = &callback.Message{
 		Url:     pr.Request.Url,
 		Title:   _replace(title),
 		Content: _replace(strings.Join(info, "")),
