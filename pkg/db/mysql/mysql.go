@@ -3,7 +3,6 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
@@ -38,7 +37,7 @@ func init() {
 
 	// 用户名:密码@协议(ip:端口)/数据库?charset=utf8&parseTime=true&loc=Local
 	dataSourceName := mysql["user"] + ":" + mysql["pass"] + "@tcp(" + mysql["host"] + ":" + mysql["port"] + ")/" +
-		mysql["db"] + "?charset=utf8&loc=Local"
+		mysql["db"]
 
 	_db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
@@ -149,7 +148,6 @@ func exec(sql string, stop chan struct{}, data ...interface{}) {
 	r, err := tx.Exec(sql, data...)
 	if err != nil {
 		logger.Error(err.Error())
-		fmt.Println(sql, data)
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
