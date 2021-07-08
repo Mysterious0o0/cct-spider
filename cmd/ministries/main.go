@@ -7,6 +7,8 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"sync"
@@ -14,7 +16,7 @@ import (
 
 var (
 	minV *viper.Viper
-	filter *store.Filter
+	filt *filter.Filter
 )
 
 func minConfig() *viper.Viper {
@@ -32,19 +34,19 @@ func minConfig() *viper.Viper {
 
 func init() {
 	minV = minConfig()
-	filter = &store.Filter{
+	filt = &filter.Filter{
 		Filepath: "urlKey.txt",
 	}
-	filter.ReadUrlKey()
+	filt.ReadUrlKey()
 }
 
 func ministries() {
 	wg := &sync.WaitGroup{}
-	urlChannel := make(chan *store.UrlChan)   // url请求池
-	infoChannel := make(chan *store.InfoChan) // info请求池
-	errChannel := make(chan *store.InfoChan)  // 异常池
-	message := make(chan *store.Message)      // 数据池
-	save := store.InsertIntoSQL               // 保存数据的函数
+	urlChannel := make(chan *callback.UrlChan)   // url请求池
+	infoChannel := make(chan *callback.InfoChan) // info请求池
+	errChannel := make(chan *callback.InfoChan)  // 异常池
+	message := make(chan *callback.Message)      // 数据池
+	save := store.InsertIntoSQL                  // 保存数据的函数
 
 	wg.Add(5)
 	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
@@ -55,7 +57,7 @@ func ministries() {
 
 	go func() {
 		for v := range urlChannel {
-			if _, ok := filter.UrlKey[md5.MD5(v.Url)]; ok{
+			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
 				continue
 			}
 			wg.Add(1)
@@ -64,7 +66,7 @@ func ministries() {
 	}()
 	go func() {
 		for v := range infoChannel {
-			if _, ok := filter.UrlKey[md5.MD5(v.Url)]; ok{
+			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
 				continue
 			}
 			wg.Add(1)
@@ -77,7 +79,7 @@ func ministries() {
 		close(infoChannel)
 		close(message)
 	}()
-	save(filter, message)
+	save(filt, message)
 
 }
 
