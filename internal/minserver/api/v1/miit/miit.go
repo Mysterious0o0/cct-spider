@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/robertkrimen/otto"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
@@ -109,10 +110,10 @@ func _getjsluid(ck string) string {
 	return ""
 }
 
-func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for i := 0; i <= 100; i++ {
-		urlChan <- &store.UrlChan{
+		urlChan <- &callback.UrlChan{
 			Url:     fmt.Sprintf("%s%v", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
@@ -120,7 +121,7 @@ func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGrou
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
 	req := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
@@ -138,14 +139,14 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 		return
 	}
 	for _, v := range j.DataMiit.DataResults {
-		infoChan <- &store.InfoChan{
+		infoChan <- &callback.InfoChan{
 			Url:      urlprocess.UrlJoint(store.BaseUrl, v.GroupData[0].Url),
 			GetInfoF: GetHtmlInfo,
 		}
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
+func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,

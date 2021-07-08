@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
@@ -13,7 +14,7 @@ import (
 	"sync"
 )
 
-func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, infoChan chan<- *callback.InfoChan, wg *sync.WaitGroup) {
 	defer wg.Done()
 	num := 1
 	if urlprocess.GetParseQuery(url, "itemId") == "928" {
@@ -39,7 +40,7 @@ func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGr
 		}
 		for _, v := range j.Data.Rows {
 			//fmt.Printf(store.DetailUrl, v.DocId)
-			infoChan <- &store.InfoChan{
+			infoChan <- &callback.InfoChan{
 				Url:      fmt.Sprintf(store.DetailUrl, v.DocId),
 				GetInfoF: GetHtmlInfo,
 			}
@@ -47,7 +48,7 @@ func GetPageUrlList(url string, infoChan chan<- *store.InfoChan, wg *sync.WaitGr
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan<- *store.InfoChan, message chan<- *store.Message) {
+func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *callback.Message) {
 	infoMap := make(map[string]string)
 	req := request.Request{
 		Url:    url,
@@ -71,7 +72,7 @@ func GetHtmlInfo(url string, errChan chan<- *store.InfoChan, message chan<- *sto
 	_, data, _ := p.GetTextByParseHtml()
 	infoMap[j.DocTitle] = strings.Join(data, "")
 	date := strings.Replace(strings.Split(j.DocDate, " ")[0], "-", "", -1)
-	message <- &store.Message{
+	message <- &callback.Message{
 		Url:     fmt.Sprintf(store.PageUrl, j.DocId),
 		Title:   strings.Replace(j.DocTitle, `'`, `"`, -1),
 		Content: strings.Replace(strings.Join(data, ""), `'`, `"`, -1),

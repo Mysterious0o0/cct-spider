@@ -2,7 +2,7 @@ package sarm
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
@@ -10,9 +10,9 @@ import (
 	"sync"
 )
 
-func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGroup) {
+func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, wg *sync.WaitGroup) {
 	defer wg.Done()
-	urlChan <- &store.UrlChan{
+	urlChan <- &callback.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
 	}
@@ -35,14 +35,14 @@ func GetPageUrlList(url string, urlChan chan<- *store.UrlChan, wg *sync.WaitGrou
 		num = count/size + 1
 	}
 	for i := 1; i < num; i++ {
-		urlChan <- &store.UrlChan{
+		urlChan <- &callback.UrlChan{
 			Url:     fmt.Sprintf("%s_%v.html", url[:len(url)-len(".html")], i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
-func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<- *store.InfoChan) {
+func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
@@ -54,14 +54,14 @@ func GetDetailPageUrl(url string, urlChan chan<- *store.UrlChan, infoChan chan<-
 	}
 	urlList := pr.GetPageUrl("href")
 	for _, link := range urlList {
-		infoChan <- &store.InfoChan{
+		infoChan <- &callback.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
 		}
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *store.InfoChan, message chan <- *store.Message){
+func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
