@@ -37,7 +37,7 @@ func init() {
 
 	// 用户名:密码@协议(ip:端口)/数据库?charset=utf8&parseTime=true&loc=Local
 	dataSourceName := mysql["user"] + ":" + mysql["pass"] + "@tcp(" + mysql["host"] + ":" + mysql["port"] + ")/" +
-		mysql["db"]
+		mysql["db"] + "?charset=utf8&loc=Local"
 
 	_db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
