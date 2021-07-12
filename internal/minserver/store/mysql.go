@@ -29,7 +29,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			continue
 		}
 		if mes.Date == "" {
-			mes.Date = time.Now().Format("20210101")
+			mes.Date = time.Now().Format("20060102")
 		}
 		if len(mes.Content) > 65535 {
 			n, _ := subString.RuneIndex([]byte(mes.Content), 65535/3)

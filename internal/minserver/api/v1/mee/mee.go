@@ -116,9 +116,9 @@ func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <-
 		},
 		Parse:   parse.Parse{
 			Source: "生态环境部",
-			DateSelector: ".wjkFontBox>em, .content_top_box",
-			TitleSelector: "h1, h2",
-			TextSelector: ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box>p, .content_body_box>div, .neiright_JPZ_GK_CP>p",
+			DateSelector: ".wjkFontBox>em, .content_top_box, span[class='xqLyPc time']",
+			TitleSelector: "h1, .neiright_Box>h2",
+			TextSelector: ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box>p, .content_body_box>div, .neiright_JPZ_GK_CP>p, .TRS_Editor>p",
 			DomainName: "http://www.mee.gov.cn",
 		},
 	}
