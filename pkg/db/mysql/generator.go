@@ -12,7 +12,7 @@ const (
 func dataPatch(data [][]string) string {
 	var patch []string
 	for _, row := range data {
-		s := `('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')`
+		s := `('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')`
 		s = fmt.Sprintf(s,
 			row[0],
 			row[1],
@@ -28,6 +28,8 @@ func dataPatch(data [][]string) string {
 			row[11],
 			row[12],
 			row[13],
+			row[14],
+			row[15],
 		)
 		patch = append(patch, s)
 	}
@@ -43,6 +45,8 @@ func Generator(data [][]string) string {
 		 TARGET_GUID,
 		 TARGET_CODE,
 		 TARGET_NAME,
+         DATA_SOURCE_CODE,
+         DATA_SOURCE_NAME,
 		 SOURCE_TARGET_CODE,
 		 REGION_CODE,
 		 REGION_NAME,
@@ -61,6 +65,8 @@ func Generator(data [][]string) string {
 		TARGET_GUID = VALUES(TARGET_GUID),
 		TARGET_CODE = VALUES(TARGET_CODE),
 		TARGET_NAME = VALUES(TARGET_NAME),
+        DATA_SOURCE_CODE = VALUES(DATA_SOURCE_CODE),
+        DATA_SOURCE_NAME = VALUES(DATA_SOURCE_NAME),
 		SOURCE_TARGET_CODE = VALUES(SOURCE_TARGET_CODE),
 		REGION_CODE = VALUES(REGION_CODE),
 		REGION_NAME = VALUES(REGION_NAME),
