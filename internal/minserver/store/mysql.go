@@ -16,6 +16,7 @@ import (
 var (
 	s                               = &callback.SqlValues{}
 	preamble, epilogue, oneQuoteSql = _getSQL(s)
+	t                               = time.Now().Format("20060102")
 )
 
 func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
@@ -28,8 +29,8 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
 		}
-		if mes.Date == "" {
-			mes.Date = time.Now().Format("20060102")
+		if mes.Date > t {
+			mes.Date = ""
 		}
 		if len(mes.Content) > 65535 {
 			n, _ := subString.RuneIndex([]byte(mes.Content), 65535/3)

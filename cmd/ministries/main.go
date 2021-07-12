@@ -11,6 +11,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"sync"
 )
 
@@ -58,6 +59,7 @@ func ministries() {
 	go func() {
 		for v := range urlChannel {
 			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
+				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
 			wg.Add(1)
@@ -67,6 +69,7 @@ func ministries() {
 	go func() {
 		for v := range infoChannel {
 			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
+				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
 			wg.Add(1)
