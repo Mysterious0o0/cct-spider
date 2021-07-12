@@ -7,7 +7,6 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/subString"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"reflect"
 	"strconv"
 	"strings"
@@ -23,7 +22,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 	var (
 		quotes       []string
 		insertValues []interface{}
-		//beginLen     = len(preamble) + len(epilogue)
+		beginLen     = len(preamble) + len(epilogue)
 	)
 	for mes := range message {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
@@ -54,28 +53,22 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			IS_INDUSTRY:      "否",
 			IS_CAPITAL:       "否",
 		}
-		logger.Info("Success", logger.Field("url", mes.Url))
+		//logger.Info("Success", logger.Field("url", mes.Url))
 		f.SaveUrlKey([]byte(md5.MD5(mes.Url) + "\n"))
-		v, _ := _getQuotesAndValues(sqlValues)
+		v, l := _getQuotesAndValues(sqlValues)
 
+		if beginLen+l+len(oneQuoteSql) < 500000 {
+			insertValues = append(insertValues, v...)
+			quotes = append(quotes, oneQuoteSql)
+			beginLen += len(oneQuoteSql) + l
 
-		insertValues = append([]interface{}{}, v...)
-		quotes = append([]string{}, oneQuoteSql)
-		SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-		mysql.Transaction(SQl, insertValues...)
-
-		//if beginLen+l+len(oneQuoteSql) < 500000 {
-		//	insertValues = append(insertValues, v...)
-		//	quotes = append(quotes, oneQuoteSql)
-		//	beginLen += len(oneQuoteSql) + l
-		//
-		//} else {
-		//	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-		//	mysql.Transaction(SQl, insertValues...)
-		//	insertValues = append([]interface{}{}, v...)
-		//	quotes = append([]string{}, oneQuoteSql)
-		//	beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
-		//}
+		} else {
+			SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+			mysql.Transaction(SQl, insertValues...)
+			insertValues = append([]interface{}{}, v...)
+			quotes = append([]string{}, oneQuoteSql)
+			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
+		}
 	}
 	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
 	mysql.Transaction(SQl, insertValues...)
@@ -136,7 +129,7 @@ func _getSQL(v interface{}) (preambleSql string, epilogueSql string, oneQuoteSql
 
 	}
 	oneQuoteSql = fmt.Sprintf("(%s)", quotes)
-	preambleSql = fmt.Sprintf("INSERT INTO chengtong.t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
+	preambleSql = fmt.Sprintf("INSERT INTO t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
 	epilogueSql = fmt.Sprintf("ON DUPLICATE KEY UPDATE %s", strings.Join(epilogues, ", "))
 	return
 }
