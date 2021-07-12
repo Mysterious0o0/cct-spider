@@ -7,7 +7,6 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/subString"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"reflect"
 	"strconv"
 	"strings"
@@ -30,7 +29,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			continue
 		}
 		if mes.Date == "" {
-			mes.Date = time.Now().Format("20210101")
+			mes.Date = time.Now().Format("20060102")
 		}
 		if len(mes.Content) > 65535 {
 			n, _ := subString.RuneIndex([]byte(mes.Content), 65535/3)
@@ -54,7 +53,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			IS_INDUSTRY:      "否",
 			IS_CAPITAL:       "否",
 		}
-		logger.Info("Success", logger.Field("url", mes.Url))
+		//logger.Info("Success", logger.Field("url", mes.Url))
 		f.SaveUrlKey([]byte(md5.MD5(mes.Url) + "\n"))
 		v, _ := _getQuotesAndValues(sqlValues)
 
@@ -77,8 +76,8 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 		//	beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
 		//}
 	}
-	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-	mysql.Transaction(SQl, insertValues...)
+	//SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+	//mysql.Transaction(SQl, insertValues...)
 }
 
 func _getQuotesAndValues(v interface{}) (insertValues []interface{}, strLen int) {
@@ -136,7 +135,7 @@ func _getSQL(v interface{}) (preambleSql string, epilogueSql string, oneQuoteSql
 
 	}
 	oneQuoteSql = fmt.Sprintf("(%s)", quotes)
-	preambleSql = fmt.Sprintf("INSERT INTO chengtong.t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
+	preambleSql = fmt.Sprintf("INSERT INTO t_dmbe_policy_news_info (%s) VALUES ", strings.Join(insertFields, ", "))
 	epilogueSql = fmt.Sprintf("ON DUPLICATE KEY UPDATE %s", strings.Join(epilogues, ", "))
 	return
 }
