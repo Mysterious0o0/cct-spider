@@ -16,10 +16,12 @@ type Core struct {
 	SQL         string
 	IndexCode   string
 	TypeCode    string
+	UnitType    string
+	UnitName    string
 	URL         urllib.Param
 }
 
-func (c Core) Run() {
+func (c Core) Run() (rowsAffected bool, err error) {
 	queryRow := mysql.Query(c.SQL)
 	row := executor.Executor(c.URL, c.TypeCode, c.IndexCode)
 	diff, err := set.Set{Src: queryRow}.Diff(row)
@@ -30,16 +32,9 @@ func (c Core) Run() {
 	dataBuilder := response.DataBuilder{
 		IndexCode: c.IndexCode,
 		RegionCode: c.URL.WdsWdValueCode,
-	}
-	switch c.TL {
-	case "year":
-		dataBuilder.IsYear = true
-	case "season":
-		dataBuilder.IsSeason = true
-	case "month":
-		dataBuilder.IsMonth = true
-	case "day":
-		dataBuilder.IsDay = true
+		TL: c.TL,
+		UnitType: c.UnitType,
+		UnitName: c.UnitName,
 	}
 	data := dataBuilder.Build(diff)
 	if len(data) == 0 {
@@ -48,4 +43,6 @@ func (c Core) Run() {
 	}
 	tranSQL := mysql.Generator(data)
 	mysql.Transaction(tranSQL)
+	rowsAffected = true
+	return
 }

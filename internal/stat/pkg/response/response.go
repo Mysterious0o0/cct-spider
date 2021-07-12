@@ -71,25 +71,25 @@ func (tv TargetValue) Row() (row []string) {
 type DataBuilder struct {
 	IndexCode  string // 国家统计局指标代码
 	RegionCode string // 地区代码
-	IsYear     bool   // 是否为年度数据
-	IsSeason   bool   // 是否为季度数据
-	IsMonth    bool   // 是否为月度数据
-	IsDay      bool   // 是否为日度数据
+	TL         string // 时间类型：年度、季度、月度、日度(year、season、month、day)
+	UnitType   string
+	UnitName   string
 }
 
 func (d DataBuilder) Build(diff [][]string) (data [][]string) {
 	data = make([][]string, 0)
 	for _, r := range diff {
 		tv := TargetValue{}
-		if d.IsYear {
+		switch d.TL {
+		case "year":
 			tv.AcctYear = r[0]
-		} else if d.IsSeason {
+		case "season":
 			tv.AcctYear = r[0][:4]
-			tv.AcctSeason = r[0][4:6]
-		} else if d.IsMonth {
+			tv.AcctSeason = r[0][4:5]
+		case "month":
 			tv.AcctYear = r[0][:4]
 			tv.AcctMonth = r[0][4:6]
-		} else {
+		case "day":
 			tv.AcctYear = r[0][:4]
 			tv.AcctMonth = r[0][4:6]
 			tv.AcctDate = r[0][6:8]
@@ -104,6 +104,8 @@ func (d DataBuilder) Build(diff [][]string) (data [][]string) {
 		tv.ValueGUID = md5.MD5(tv.TargetCode + d.RegionCode + r[0])
 		tv.DataSourceCode = "stat"
 		tv.DataSourceName = "国家统计局"
+		tv.UnitType = d.UnitType
+		tv.UnitName = d.UnitName
 		data = append(data, tv.Row())
 	}
 	logger.Info(fmt.Sprintf("update %d rows", len(data)),

@@ -1,14 +1,32 @@
 package last
 
 import (
+	"fmt"
 	"math"
 	"time"
 )
 
+const (
+	duration = -3
+)
 
 // Years return years from startYear to current year
 func Years(startYear int) int {
-	return time.Now().Year() - startYear
+	return time.Now().Year() - startYear + 1
+}
+
+func YearRegion(startYear int) (region []string) {
+	current := time.Now()
+	for {
+		last := current.AddDate(duration, 0, 0)
+		if last.Year() < startYear {
+			region = append(region, fmt.Sprintf("%d-%d", startYear, current.Year()))
+			break
+		}
+		region = append(region, fmt.Sprintf("%d-%d", last.Year() + 1, current.Year()))
+		current = last
+	}
+	return
 }
 
 // Seasons return seasons from startYear to current year

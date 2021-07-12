@@ -17,7 +17,7 @@ type Param struct {
 	WdsWdCode      string
 	WdsWdValueCode string
 	DfWdsWdCode    string
-	DfWdsValueCode int
+	DfWdsValueCode string
 }
 
 func (p Param) Encode() string {
@@ -31,7 +31,8 @@ func (p Param) Encode() string {
 	} else {
 		value.Set("wds", `[]`)
 	}
-	value.Set("dfwds", fmt.Sprintf(`[{"wdcode":"%s","valuecode":"last%d"}]`, p.DfWdsWdCode, p.DfWdsValueCode))
+	//value.Set("dfwds", fmt.Sprintf(`[{"wdcode":"%s","valuecode":"last%d"}]`, p.DfWdsWdCode, p.DfWdsValueCode))
+	value.Set("dfwds", fmt.Sprintf(`[{"wdcode":"%s","valuecode":"%s"}]`, p.DfWdsWdCode, p.DfWdsValueCode))
 	v := value.Encode()
 	return base + v
 }
