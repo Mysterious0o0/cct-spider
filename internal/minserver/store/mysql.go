@@ -54,8 +54,14 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			IS_INDUSTRY:      "否",
 			IS_CAPITAL:       "否",
 		}
+		//logger.Info("Success", logger.Field("url", mes.Url))
 		f.WriteMap(md5.MD5(mes.Url))
 		v, l := _getQuotesAndValues(sqlValues)
+
+		//insertValues = append([]interface{}{}, v...)
+		//quotes = append([]string{}, oneQuoteSql)
+		//SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+		//mysql.Transaction(SQl, insertValues...)
 
 		if beginLen+l+len(oneQuoteSql) < 500000 {
 			insertValues = append(insertValues, v...)
