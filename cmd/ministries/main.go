@@ -58,7 +58,7 @@ func ministries() {
 
 	go func() {
 		for v := range urlChannel {
-			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
+			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
@@ -68,7 +68,7 @@ func ministries() {
 	}()
 	go func() {
 		for v := range infoChannel {
-			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok{
+			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
