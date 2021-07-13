@@ -52,7 +52,7 @@ func (p *Parse) GetTextByParseHtml() (title string, info []string, date string) 
 	if p.DateSelector != "" {
 		dom.Find(p.DateSelector).Each(func(i int, selection *goquery.Selection) {
 			t := ""
-			timeReg := regexp.MustCompile("([0-9]{4})[\\.\\-\\/年]([0-9]{1,2})[\\.\\-\\/月]([0-9]{1,2})")
+			timeReg := regexp.MustCompile("([0-9]{4})[\\-\\/年]([0-9]{1,2})[\\-\\/月]([0-9]{1,2})")
 			timeStr := timeReg.FindStringSubmatch(selection.Text())
 			if len(timeStr) == 0 {
 				return
@@ -68,7 +68,6 @@ func (p *Parse) GetTextByParseHtml() (title string, info []string, date string) 
 			date = t
 		})
 	}
-
 	return
 }
 
