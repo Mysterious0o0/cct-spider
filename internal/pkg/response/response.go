@@ -15,12 +15,12 @@ type PR struct {
 }
 
 func (pr *PR) GetPageUrl(attrName string) (hrefList []string) {
-	html, err := pr.Request.Visit()
+	html, err := pr.Request.VisitString()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
 		return
 	}
-	pr.Parse.Html = string(html)
+	pr.Parse.Html = html
 	hrefList = pr.Parse.GetAllUrlByParseHtml(attrName)
 	return hrefList
 }
@@ -36,8 +36,12 @@ func (pr *PR) GetHtmlInfo() (message *callback.Message) {
 		logger.Warn(fmt.Sprintf("后缀：%s 网址：%s 后缀不存在\n", pr.Parse.Suffix, pr.Request.Url))
 		return
 	}
-	html, _ := pr.Request.Visit()
-	pr.Parse.Html = string(html)
+	html, err := pr.Request.VisitString()
+	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+		return
+	}
+	pr.Parse.Html = html
 	title, content, date := pr.Parse.GetTextByParseHtml()
 	info = append(info, content...)
 	message = &callback.Message{
@@ -51,23 +55,23 @@ func (pr *PR) GetHtmlInfo() (message *callback.Message) {
 }
 
 func (pr *PR) GetPageNum(r string) (num int) {
-	html, err := pr.Request.Visit()
+	html, err := pr.Request.VisitString()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
 		return
 	}
-	pr.Parse.Html = string(html)
+	pr.Parse.Html = html
 	num = pr.Parse.GetPageNum(r)
 	return
 }
 
 func (pr *PR) GetCountAndSize(countR string, sizeR string) (count int, size int) {
-	html, err := pr.Request.Visit()
+	html, err := pr.Request.VisitString()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
 		return
 	}
-	pr.Parse.Html = string(html)
+	pr.Parse.Html = html
 	count, size = pr.Parse.GetCountAndSize(countR, sizeR)
 	return
 }
