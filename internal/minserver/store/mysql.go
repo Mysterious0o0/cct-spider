@@ -23,14 +23,14 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 	var (
 		quotes       []string
 		insertValues []interface{}
-		//beginLen     = len(preamble) + len(epilogue)
+		beginLen     = len(preamble) + len(epilogue)
 	)
 	for mes := range message {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
 		}
-		if mes.Date > t {
-			mes.Date = ""
+		if mes.Date > t || mes.Date == "" {
+			mes.Date = "10000101"
 		}
 		if len(mes.Content) > 65535 {
 			n, _ := subString.RuneIndex([]byte(mes.Content), 65535/3)
@@ -54,31 +54,24 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			IS_INDUSTRY:      "否",
 			IS_CAPITAL:       "否",
 		}
-		//logger.Info("Success", logger.Field("url", mes.Url))
 		f.SaveUrlKey([]byte(md5.MD5(mes.Url) + "\n"))
-		v, _ := _getQuotesAndValues(sqlValues)
+		v, l := _getQuotesAndValues(sqlValues)
 
+		if beginLen+l+len(oneQuoteSql) < 500000 {
+			insertValues = append(insertValues, v...)
+			quotes = append(quotes, oneQuoteSql)
+			beginLen += len(oneQuoteSql) + l
 
-		insertValues = append([]interface{}{}, v...)
-		quotes = append([]string{}, oneQuoteSql)
-		SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-		mysql.Transaction(SQl, insertValues...)
-
-		//if beginLen+l+len(oneQuoteSql) < 500000 {
-		//	insertValues = append(insertValues, v...)
-		//	quotes = append(quotes, oneQuoteSql)
-		//	beginLen += len(oneQuoteSql) + l
-		//
-		//} else {
-		//	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-		//	mysql.Transaction(SQl, insertValues...)
-		//	insertValues = append([]interface{}{}, v...)
-		//	quotes = append([]string{}, oneQuoteSql)
-		//	beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
-		//}
+		} else {
+			SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+			mysql.Transaction(SQl, insertValues...)
+			insertValues = append([]interface{}{}, v...)
+			quotes = append([]string{}, oneQuoteSql)
+			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
+		}
 	}
-	//SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
-	//mysql.Transaction(SQl, insertValues...)
+	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
+	mysql.Transaction(SQl, insertValues...)
 }
 
 func _getQuotesAndValues(v interface{}) (insertValues []interface{}, strLen int) {
