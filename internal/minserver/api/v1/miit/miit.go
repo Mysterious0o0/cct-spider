@@ -24,29 +24,21 @@ import (
 
 var _cookie = _getCookie()
 
-//func init()  {
-//	go func() {
-//		for range time.Tick(time.Minute * 5) {
-//			_cookie = _getCookie()
-//		}
-//	}()
-//}
-
 func _getCookie() (cookie string) {
 	url := "https://www.miit.gov.cn/search-front-server/api/search/info"
 	req := request.Request{
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	b, err := req.Visit()
+	b, err := req.VisitString()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
-	jslClearances := reg.FindStringSubmatch(string(b))
+	jslClearances := reg.FindStringSubmatch(b)
 	if len(jslClearances) == 0 {
-		logger.Error("first request error", logger.Field("b", string(b)))
+		logger.Error("first request error", logger.Field("b", b))
 		return
 	}
 	vm := otto.New()
@@ -59,14 +51,14 @@ func _getCookie() (cookie string) {
 	ck := req.GetCookie("__jsluid_s")
 	req.Cookies.StrCookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, cookiePro)
 
-	b, err = req.Visit()
+	b, err = req.VisitString()
 	if err != nil{
 		logger.Error(err.Error())
 	}
 	reg = regexp.MustCompile(`;go\((.*?)\)`)
-	data := reg.FindStringSubmatch(string(b))
+	data := reg.FindStringSubmatch(b)
 	if len(data) == 0{
-		logger.Warn("getCookie error", logger.Field("b", string(b)))
+		logger.Warn("getCookie error", logger.Field("b", b))
 		return
 	}
 	c := _getjsluid(data[1])
@@ -180,11 +172,11 @@ func getPDFInfo(url string) (info []string) {
 		Url:    url,
 		Method: http.MethodGet,
 	}
-	html, err := req.Visit()
+	html, err := req.VisitString()
 	if err != nil {
 		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
-	fmt.Println(string(html))
+	fmt.Println(html)
 	return
 }

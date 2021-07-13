@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/codec"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"io"
 	"io/ioutil"
@@ -30,6 +31,30 @@ func (r *Request) Visit() (b []byte, err error) {
 	}
 	defer resp.Body.Close()
 	b, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	if codec.IsGbk(b) {
+		b, err = codec.GbkToUtf8(b)
+		logger.Info("")
+	}
+	return
+}
+
+func (r *Request) VisitString() (s string, err error) {
+	resp, err := r.request()
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	if codec.IsGbk(b) {
+		b, err = codec.GbkToUtf8(b)
+	}
+	s = string(b)
 	return
 }
 
