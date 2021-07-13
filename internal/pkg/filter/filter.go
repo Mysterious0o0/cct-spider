@@ -13,7 +13,7 @@ type Filter struct {
 }
 
 
-func (f Filter)SaveUrlKey(content  []byte){
+func (f *Filter)SaveUrlKey(content  []byte){
 	w1, err := os.OpenFile(f.Filepath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil{
 		logger.Error(err.Error())
@@ -34,7 +34,7 @@ func (f Filter)SaveUrlKey(content  []byte){
 }
 
 
-func (f Filter)ReadUrlKey() {
+func (f *Filter)ReadUrlKey() {
 	f.UrlKey = make(map[string]byte)
 	fi, err := os.Open(f.Filepath)
 	if err != nil{
