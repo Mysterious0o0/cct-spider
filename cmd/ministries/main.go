@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	minV *viper.Viper
-	filt *filter.Filter
+	minV      *viper.Viper
+	filt      *filter.Filter
+	urlKeyMap map[string]byte
 )
 
 func minConfig() *viper.Viper {
@@ -37,8 +38,10 @@ func init() {
 	minV = minConfig()
 	filt = &filter.Filter{
 		Filepath: "urlKey.txt",
+		ThisUrlKey: make(map[string]byte),
+
 	}
-	filt.ReadUrlKey()
+	urlKeyMap = filt.ReadUrlKey()
 }
 
 func ministries() {
@@ -58,7 +61,7 @@ func ministries() {
 
 	go func() {
 		for v := range urlChannel {
-			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok {
+			if _, ok := urlKeyMap[md5.MD5(v.Url)]; ok {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
@@ -68,7 +71,7 @@ func ministries() {
 	}()
 	go func() {
 		for v := range infoChannel {
-			if _, ok := filt.UrlKey[md5.MD5(v.Url)]; ok {
+			if _, ok := urlKeyMap[md5.MD5(v.Url)]; ok {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
@@ -83,7 +86,7 @@ func ministries() {
 		close(message)
 	}()
 	save(filt, message)
-
+	filt.SaveUrlKey()
 }
 
 func main() {
