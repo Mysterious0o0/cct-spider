@@ -15,8 +15,8 @@ import (
 
 var (
 	s                               = &callback.SqlValues{}
-	preamble, epilogue, oneQuoteSql = _getSQL(s)
 	t                               = time.Now().Format("20060102")
+	preamble, epilogue, oneQuoteSql = _getSQL(s)
 )
 
 func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
