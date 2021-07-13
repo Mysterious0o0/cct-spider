@@ -54,7 +54,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			IS_INDUSTRY:      "否",
 			IS_CAPITAL:       "否",
 		}
-		f.SaveUrlKey([]byte(md5.MD5(mes.Url) + "\n"))
+		f.WriteMap(md5.MD5(mes.Url))
 		v, l := _getQuotesAndValues(sqlValues)
 
 		if beginLen+l+len(oneQuoteSql) < 500000 {
