@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,14 +16,18 @@ import (
 
 func cqc1() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	cqc1Region := last.YearRegion(indexcode.CQC1StartYear)
+	indexName := indexcode.CQC1Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cqc1Region := last.YearRegion(start)
+
 	for _, region := range cqc1Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.CQC1Code),
-			IndexCode: indexcode.CQC1Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "亿元",
@@ -34,6 +39,7 @@ func cqc1() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -45,14 +51,18 @@ func cqc1() {
 
 func cqc2() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	cqc2Region := last.YearRegion(indexcode.CQC2StartYear)
+	indexName := indexcode.CQC2Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cqc2Region := last.YearRegion(start)
+
 	for _, region := range cqc2Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.CQC2Code),
-			IndexCode: indexcode.CQC2Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "%",
@@ -64,6 +74,7 @@ func cqc2() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

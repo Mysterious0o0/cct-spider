@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -17,14 +18,18 @@ import (
 
 func scg1() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	scg1Region := last.YearRegion(indexcode.SCG1StartYear)
+	indexName := indexcode.SCG1Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	scg1Region := last.YearRegion(start)
+
 	for _, region := range scg1Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.SCG1Code),
-			IndexCode: indexcode.SCG1Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "亿元",
@@ -36,6 +41,7 @@ func scg1() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -47,14 +53,18 @@ func scg1() {
 
 func scg2() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	scg2Region := last.YearRegion(indexcode.SCG2StartYear)
+	indexName := indexcode.SCG2Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	scg2Region := last.YearRegion(start)
+
 	for _, region := range scg2Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.SCG2Code),
-			IndexCode: indexcode.SCG2Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "亿元",
@@ -66,6 +76,7 @@ func scg2() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -77,14 +88,18 @@ func scg2() {
 
 func scg3() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	scg3Region := last.YearRegion(indexcode.SCG3StartYear)
+	indexName := indexcode.SCG3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	scg3Region := last.YearRegion(start)
+
 	for _, region := range scg3Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.SCG3Code),
-			IndexCode: indexcode.SCG3Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "%",
@@ -96,6 +111,7 @@ func scg3() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -107,14 +123,18 @@ func scg3() {
 
 func scg4() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	scg4Region := last.YearRegion(indexcode.SCG4StartYear)
+	indexName := indexcode.SCG4Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	scg4Region := last.YearRegion(start)
+
 	for _, region := range scg4Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.SCG4Code),
-			IndexCode: indexcode.SCG4Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "%",
@@ -126,6 +146,7 @@ func scg4() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

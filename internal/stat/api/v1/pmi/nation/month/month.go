@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -14,14 +15,18 @@ import (
 
 func runPMINationMonth() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	pmiRegion := last.YearRegion(indexcode.PMIStartYear)
+	indexName := indexcode.PMIName
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	pmiRegion := last.YearRegion(start)
+
 	for _, region := range pmiRegion {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.PMICode),
-			IndexCode: indexcode.PMICode,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			UnitType: "",
 			UnitName: "%",
@@ -33,6 +38,7 @@ func runPMINationMonth() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

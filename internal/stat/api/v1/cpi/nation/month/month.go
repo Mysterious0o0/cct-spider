@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -16,14 +17,18 @@ import (
 
 func cpi2() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	cpi2Region := last.YearRegion(indexcode.CPI2StartYear)
+	indexName := indexcode.CPI2Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cpi2Region := last.YearRegion(start)
+
 	for _, region := range cpi2Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.CPI2Code),
-			IndexCode: indexcode.CPI2Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -33,6 +38,7 @@ func cpi2() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -44,14 +50,18 @@ func cpi2() {
 
 func cpi3() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	cpi3Region := last.YearRegion(indexcode.CPI3StartYear)
+	indexName := indexcode.CPI3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cpi3Region := last.YearRegion(start)
+
 	for _, region := range cpi3Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.CPI3Code),
-			IndexCode: indexcode.CPI3Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -61,6 +71,7 @@ func cpi3() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -72,14 +83,18 @@ func cpi3() {
 
 func cpi4() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	cpi4Region := last.YearRegion(indexcode.CPI4StartYear)
+	indexName := indexcode.CPI4Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cpi4Region := last.YearRegion(start)
+
 	for _, region := range cpi4Region {
 		c := core.Core{
 			TL: "month",
-			SQL: fmt.Sprintf(sql, indexcode.CPI4Code),
-			IndexCode: indexcode.CPI4Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.MonthDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -89,6 +104,7 @@ func cpi4() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

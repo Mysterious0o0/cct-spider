@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	duration = -3
+	duration = -1
 )
 
 // Years return years from startYear to current year

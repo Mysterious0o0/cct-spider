@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,14 +16,18 @@ import (
 
 func fai2() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	fai2Region := last.YearRegion(indexcode.FAI2StartYear)
+	indexName := indexcode.FAI2Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	fai2Region := last.YearRegion(start)
+
 	for _, region := range fai2Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.FAI2Code),
-			IndexCode: indexcode.FAI2Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -32,6 +37,7 @@ func fai2() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -43,14 +49,18 @@ func fai2() {
 
 func fai3() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	fai3Region := last.YearRegion(indexcode.FAI3StartYear)
+	indexName := indexcode.FAI3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	fai3Region := last.YearRegion(start)
+
 	for _, region := range fai3Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.FAI3Code),
-			IndexCode: indexcode.FAI3Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -60,6 +70,7 @@ func fai3() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

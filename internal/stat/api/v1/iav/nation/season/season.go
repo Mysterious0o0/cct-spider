@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,14 +16,18 @@ import (
 
 func iav3() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	iav3Region := last.YearRegion(indexcode.IAV3StartYear)
+	indexName := indexcode.IAV3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	iav3Region := last.YearRegion(start)
+
 	for _, region := range iav3Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.IAV3Code),
-			IndexCode: indexcode.IAV3Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			UnitType: "",
 			UnitName: "亿元",
@@ -34,6 +39,7 @@ func iav3() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -45,14 +51,18 @@ func iav3() {
 
 func iav4() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	iav4Region := last.YearRegion(indexcode.IAV4StartYear)
+	indexName := indexcode.IAV4Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	iav4Region := last.YearRegion(start)
+
 	for _, region := range iav4Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.IAV4Code),
-			IndexCode: indexcode.IAV4Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			UnitType: "",
 			UnitName: "亿元",
@@ -64,6 +74,7 @@ func iav4() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

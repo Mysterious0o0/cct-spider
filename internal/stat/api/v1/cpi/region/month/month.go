@@ -8,6 +8,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,15 +16,19 @@ import (
 
 func runCPIRegionMonth() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_MONTH), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s' AND REGION_CODE = '%s'`
+                WHERE TARGET_CODE = '%s' AND REGION_CODE = '%s'`
 
-	cpi3Region := last.YearRegion(indexcode.CPI3StartYear)
+	indexName := indexcode.CPI3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	cpi3Region := last.YearRegion(start)
+
 	for _, region := range cpi3Region {
 		for _, v := range provincecode.ProvinceCode {
 			c := core.Core{
 				TL: "month",
-				SQL: fmt.Sprintf(sql, indexcode.CPI3Code, v),
-				IndexCode: indexcode.CPI3Code,
+				SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"], v),
+				IndexName: indexName,
 				TypeCode: typecode.ProvinceMonthDataCode,
 				URL: urllib.Param{
 					M:              "QueryData",
@@ -35,6 +40,7 @@ func runCPIRegionMonth() {
 					DfWdsWdCode:    "sj",
 					DfWdsValueCode: region,
 				},
+				IndexMap: indexcode.IndexMap,
 			}
 			rowsAffected, err := c.Run()
 			if err != nil || !rowsAffected {

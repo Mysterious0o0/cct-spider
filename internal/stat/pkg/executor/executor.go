@@ -16,6 +16,14 @@ func end(s []string) string {
 	return s[length-1]
 }
 
+func replaceSeason(date string) string {
+	date = strings.ReplaceAll(date, "A", "Q1")
+	date = strings.ReplaceAll(date, "B", "Q2")
+	date = strings.ReplaceAll(date, "C", "Q3")
+	date = strings.ReplaceAll(date, "D", "Q4")
+	return date
+}
+
 // Executor
 // 查询年度指标数据的步骤
 // 1、访问https://data.stats.gov.cn/easyquery.htm?cn=%s&zb=%s获取cookie，
@@ -42,6 +50,7 @@ func Executor(url urllib.Param, cn, zb string) (row [][]string) {
 		// Value := node.Data.Data
 		StrValue := node.Data.StrData
 		date := end(strings.Split(node.Code, "."))
+		date = replaceSeason(date)
 		row = append(row, []string{date, StrValue})
 	}
 	return

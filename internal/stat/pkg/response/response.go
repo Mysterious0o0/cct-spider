@@ -2,7 +2,6 @@ package response
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/stat/code/indexcode"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/code/provincecode"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
@@ -69,11 +68,12 @@ func (tv TargetValue) Row() (row []string) {
 }
 
 type DataBuilder struct {
-	IndexCode  string // 国家统计局指标代码
-	RegionCode string // 地区代码
 	TL         string // 时间类型：年度、季度、月度、日度(year、season、month、day)
+	IndexName  string // 指标名称
+	RegionCode string // 地区代码
 	UnitType   string
 	UnitName   string
+	IndexMap   map[string]map[string]string
 }
 
 func (d DataBuilder) Build(diff [][]string) (data [][]string) {
@@ -85,7 +85,7 @@ func (d DataBuilder) Build(diff [][]string) (data [][]string) {
 			tv.AcctYear = r[0]
 		case "season":
 			tv.AcctYear = r[0][:4]
-			tv.AcctSeason = r[0][4:5]
+			tv.AcctSeason = r[0][4:6]
 		case "month":
 			tv.AcctYear = r[0][:4]
 			tv.AcctMonth = r[0][4:6]
@@ -97,10 +97,10 @@ func (d DataBuilder) Build(diff [][]string) (data [][]string) {
 		tv.TargetValue = r[1]
 		tv.RegionCode = d.RegionCode
 		tv.RegionName = provincecode.CodeProvince[d.RegionCode]
-		tv.TargetCode = indexcode.StatInner[d.IndexCode]
+		tv.TargetCode = d.IndexMap[d.IndexName]["innerCode"]
 		tv.TargetGUID = md5.MD5(tv.TargetCode)
-		tv.TargetName = indexcode.CodeName[d.IndexCode]
-		tv.SourceTargetCode = d.IndexCode
+		tv.TargetName = d.IndexName
+		tv.SourceTargetCode = d.IndexMap[d.IndexName]["outerCode"]
 		tv.ValueGUID = md5.MD5(tv.TargetCode + d.RegionCode + r[0])
 		tv.DataSourceCode = "stat"
 		tv.DataSourceName = "国家统计局"
@@ -108,7 +108,6 @@ func (d DataBuilder) Build(diff [][]string) (data [][]string) {
 		tv.UnitName = d.UnitName
 		data = append(data, tv.Row())
 	}
-	logger.Info(fmt.Sprintf("update %d rows", len(data)),
-		logger.Field(indexcode.CodeName[d.IndexCode], data))
+	logger.Info(fmt.Sprintf("%s update %d rows", d.IndexName, len(data)))
 	return
 }

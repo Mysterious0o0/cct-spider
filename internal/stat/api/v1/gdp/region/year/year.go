@@ -8,6 +8,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,15 +16,19 @@ import (
 
 func runGDPRegionYear() {
 	sql := `SELECT ACCT_YEAR, TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s' AND REGION_CODE = '%s'`
+                WHERE TARGET_CODE = '%s' AND REGION_CODE = '%s'`
 
-	gdpRRegion := last.YearRegion(indexcode.GDPRStartYear)
+	indexName := indexcode.GDPRName
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	gdpRRegion := last.YearRegion(start)
+
 	for _, v := range provincecode.ProvinceCode {
 		for _, region := range gdpRRegion {
 			c := core.Core{
 				TL: "year",
-				SQL: fmt.Sprintf(sql, indexcode.GDPRCode, v),
-				IndexCode: indexcode.GDPRCode,
+				SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"], v),
+				IndexName: indexName,
 				TypeCode: typecode.ProvinceYearDataCode,
 				UnitType: "",
 				UnitName: "亿元",
@@ -37,6 +42,7 @@ func runGDPRegionYear() {
 					DfWdsWdCode:    "sj",
 					DfWdsValueCode: region,
 				},
+				IndexMap: indexcode.IndexMap,
 			}
 			rowsAffected, err := c.Run()
 			if err != nil || !rowsAffected {

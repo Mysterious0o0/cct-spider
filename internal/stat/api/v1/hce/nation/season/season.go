@@ -7,6 +7,7 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
 	"time"
 )
 
@@ -15,14 +16,18 @@ import (
 
 func hce2() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	gdp2Region := last.YearRegion(indexcode.HCE2StartYear)
+	indexName := indexcode.HCE2Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	gdp2Region := last.YearRegion(start)
+
 	for _, region := range gdp2Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.HCE2Code),
-			IndexCode: indexcode.HCE2Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			UnitType: "",
 			UnitName: "元",
@@ -34,6 +39,7 @@ func hce2() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {
@@ -45,14 +51,18 @@ func hce2() {
 
 func hec3() {
 	sql := `SELECT CONCAT(ACCT_YEAR, ACCT_QUARTOR), TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	gdp3Region := last.YearRegion(indexcode.HCE3StartYear)
+	indexName := indexcode.HCE3Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	gdp3Region := last.YearRegion(start)
+
 	for _, region := range gdp3Region {
 		c := core.Core{
 			TL: "season",
-			SQL: fmt.Sprintf(sql, indexcode.HCE3Code),
-			IndexCode: indexcode.HCE3Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.SeasonDataCode,
 			UnitType: "",
 			UnitName: "%",
@@ -64,6 +74,7 @@ func hec3() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := c.Run()
 		if err != nil || !rowsAffected {

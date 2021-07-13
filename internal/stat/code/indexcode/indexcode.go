@@ -1,106 +1,13 @@
 package indexcode
 
-// 指标起始年
-
-const (
-	CPIStartYear  = 1951
-	CPI1StartYear = 1978
-	CPI2StartYear = 2016
-	CPI3StartYear = 2016
-	CPI4StartYear = 2016
-	CQCStartYear  = 1991
-	CQC1StartYear = 1999
-	CQC2StartYear = 1999
-	FAIStartYear  = 1990
-	FAI1StartYear = 1990
-	FAI2StartYear = 1998
-	FAI3StartYear = 2007
-	GDPStartYear  = 1952
-	GDPRStartYear = 1992
-	GDP1StartYear = 1992
-	GDP2StartYear = 1992
-	HCEStartYear  = 2013
-	HCE1StartYear = 2014
-	HCE2StartYear = 2013
-	HCE3StartYear = 2014
-	IAVStartYear  = 1952
-	IAV1StartYear = 1998
-	IAV2StartYear = 1998
-	IAV3StartYear = 1992
-	IAV4StartYear = 1992
-	PMIStartYear  = 2005
-	PPIStartYear  = 1978
-	PPI1StartYear = 1985
-	PPI2StartYear = 2011
-	PPI3StartYear = 1996
-	PPI4StartYear = 2011
-	RCLStartYear  = 1992
-	SCGStartYear  = 1952
-	SCG1StartYear = 1984
-	SCG2StartYear = 2000
-	SCG3StartYear = 2000
-	SCG4StartYear = 2000
-	URIStartYear  = 2013
-	URI1StartYear = 2014
-	URI2StartYear = 2013
-	URI3StartYear = 2014
-)
-
-// 国家统计局指标代码
-
-const (
-	CPICode  = "A090101"   // 居民消费价格指数(上年=100)[start: 1951]
-	CPI1Code = "A090201"   // 居民消费价格指数(1978=100)[start: 1978]
-	CPI2Code = "A01030101" // 居民消费价格指数(上月=100)[start: 2016]
-	CPI3Code = "A01010101" // 居民消费价格指数(上年同月=100)[start: 2016]
-	CPI4Code = "A01020101" // 居民消费价格指数(上年同期=100)[start: 2016]
-	CQCCode  = "A0L0309"   // 货币和准货币(M2)供应量同比增长率(%)[start: 1991]
-	CQC1Code = "A0D0101"   // 货币和准货币(M2)供应量_期末值(亿元)[start: 1999]
-	CQC2Code = "A0D0102"   // 货币和准货币(M2)供应量_同比增长(%)[start: 1999]
-	FAICode  = "A090107"   // 固定资产投资价格指数(上年=100)[start: 1990]
-	FAI1Code = "A090207"   // 固定资产投资价格指数(1990=100)[start: 1990]
-	FAI2Code = "A060201"   // 固定资产投资价格指数_当季值(上年同季=100)[start: 1998]
-	FAI3Code = "A060301"   // 固定资产投资价格指数_累计值(上年同期=100)[start: 2007]
-	GDPCode  = "A020102"   // 国内生产总值(亿元)[start: 1952]
-	GDPRCode = "A020101"   // 地区生产总值(亿元)[start: 1992]
-	GDP1Code = "A010101"   // 国内生产总值_当季值(亿元)[start: 1992]
-	GDP2Code = "A010102"   // 国内生产总值_累计值(亿元)[start: 1992]
-	HCECode  = "A0A0107"   // 居民人均消费支出(元)[start: 2013]
-	HCE1Code = "A0A0108"   // 居民人均消费支出_同比增长(%)[start: 2014]
-	HCE2Code = "A050109"   // 居民人均消费支出_累计值(元)[start: 2013]
-	HCE3Code = "A05010A"   // 居民人均消费支出_累计增长(%)[start: 2014]
-	IAVCode  = "A020403"   // 工业增加值(亿元)[start: 1952]
-	IAV1Code = "A020101"   // 工业增加值_同比增长(%)[start: 1998]
-	IAV2Code = "A020102"   // 工业增加值_累计增长(%)[start: 1998]
-	IAV3Code = "A01010B"   // 工业增加值_当季值(亿元)[start: 1992]
-	IAV4Code = "A01010C"   // 工业增加值_累计值(亿元)[start: 1992]
-	PMICode  = "A0B0101"   // 制造业采购经理指数(%)[start: 2005]
-	PPICode  = "A090105"   // 工业生产者出厂价格指数(上年=100)[start: 1978]
-	PPI1Code = "A090205"   // 工业生产者出厂价格指数(1985=100)[start: 1985]
-	PPI2Code = "A01080701" // 工业生产者出厂价格指数(上月=100)[start: 2011]
-	PPI3Code = "A01080101" // 工业生产者出厂价格指数(上年同月=100)[start: 1996]
-	PPI4Code = "A01080401" // 工业生产者出厂价格指数(上年同期=100)[start: 2011]
-	RCLCode  = "A020501"   // 居民消费水平(元)[start: 1992]
-	SCGCode  = "A0H01"     // 社会消费品零售总额(亿元)[start: 1952]
-	SCG1Code = "A070101"   // 社会消费品零售总额_当期值(亿元)[start: 1984]
-	SCG2Code = "A070102"   // 社会消费品零售总额_累计值(亿元)[start: 2000]
-	SCG3Code = "A070103"   // 社会消费品零售总额_同比增长(%)[start: 2000]
-	SCG4Code = "A070104"   // 社会消费品零售总额_累计增长(%)[start: 2000]
-	URICode  = "A0A0103"   // 城镇居民人均可支配收入(元)[start: 2013]
-	URI1Code = "A0A0104"   // 城镇居民人均可支配收入_同比增长(%)[start: 2014]
-	URI2Code = "A050201"   // 城镇居民人均可支配收入_累计值(元)[start: 2013]
-	URI3Code = "A050202"   // 城镇居民人均可支配收入_累计增长(%)[start: 2014]
-)
-
-// 指标名称(国家统计局和内部统一)
-
+// 指标名称(国家统计局和系统内部统一)
 const (
 	CPIName  = "居民消费价格指数(上年=100)"
 	CPI1Name = "居民消费价格指数(1978=100)"
 	CPI2Name = "居民消费价格指数(上月=100)"
 	CPI3Name = "居民消费价格指数(上年同月=100)"
 	CPI4Name = "居民消费价格指数(上年同期=100)"
-	CQCName  = ""
+	CQCName  = "货币和准货币(M2)供应量同比增长率"
 	CQC1Name = "货币和准货币(M2)供应量_期末值"
 	CQC2Name = "货币和准货币(M2)供应量_同比增长"
 	FAIName  = "固定资产投资价格指数(上年=100)"
@@ -138,139 +45,259 @@ const (
 	URI3Name = "城镇居民人均可支配收入_累计增长"
 )
 
-// 系统内部指标代码
+// IndexMap record index name mapping outer code and inner code
+var IndexMap map[string]map[string]string
 
-const (
-	InnerCPICode  = "HG00003" // 居民消费价格指数(上年=100)[start: 1951]
-	InnerCPI1Code = ""        // 居民消费价格指数(1978=100)[start: 1978]
-	InnerCPI2Code = ""        // 居民消费价格指数(上月=100)[start: 2016]
-	InnerCPI3Code = "HG00004" // 居民消费价格指数(上年同月=100)[start: 2016]
-	InnerCPI4Code = ""        // 居民消费价格指数(上年同期=100)[start: 2016]
-	InnerCQCCode  = "HG00005" // 货币和准货币(M2)供应量同比增长率(%)[start: 1991]
-	InnerCQC1Code = "HG00006" // 货币和准货币(M2)供应量_期末值(亿元)[start: 1999]
-	InnerCQC2Code = "HG00007" // 货币和准货币(M2)供应量_同比增长(%)[start: 1999]
-	InnerFAICode  = "HG00008" // 固定资产投资价格指数(上年=100)[start: 1990]
-	InnerFAI1Code = ""        // 固定资产投资价格指数(1990=100)[start: 1990]
-	InnerFAI2Code = "HG00009" // 固定资产投资价格指数_当季值(上年同季=100)[start: 1998]
-	InnerFAI3Code = "HG00010" // 固定资产投资价格指数_累计值(上年同期=100)[start: 2007]
-	InnerGDPCode  = "HG00001" // 国内生产总值(亿元)[start: 1952]
-	InnerGDPRCode = "HG00002" // 地区生产总值(亿元)[start: 1992]
-	InnerGDP1Code = "HG00035" // 国内生产总值_当季值(亿元)[start: 1992]
-	InnerGDP2Code = "HG00036" // 国内生产总值_累计值(亿元)[start: 1992]
-	InnerHCECode  = "HG00011" // 居民人均消费支出(元)[start: 2013]
-	InnerHCE1Code = "HG00012" // 居民人均消费支出_同比增长(%)[start: 2014]
-	InnerHCE2Code = "HG00013" // 居民人均消费支出_累计值(元)[start: 2013]
-	InnerHCE3Code = "HG00014" // 居民人均消费支出_累计增长(%)[start: 2014]
-	InnerIAVCode  = "HG00015" // 工业增加值(亿元)[start: 1952]
-	InnerIAV1Code = "HG00016" // 工业增加值_同比增长(%)[start: 1998]
-	InnerIAV2Code = "HG00017" // 工业增加值_累计增长(%)[start: 1998]
-	InnerIAV3Code = "HG00018" // 工业增加值_当季值(亿元)[start: 1992]
-	InnerIAV4Code = "HG00019" // 工业增加值_累计值(亿元)[start: 1992]
-	InnerPMICode  = "HG00020" // 制造业采购经理指数(%)[start: 2005]
-	InnerPPICode  = "HG00021" // 工业生产者出厂价格指数(上年=100)[start: 1978]
-	InnerPPI1Code = ""        // 工业生产者出厂价格指数(1985=100)[start: 1985]
-	InnerPPI2Code = "HG00022" // 工业生产者出厂价格指数(上月=100)[start: 2011]
-	InnerPPI3Code = "HG00023" // 工业生产者出厂价格指数(上年同月=100)[start: 1996]
-	InnerPPI4Code = "HG00024" // 工业生产者出厂价格指数(上年同期=100)[start: 2011]
-	InnerRCLCode  = "HG00025" // 居民消费水平(元)[start: 1992]
-	InnerSCGCode  = "HG00026" // 社会消费品零售总额(亿元)[start: 1952]
-	InnerSCG1Code = "HG00027" // 社会消费品零售总额_当期值(亿元)[start: 1984]
-	InnerSCG2Code = "HG00028" // 社会消费品零售总额_累计值(亿元)[start: 2000]
-	InnerSCG3Code = "HG00029" // 社会消费品零售总额_同比增长(%)[start: 2000]
-	InnerSCG4Code = "HG00030" // 社会消费品零售总额_累计增长(%)[start: 2000]
-	InnerURICode  = "HG00031" // 城镇居民人均可支配收入(元)[start: 2013]
-	InnerURI1Code = "HG00032" // 城镇居民人均可支配收入_同比增长(%)[start: 2014]
-	InnerURI2Code = "HG00033" // 城镇居民人均可支配收入_累计值(元)[start: 2013]
-	InnerURI3Code = "HG00034" // 城镇居民人均可支配收入_累计增长(%)[start: 2014]
-)
+func setUpIndexMap() {
+	IndexMap = make(map[string]map[string]string)
 
-var StatInner map[string]string // 国家统计局指标代码：内部指标代码
-var CodeName map[string]string  // 国家统计局指标代码：指标名称
+	// 居民消费价格指数(上年=100)
+	IndexMap[CPIName] = make(map[string]string)
+	IndexMap[CPIName]["outerCode"] = "A090101"
+	IndexMap[CPIName]["innerCode"] = "HG00003"
+	IndexMap[CPIName]["startYear"] = "1951"
+
+	// 居民消费价格指数(1978=100)
+	IndexMap[CPI1Name] = make(map[string]string)
+	IndexMap[CPI1Name]["outerCode"] = "A090201"
+	IndexMap[CPI1Name]["innerCode"] = "" // TODO: no need yet
+	IndexMap[CPI1Name]["startYear"] = "1978"
+
+	// 居民消费价格指数(上月=100)
+	IndexMap[CPI2Name] = make(map[string]string)
+	IndexMap[CPI2Name]["outerCode"] = "A01030101"
+	IndexMap[CPI2Name]["innerCode"] = "HG00037"
+	IndexMap[CPI2Name]["startYear"] = "2016"
+
+	// 居民消费价格指数(上年同月=100)
+	IndexMap[CPI3Name] = make(map[string]string)
+	IndexMap[CPI3Name]["outerCode"] = "A01010101"
+	IndexMap[CPI3Name]["innerCode"] = "HG00004"
+	IndexMap[CPI3Name]["startYear"] = "2016"
+
+	// 居民消费价格指数(上年同期=100)
+	IndexMap[CPI4Name] = make(map[string]string)
+	IndexMap[CPI4Name]["outerCode"] = "A01020101"
+	IndexMap[CPI4Name]["innerCode"] = "HG00038"
+	IndexMap[CPI4Name]["startYear"] = "2016"
+
+	// 货币和准货币(M2)供应量同比增长率
+	IndexMap[CQCName] = make(map[string]string)
+	IndexMap[CQCName]["outerCode"] = "A0L0309"
+	IndexMap[CQCName]["innerCode"] = "HG00005"
+	IndexMap[CQCName]["startYear"] = "1991"
+
+	// 货币和准货币(M2)供应量_期末值(亿元)
+	IndexMap[CQC1Name] = make(map[string]string)
+	IndexMap[CQC1Name]["outerCode"] = "A0D0101"
+	IndexMap[CQC1Name]["innerCode"] = "HG00006"
+	IndexMap[CQC1Name]["startYear"] = "1999"
+
+	// 货币和准货币(M2)供应量_同比增长
+	IndexMap[CQC2Name] = make(map[string]string)
+	IndexMap[CQC2Name]["outerCode"] = "A0D0102"
+	IndexMap[CQC2Name]["innerCode"] = "HG00007"
+	IndexMap[CQC2Name]["startYear"] = "1999"
+
+	// 固定资产投资价格指数(上年=100)
+	IndexMap[FAIName] = make(map[string]string)
+	IndexMap[FAIName]["outerCode"] = "A090107"
+	IndexMap[FAIName]["innerCode"] = "HG00008"
+	IndexMap[FAIName]["startYear"] = "1990"
+
+	// 固定资产投资价格指数(1990=100)
+	IndexMap[FAI1Name] = make(map[string]string)
+	IndexMap[FAI1Name]["outerCode"] = "A090207"
+	IndexMap[FAI1Name]["innerCode"] = "" // TODO: no need yet
+	IndexMap[FAI1Name]["startYear"] = "1990"
+
+	// 固定资产投资价格指数_当季值(上年同季=100)
+	IndexMap[FAI2Name] = make(map[string]string)
+	IndexMap[FAI2Name]["outerCode"] = "A060201"
+	IndexMap[FAI2Name]["innerCode"] = "HG00009"
+	IndexMap[FAI2Name]["startYear"] = "1998"
+
+	// 固定资产投资价格指数_累计值(上年同期=100)
+	IndexMap[FAI3Name] = make(map[string]string)
+	IndexMap[FAI3Name]["outerCode"] = "A060301"
+	IndexMap[FAI3Name]["innerCode"] = "HG00010"
+	IndexMap[FAI3Name]["startYear"] = "2007"
+
+	// 国内生产总值
+	IndexMap[GDPName] = make(map[string]string)
+	IndexMap[GDPName]["outerCode"] = "A020102"
+	IndexMap[GDPName]["innerCode"] = "HG00001"
+	IndexMap[GDPName]["startYear"] = "1952"
+
+	// 地区生产总值
+	IndexMap[GDPRName] = make(map[string]string)
+	IndexMap[GDPRName]["outerCode"] = "A020101"
+	IndexMap[GDPRName]["innerCode"] = "HG00002"
+	IndexMap[GDPRName]["startYear"] = "1992"
+
+	// 国内生产总值_当季值
+	IndexMap[GDP1Name] = make(map[string]string)
+	IndexMap[GDP1Name]["outerCode"] = "A010101"
+	IndexMap[GDP1Name]["innerCode"] = "HG00035"
+	IndexMap[GDP1Name]["startYear"] = "1992"
+
+	// 国内生产总值_累计值
+	IndexMap[GDP2Name] = make(map[string]string)
+	IndexMap[GDP2Name]["outerCode"] = "A010102"
+	IndexMap[GDP2Name]["innerCode"] = "HG00036"
+	IndexMap[GDP2Name]["startYear"] = "1992"
+
+	// 居民人均消费支出
+	IndexMap[HCEName] = make(map[string]string)
+	IndexMap[HCEName]["outerCode"] = "A0A0107"
+	IndexMap[HCEName]["innerCode"] = "HG00011"
+	IndexMap[HCEName]["startYear"] = "2013"
+
+	// 居民人均消费支出_同比增长
+	IndexMap[HCE1Name] = make(map[string]string)
+	IndexMap[HCE1Name]["outerCode"] = "A0A0108"
+	IndexMap[HCE1Name]["innerCode"] = "HG00012"
+	IndexMap[HCE1Name]["startYear"] = "2014"
+
+	// 居民人均消费支出_累计值
+	IndexMap[HCE2Name] = make(map[string]string)
+	IndexMap[HCE2Name]["outerCode"] = "A050109"
+	IndexMap[HCE2Name]["innerCode"] = "HG00013"
+	IndexMap[HCE2Name]["startYear"] = "2013"
+
+	// 居民人均消费支出_累计增长
+	IndexMap[HCE3Name] = make(map[string]string)
+	IndexMap[HCE3Name]["outerCode"] = "A05010A"
+	IndexMap[HCE3Name]["innerCode"] = "HG00014"
+	IndexMap[HCE3Name]["startYear"] = "2014"
+
+	// 工业增加值
+	IndexMap[IAVName] = make(map[string]string)
+	IndexMap[IAVName]["outerCode"] = "A020403"
+	IndexMap[IAVName]["innerCode"] = "HG00015"
+	IndexMap[IAVName]["startYear"] = "1952"
+
+	// 工业增加值_同比增长
+	IndexMap[IAV1Name] = make(map[string]string)
+	IndexMap[IAV1Name]["outerCode"] = "A020101"
+	IndexMap[IAV1Name]["innerCode"] = "HG00016"
+	IndexMap[IAV1Name]["startYear"] = "1998"
+
+	// 工业增加值_累计增长
+	IndexMap[IAV2Name] = make(map[string]string)
+	IndexMap[IAV2Name]["outerCode"] = "A020102"
+	IndexMap[IAV2Name]["innerCode"] = "HG00017"
+	IndexMap[IAV2Name]["startYear"] = "1998"
+
+	// 工业增加值_当季值
+	IndexMap[IAV3Name] = make(map[string]string)
+	IndexMap[IAV3Name]["outerCode"] = "A01010B"
+	IndexMap[IAV3Name]["innerCode"] = "HG00018"
+	IndexMap[IAV3Name]["startYear"] = "1992"
+
+	// 工业增加值_累计值
+	IndexMap[IAV4Name] = make(map[string]string)
+	IndexMap[IAV4Name]["outerCode"] = "A01010C"
+	IndexMap[IAV4Name]["innerCode"] = "HG00019"
+	IndexMap[IAV4Name]["startYear"] = "1992"
+
+	// 制造业采购经理指数
+	IndexMap[PMIName] = make(map[string]string)
+	IndexMap[PMIName]["outerCode"] = "A0B0101"
+	IndexMap[PMIName]["innerCode"] = "HG00020"
+	IndexMap[PMIName]["startYear"] = "2005"
+
+	// 工业生产者出厂价格指数(上年=100)
+	IndexMap[PPIName] = make(map[string]string)
+	IndexMap[PPIName]["outerCode"] = "A090105"
+	IndexMap[PPIName]["innerCode"] = "HG00021"
+	IndexMap[PPIName]["startYear"] = "1978"
+
+	// 工业生产者出厂价格指数(1985=100)
+	IndexMap[PPI1Name] = make(map[string]string)
+	IndexMap[PPI1Name]["outerCode"] = "A090205"
+	IndexMap[PPI1Name]["innerCode"] = "" // TODO: no need yet
+	IndexMap[PPI1Name]["startYear"] = "1985"
+
+	// 工业生产者出厂价格指数(上月=100)
+	IndexMap[PPI2Name] = make(map[string]string)
+	IndexMap[PPI2Name]["outerCode"] = "A01080701"
+	IndexMap[PPI2Name]["innerCode"] = "HG00022"
+	IndexMap[PPI2Name]["startYear"] = "2011"
+
+	// 工业生产者出厂价格指数(上年同月=100)
+	IndexMap[PPI3Name] = make(map[string]string)
+	IndexMap[PPI3Name]["outerCode"] = "A01080101"
+	IndexMap[PPI3Name]["innerCode"] = "HG00023"
+	IndexMap[PPI3Name]["startYear"] = "1996"
+
+	// 工业生产者出厂价格指数(上年同期=100)
+	IndexMap[PPI4Name] = make(map[string]string)
+	IndexMap[PPI4Name]["outerCode"] = "A01080401"
+	IndexMap[PPI4Name]["innerCode"] = "HG00024"
+	IndexMap[PPI4Name]["startYear"] = "2011"
+
+	// 居民消费水平
+	IndexMap[RCLName] = make(map[string]string)
+	IndexMap[RCLName]["outerCode"] = "A020501"
+	IndexMap[RCLName]["innerCode"] = "HG00025"
+	IndexMap[RCLName]["startYear"] = "1992"
+
+	// 社会消费品零售总额
+	IndexMap[SCGName] = make(map[string]string)
+	IndexMap[SCGName]["outerCode"] = "A0H01"
+	IndexMap[SCGName]["innerCode"] = "HG00026"
+	IndexMap[SCGName]["startYear"] = "1952"
+
+	// 社会消费品零售总额_当期值
+	IndexMap[SCG1Name] = make(map[string]string)
+	IndexMap[SCG1Name]["outerCode"] = "A070101"
+	IndexMap[SCG1Name]["innerCode"] = "HG00027"
+	IndexMap[SCG1Name]["startYear"] = "1984"
+
+	// 社会消费品零售总额_累计值
+	IndexMap[SCG2Name] = make(map[string]string)
+	IndexMap[SCG2Name]["outerCode"] = "A070102"
+	IndexMap[SCG2Name]["innerCode"] = "HG00028"
+	IndexMap[SCG2Name]["startYear"] = "2000"
+
+	// 社会消费品零售总额_同比增长
+	IndexMap[SCG3Name] = make(map[string]string)
+	IndexMap[SCG3Name]["outerCode"] = "A070103"
+	IndexMap[SCG3Name]["innerCode"] = "HG00029"
+	IndexMap[SCG3Name]["startYear"] = "2000"
+
+	// 社会消费品零售总额_累计增长
+	IndexMap[SCG4Name] = make(map[string]string)
+	IndexMap[SCG4Name]["outerCode"] = "A070104"
+	IndexMap[SCG4Name]["innerCode"] = "HG00030"
+	IndexMap[SCG4Name]["startYear"] = "2000"
+
+	// 城镇居民人均可支配收入
+	IndexMap[URIName] = make(map[string]string)
+	IndexMap[URIName]["outerCode"] = "A0A0103"
+	IndexMap[URIName]["innerCode"] = "HG00031"
+	IndexMap[URIName]["startYear"] = "2013"
+
+	// 城镇居民人均可支配收入_同比增长
+	IndexMap[URI1Name] = make(map[string]string)
+	IndexMap[URI1Name]["outerCode"] = "A0A0104"
+	IndexMap[URI1Name]["innerCode"] = "HG00032"
+	IndexMap[URI1Name]["startYear"] = "2014"
+
+	// 城镇居民人均可支配收入_累计值
+	IndexMap[URI2Name] = make(map[string]string)
+	IndexMap[URI2Name]["outerCode"] = "A050201"
+	IndexMap[URI2Name]["innerCode"] = "HG00033"
+	IndexMap[URI2Name]["startYear"] = "2013"
+
+	// 城镇居民人均可支配收入_累计增长
+	IndexMap[URI3Name] = make(map[string]string)
+	IndexMap[URI3Name]["outerCode"] = "A050202"
+	IndexMap[URI3Name]["innerCode"] = "HG00034"
+	IndexMap[URI3Name]["startYear"] = "2014"
+}
 
 func init() {
-	StatInner = make(map[string]string)
-	StatInner[CPICode] = InnerCPICode
-	StatInner[CPI1Code] = InnerCPI1Code
-	StatInner[CPI2Code] = InnerCPI2Code
-	StatInner[CPI3Code] = InnerCPI3Code
-	StatInner[CPI4Code] = InnerCPI4Code
-	StatInner[CQCCode] = InnerCQCCode
-	StatInner[CQC1Code] = InnerCQC1Code
-	StatInner[CQC2Code] = InnerCQC2Code
-	StatInner[FAICode] = InnerFAICode
-	StatInner[FAI1Code] = InnerFAI1Code
-	StatInner[FAI2Code] = InnerFAI2Code
-	StatInner[FAI3Code] = InnerFAI3Code
-	StatInner[GDPCode] = InnerGDPCode
-	StatInner[GDPRCode] = InnerGDPRCode
-	StatInner[GDP1Code] = InnerGDP1Code
-	StatInner[GDP2Code] = InnerGDP2Code
-	StatInner[HCECode] = InnerHCECode
-	StatInner[HCE1Code] = InnerHCE1Code
-	StatInner[HCE2Code] = InnerHCE2Code
-	StatInner[HCE3Code] = InnerHCE3Code
-	StatInner[IAVCode] = InnerIAVCode
-	StatInner[IAV1Code] = InnerIAV1Code
-	StatInner[IAV2Code] = InnerIAV2Code
-	StatInner[IAV3Code] = InnerIAV3Code
-	StatInner[IAV4Code] = InnerIAV4Code
-	StatInner[PMICode] = InnerPMICode
-	StatInner[PPICode] = InnerPPICode
-	StatInner[PPI1Code] = InnerPPI1Code
-	StatInner[PPI2Code] = InnerPPI2Code
-	StatInner[PPI3Code] = InnerPPI3Code
-	StatInner[PPI4Code] = InnerPPI4Code
-	StatInner[RCLCode] = InnerRCLCode
-	StatInner[SCGCode] = InnerSCGCode
-	StatInner[SCG1Code] = InnerSCG1Code
-	StatInner[SCG2Code] = InnerSCG2Code
-	StatInner[SCG3Code] = InnerSCG3Code
-	StatInner[SCG4Code] = InnerSCG4Code
-	StatInner[URICode] = InnerURICode
-	StatInner[URI1Code] = InnerURI1Code
-	StatInner[URI2Code] = InnerURI2Code
-	StatInner[URI3Code] = InnerURI3Code
-
-	CodeName = make(map[string]string)
-	CodeName[CPICode] = CPIName
-	CodeName[CPI1Code] = CPI1Name
-	CodeName[CPI2Code] = CPI2Name
-	CodeName[CPI3Code] = CPI3Name
-	CodeName[CPI4Code] = CPI4Name
-	CodeName[CQCCode] = CQCName
-	CodeName[CQC1Code] = CQC1Name
-	CodeName[CQC2Code] = CQC2Name
-	CodeName[FAICode] = FAIName
-	CodeName[FAI1Code] = FAI1Name
-	CodeName[FAI2Code] = FAI2Name
-	CodeName[FAI3Code] = FAI3Name
-	CodeName[GDPCode] = GDPName
-	CodeName[GDPRCode] = GDPRName
-	CodeName[GDP1Code] = GDP1Name
-	CodeName[GDP2Code] = GDP2Name
-	CodeName[HCECode] = HCEName
-	CodeName[HCE1Code] = HCE1Name
-	CodeName[HCE2Code] = HCE2Name
-	CodeName[HCE3Code] = HCE3Name
-	CodeName[IAVCode] = IAVName
-	CodeName[IAV1Code] = IAV1Name
-	CodeName[IAV2Code] = IAV2Name
-	CodeName[IAV3Code] = IAV3Name
-	CodeName[IAV4Code] = IAV4Name
-	CodeName[PMICode] = PMIName
-	CodeName[PPICode] = PPIName
-	CodeName[PPI1Code] = PPI1Name
-	CodeName[PPI2Code] = PPI2Name
-	CodeName[PPI3Code] = PPI3Name
-	CodeName[PPI4Code] = PPI4Name
-	CodeName[RCLCode] = RCLName
-	CodeName[SCGCode] = SCGName
-	CodeName[SCG1Code] = SCG1Name
-	CodeName[SCG2Code] = SCG2Name
-	CodeName[SCG3Code] = SCG3Name
-	CodeName[SCG4Code] = SCG4Name
-	CodeName[URICode] = URIName
-	CodeName[URI1Code] = URI1Name
-	CodeName[URI2Code] = URI2Name
-	CodeName[URI3Code] = URI3Name
+	setUpIndexMap()
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/core"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/last"
 	"github.com/xiaogogonuo/cct-spider/internal/stat/pkg/urllib"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,14 +17,23 @@ import (
 
 func uri() {
 	sql := `SELECT ACCT_YEAR, TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	uriRegion := last.YearRegion(indexcode.URIStartYear)
+	indexName := indexcode.URIName
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	uriRegion := last.YearRegion(start)
+
 	for _, region := range uriRegion {
+		// 过滤掉今年
+		stop, _ := strconv.Atoi(strings.Split(region, "-")[1])
+		if stop == time.Now().Year() {
+			continue
+		}
 		coreURI := core.Core{
 			TL: "year",
-			SQL: fmt.Sprintf(sql, indexcode.URICode),
-			IndexCode: indexcode.URICode,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.YearDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -32,6 +43,7 @@ func uri() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := coreURI.Run()
 		if err != nil || !rowsAffected {
@@ -43,14 +55,23 @@ func uri() {
 
 func uri1() {
 	sql := `SELECT ACCT_YEAR, TARGET_VALUE FROM T_DMAA_BASE_TARGET_VALUE 
-                WHERE SOURCE_TARGET_CODE = '%s'`
+                WHERE TARGET_CODE = '%s'`
 
-	uri1Region := last.YearRegion(indexcode.URI1StartYear)
+	indexName := indexcode.URI1Name
+	startYear := indexcode.IndexMap[indexName]["startYear"]
+	start, _ := strconv.Atoi(startYear)
+	uri1Region := last.YearRegion(start)
+
 	for _, region := range uri1Region {
+		// 过滤掉今年
+		stop, _ := strconv.Atoi(strings.Split(region, "-")[1])
+		if stop == time.Now().Year() {
+			continue
+		}
 		coreURI1 := core.Core{
 			TL: "year",
-			SQL: fmt.Sprintf(sql, indexcode.URI1Code),
-			IndexCode: indexcode.URI1Code,
+			SQL: fmt.Sprintf(sql, indexcode.IndexMap[indexName]["innerCode"]),
+			IndexName: indexName,
 			TypeCode: typecode.YearDataCode,
 			URL: urllib.Param{
 				M:              "QueryData",
@@ -60,6 +81,7 @@ func uri1() {
 				DfWdsWdCode:    "sj",
 				DfWdsValueCode: region,
 			},
+			IndexMap: indexcode.IndexMap,
 		}
 		rowsAffected, err := coreURI1.Run()
 		if err != nil || !rowsAffected {
