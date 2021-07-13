@@ -29,7 +29,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 		if len(mes.Title) == 0 && len(mes.Content) == 0 {
 			continue
 		}
-		if mes.Date > t {
+		if mes.Date > t || mes.Date == "" {
 			mes.Date = "10000101"
 		}
 		if len(mes.Content) > 65535 {
