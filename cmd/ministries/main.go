@@ -86,7 +86,6 @@ func ministries() {
 		close(message)
 	}()
 	save(filt, message)
-	filt.SaveUrlKey()
 }
 
 func main() {
