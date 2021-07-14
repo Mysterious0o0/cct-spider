@@ -71,6 +71,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 		} else {
 			SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
 			mysql.Transaction(SQl, insertValues...)
+			f.SaveUrlKey()
 			insertValues = append([]interface{}{}, v...)
 			quotes = append([]string{}, oneQuoteSql)
 			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
@@ -78,6 +79,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 	}
 	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
 	mysql.Transaction(SQl, insertValues...)
+	f.SaveUrlKey()
 }
 
 func _getQuotesAndValues(v interface{}) (insertValues []interface{}, strLen int) {
