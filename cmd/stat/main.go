@@ -38,40 +38,40 @@ import (
 )
 
 const (
-	cpiNationMonthRun  = true
-	cpiNationYearRun   = true
-	cpiRegionMonthRun  = false
-	cpiRegionYearRun   = false
+	cpiNationMonthRun  = false
+	cpiNationYearRun   = false
+	cpiRegionMonthRun  = true
+	cpiRegionYearRun   = true
 
-	cqcNationMonthRun  = true
-	cqcNationYearRun   = true
+	cqcNationMonthRun  = false
+	cqcNationYearRun   = false
 
-	faiNationSeasonRun = true
-	faiNationYearRun   = true
+	faiNationSeasonRun = false
+	faiNationYearRun   = false
 
-	gdpNationSeasonRun = true
-	gdpNationYearRun   = true
-	gdpRegionYearRun   = false
+	gdpNationSeasonRun = false
+	gdpNationYearRun   = false
+	gdpRegionYearRun   = true
 
-	hecNationSeasonRun = true
-	hecNationYearRun   = true
+	hecNationSeasonRun = false
+	hecNationYearRun   = false
 
-	iavNationMonthRun  = true
-	iavNationSeasonRun = true
-	iavNationYearRun   = true
+	iavNationMonthRun  = false
+	iavNationSeasonRun = false
+	iavNationYearRun   = false
 
-	pmiNationMonthRun  = true
+	pmiNationMonthRun  = false
 
-	ppiNationMonthRun  = true
-	ppiNationYearRun   = true
+	ppiNationMonthRun  = false
+	ppiNationYearRun   = false
 
-	rclRegionYearRun   = false
+	rclRegionYearRun   = true
 
-	scgNationMonthRun  = true
-	scgNationYearRun   = true
+	scgNationMonthRun  = false
+	scgNationYearRun   = false
 
-	uriNationSeasonRun = true
-	uriNationYearRun   = true
+	uriNationSeasonRun = false
+	uriNationYearRun   = false
 )
 
 func main() {
