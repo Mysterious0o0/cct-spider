@@ -39,6 +39,7 @@ func (f *Filter) SaveUrlKey() {
 		logger.Error(err.Error())
 		return
 	}
+	f.ThisUrlKey = map[string]byte{}
 }
 
 func (f *Filter) ReadUrlKey() (urlKey map[string]byte) {
