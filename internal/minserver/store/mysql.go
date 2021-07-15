@@ -69,6 +69,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			beginLen += len(oneQuoteSql) + l
 
 		} else {
+			fmt.Printf("insert into data:%v , url: %v\n", len(insertValues), len(f.ThisUrlKey))
 			SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
 			mysql.Transaction(SQl, insertValues...)
 			f.SaveUrlKey()
@@ -77,6 +78,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
 		}
 	}
+	fmt.Printf("insert into data:%v , url: %v\n", len(insertValues), len(f.ThisUrlKey))
 	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
 	mysql.Transaction(SQl, insertValues...)
 	f.SaveUrlKey()
