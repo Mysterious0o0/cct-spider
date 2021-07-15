@@ -40,8 +40,8 @@ import (
 const (
 	cpiNationMonthRun  = false
 	cpiNationYearRun   = false
-	cpiRegionMonthRun  = true
-	cpiRegionYearRun   = true
+	cpiRegionMonthRun  = false
+	cpiRegionYearRun   = false
 
 	cqcNationMonthRun  = false
 	cqcNationYearRun   = false
@@ -51,7 +51,7 @@ const (
 
 	gdpNationSeasonRun = false
 	gdpNationYearRun   = false
-	gdpRegionYearRun   = true
+	gdpRegionYearRun   = false
 
 	hecNationSeasonRun = false
 	hecNationYearRun   = false
