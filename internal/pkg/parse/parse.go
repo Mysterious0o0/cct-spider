@@ -14,6 +14,7 @@ type Parse struct {
 	Html            string
 	BaseUrl         string
 	Source          string
+	SourceCode      string
 	UrlSelector     string
 	TitleSelector   string
 	TextSelector    string

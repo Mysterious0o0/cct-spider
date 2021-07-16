@@ -23,7 +23,7 @@ func GetFirstUrl(url string, urlChan chan<- *callback.UrlChan, wg *sync.WaitGrou
 			UrlSelector: "div[class='outBox zcwj']>div>a",
 		},
 	}
-	for _, link := range pr.GetPageUrl("href"){
+	for _, link := range pr.GetPageUrl("href") {
 		urlChan <- &callback.UrlChan{
 			Url:     link,
 			GetUrlF: GetSecondUrl,
@@ -52,7 +52,7 @@ func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- 
 				UrlSelector: "span[class='mobile_none']>a",
 			},
 		}
-		for _, link := range pr.GetPageUrl("href"){
+		for _, link := range pr.GetPageUrl("href") {
 			urlChan <- &callback.UrlChan{
 				Url:     link,
 				GetUrlF: GetPageUrlList,
@@ -60,7 +60,6 @@ func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- 
 		}
 	}
 }
-
 
 func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
 	urlChan <- &callback.UrlChan{
@@ -94,8 +93,8 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 			Url:    url,
 			Method: http.MethodGet,
 		},
-		Parse:   parse.Parse{
-			BaseUrl: url,
+		Parse: parse.Parse{
+			BaseUrl:     url,
 			UrlSelector: "#div>li>a",
 		},
 	}
@@ -107,19 +106,19 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 	}
 }
 
-
-func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
+func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *callback.Message) {
 	pr := response.PR{
 		Request: request.Request{
-			Url : url,
+			Url:    url,
 			Method: http.MethodGet,
 		},
-		Parse:   parse.Parse{
-			Source: "生态环境部",
-			DateSelector: ".wjkFontBox>em, .content_top_box, span[class='xqLyPc time']",
+		Parse: parse.Parse{
+			Source:        "生态环境部",
+			SourceCode:    "WEB_01013",
+			DateSelector:  ".wjkFontBox>em, .content_top_box, span[class='xqLyPc time']",
 			TitleSelector: "h1, .neiright_Box>h2",
-			TextSelector: ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box>p, .content_body_box>div, .neiright_JPZ_GK_CP>p, .TRS_Editor>p",
-			DomainName: "http://www.mee.gov.cn",
+			TextSelector:  ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box>p, .content_body_box>div, .neiright_JPZ_GK_CP>p, .TRS_Editor>p",
+			DomainName:    "http://www.mee.gov.cn",
 		},
 	}
 	message <- pr.GetHtmlInfo()
@@ -134,4 +133,3 @@ func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <-
 	//	info <- infoMap
 	//}
 }
-

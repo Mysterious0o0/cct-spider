@@ -53,11 +53,12 @@ func (u InfoChan) GetInfoFunc(infoChan chan *InfoChan, message chan *Message, wg
 }
 
 type Message struct {
-	Url     string
-	Title   string
-	Content string
-	Source  string
-	Date    string
+	Url        string
+	Title      string
+	Summary    string
+	Source     string
+	SourceCode string
+	Date       string
 }
 
 type SqlValues struct {
