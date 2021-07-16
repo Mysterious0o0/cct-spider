@@ -77,14 +77,4 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 		},
 	}
 	message <- pr.GetHtmlInfo()
-
-	//infoMap := pr.GetHtmlInfo()
-	//if len(infoMap) == 0 {
-	//	errChan <- &store.InfoChan{
-	//		Url:      url,
-	//		GetInfoF: GetHtmlInfo,
-	//	}
-	//}else {
-	//	info <- infoMap
-	//}
 }

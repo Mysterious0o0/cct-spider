@@ -156,28 +156,4 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 	//fmt.Println(_cookie)
 	pr.Request.Cookies.StrCookie = _cookie
 	message <- pr.GetHtmlInfo()
-
-	//infoMap := pr.GetHtmlInfo()
-	//if len(infoMap) == 0 {
-	//	errChan <- &store.InfoChan{
-	//		Url:      url,
-	//		GetInfoF: GetHtmlInfo,
-	//	}
-	//}else {
-	//	info <- infoMap
-	//}
-}
-
-func getPDFInfo(url string) (info []string) {
-	req := request.Request{
-		Url:    url,
-		Method: http.MethodGet,
-	}
-	html, err := req.VisitString()
-	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
-		return
-	}
-	fmt.Println(html)
-	return
 }

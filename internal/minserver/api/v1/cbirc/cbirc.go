@@ -80,13 +80,4 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 		SourceCode: "WEB_01045",
 		Date:       date,
 	}
-
-	//if len(infoMap) == 0 {
-	//	errChan <- &store.InfoChan{
-	//		Url:      url,
-	//		GetInfoF: GetHtmlInfo,
-	//	}
-	//}else {
-	//	info <- infoMap
-	//}
 }

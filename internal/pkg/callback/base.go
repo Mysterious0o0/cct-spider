@@ -62,27 +62,27 @@ type Message struct {
 }
 
 type SqlValues struct {
-	NEWS_GUID        string // 新闻ID
-	NEWS_TITLE       string // 新闻标题
-	NEWS_TITLE_EN    string // 新闻标题英文
-	NEWS_TS          string // 新闻时间戳
-	NEWS_URL         string // 新闻URL
-	NEWS_SOURCE      string // 新闻来源
-	NEWS_SOURCE_CODE string // 新闻来源编码
-	NEWS_SUMMARY     string // 新闻摘要
-	POLICY_TYPE      string // 政策类型
-	POLICY_TYPE_NAME string // 政策类型名称
-	REGION_CODE      string // 地区代码
-	REGION_NAME      string // 地区名称
-	IS_CONTROL       string // 是否涉及出资企业
-	IS_INVEST        string // 是否涉及投资企业
-	IS_DEPOSIT       string // 是否涉及托管企业
-	IS_FUND          string // 是否涉及基金企业
-	IS_STOCK         string // 是否涉及股权企业
-	IS_FINANCE       string // 是否涉及金融服务
-	IS_INDUSTRY      string // 是否涉及实业控股
-	IS_CAPITAL       string // 是否涉及资产经营
-	NEWS_GYS_CODE    string // 新闻数据源代码
-	NEWS_GYS_NAME    string // 新闻数据源名称
-	NEWS_ID          int    // 新闻原始ID
+	NEWS_GUID        string
+	NEWS_TITLE       string
+	NEWS_TITLE_EN    string
+	NEWS_TS          string
+	NEWS_URL         string
+	NEWS_SOURCE      string
+	NEWS_SOURCE_CODE string
+	NEWS_SUMMARY     string
+	POLICY_TYPE      string
+	POLICY_TYPE_NAME string
+	REGION_CODE      string
+	REGION_NAME      string
+	IS_CONTROL       string
+	IS_INVEST        string
+	IS_DEPOSIT       string
+	IS_FUND          string
+	IS_STOCK         string
+	IS_FINANCE       string
+	IS_INDUSTRY      string
+	IS_CAPITAL       string
+	NEWS_GYS_CODE    string
+	NEWS_GYS_NAME    string
+	NEWS_ID          int
 }
