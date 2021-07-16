@@ -27,7 +27,6 @@ func GetPageUrlList(url string, infoChan chan<- *callback.InfoChan, wg *sync.Wai
 		}
 		b, err := req.Visit()
 		if err != nil {
-			logger.Error(err.Error(), logger.Field("url", url))
 			return
 		}
 		var j store.JsonCbirc
@@ -56,7 +55,6 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 	}
 	b, err := req.Visit()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	var j store.JsonDetailsCbirc

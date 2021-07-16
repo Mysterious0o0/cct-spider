@@ -32,7 +32,6 @@ func _getCookie() (cookie string) {
 	}
 	b, err := req.VisitString()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	reg := regexp.MustCompile(`cookie=(\(.*?\));location`)
@@ -53,7 +52,7 @@ func _getCookie() (cookie string) {
 
 	b, err = req.VisitString()
 	if err != nil {
-		logger.Error(err.Error())
+		return
 	}
 	reg = regexp.MustCompile(`;go\((.*?)\)`)
 	data := reg.FindStringSubmatch(b)
@@ -121,7 +120,6 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 	req.Cookies.StrCookie = _cookie
 	b, err := req.Visit()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	var j store.JsonMiit
@@ -175,7 +173,6 @@ func getPDFInfo(url string) (info []string) {
 	}
 	html, err := req.VisitString()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	fmt.Println(html)
