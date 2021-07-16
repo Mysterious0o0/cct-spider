@@ -27,7 +27,6 @@ type Request struct {
 func (r *Request) Visit() (b []byte, err error) {
 	resp, err := r.request()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	defer resp.Body.Close()
@@ -50,7 +49,6 @@ func (r *Request) Visit() (b []byte, err error) {
 func (r *Request) VisitString() (s string, err error) {
 	resp, err := r.request()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	defer resp.Body.Close()
