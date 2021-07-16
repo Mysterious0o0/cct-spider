@@ -56,7 +56,6 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 	}
 	b, err := req.Visit()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", url))
 		return
 	}
 	var j store.JsonDetailsCbirc
