@@ -45,11 +45,12 @@ func (pr *PR) GetHtmlInfo() (message *callback.Message) {
 	title, content, date := pr.Parse.GetTextByParseHtml()
 	info = append(info, content...)
 	message = &callback.Message{
-		Url:     pr.Request.Url,
-		Title:   _replace(title),
-		Content: _replace(strings.Join(info, "")),
-		Source:  pr.Parse.Source,
-		Date:    date,
+		Url:        pr.Request.Url,
+		Title:      _replace(title),
+		Summary:    _replace(strings.Join(info, "")),
+		Source:     pr.Parse.Source,
+		SourceCode: pr.Parse.SourceCode,
+		Date:       date,
 	}
 	return
 }
