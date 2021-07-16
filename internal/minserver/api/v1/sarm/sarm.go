@@ -61,29 +61,20 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
+func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *callback.Message) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			Source: "国家市场监督管理总局",
-			DateSelector: "li[class='Three_xilan01_02 Three_xilan01_0201']",
+			Source:        "国家市场监督管理总局",
+			SourceCode:    "WEB_00306",
+			DateSelector:  "li[class='Three_xilan01_02 Three_xilan01_0201']",
 			TitleSelector: ".xilanboxbg td[colspan='2'] li[class='Three_xilan01_02 Three_xilan01_0201']",
 			TextSelector:  ".Three_xilan_07 p",
 			DomainName:    "http://gkml.samr.gov.cn/",
 		},
 	}
 	message <- pr.GetHtmlInfo()
-
-	//infoMap := pr.GetHtmlInfo()
-	//if len(infoMap) == 0 {
-	//	errChan <- &store.InfoChan{
-	//		Url:      url,
-	//		GetInfoF: GetHtmlInfo,
-	//	}
-	//}else {
-	//	info <- infoMap
-	//}
 }

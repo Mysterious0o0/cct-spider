@@ -73,19 +73,11 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 	infoMap[j.DocTitle] = strings.Join(data, "")
 	date := strings.Replace(strings.Split(j.DocDate, " ")[0], "-", "", -1)
 	message <- &callback.Message{
-		Url:     fmt.Sprintf(store.PageUrl, j.DocId),
-		Title:   strings.Replace(j.DocTitle, `'`, `"`, -1),
-		Content: strings.Replace(strings.Join(data, ""), `'`, `"`, -1),
-		Source:  "银保监会",
-		Date:    date,
+		Url:        fmt.Sprintf(store.PageUrl, j.DocId),
+		Title:      strings.Replace(j.DocTitle, `'`, `"`, -1),
+		Summary:    strings.Replace(strings.Join(data, ""), `'`, `"`, -1),
+		Source:     "中国银行保险监督管理委员会",
+		SourceCode: "WEB_01045",
+		Date:       date,
 	}
-
-	//if len(infoMap) == 0 {
-	//	errChan <- &store.InfoChan{
-	//		Url:      url,
-	//		GetInfoF: GetHtmlInfo,
-	//	}
-	//}else {
-	//	info <- infoMap
-	//}
 }

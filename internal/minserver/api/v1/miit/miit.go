@@ -52,12 +52,12 @@ func _getCookie() (cookie string) {
 	req.Cookies.StrCookie = fmt.Sprintf("%s; __jsl_clearance_s=%s", ck, cookiePro)
 
 	b, err = req.VisitString()
-	if err != nil{
+	if err != nil {
 		logger.Error(err.Error())
 	}
 	reg = regexp.MustCompile(`;go\((.*?)\)`)
 	data := reg.FindStringSubmatch(b)
-	if len(data) == 0{
+	if len(data) == 0 {
 		logger.Warn("getCookie error", logger.Field("b", b))
 		return
 	}
@@ -138,20 +138,22 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 	}
 }
 
-func GetHtmlInfo(url string, errChan chan <- *callback.InfoChan, message chan <- *callback.Message){
+func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *callback.Message) {
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			Source: "工业和信息化部",
-			DateSelector: "#con_time, .xxgk-span4",
+			Source:        "工业和信息化部",
+			SourceCode:    "WEB_00213",
+			DateSelector:  "#con_time, .xxgk-span4",
 			TitleSelector: "#con_title",
 			TextSelector:  "#con_con>p",
 			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
+	//fmt.Println(_cookie)
 	pr.Request.Cookies.StrCookie = _cookie
 	message <- pr.GetHtmlInfo()
 }
