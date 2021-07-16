@@ -17,7 +17,7 @@ import (
 
 var (
 	regionPat                       string
-	regionMap                       map[string]string
+	regionMap                       map[string][]string
 	s                               = &callback.SqlValues{}
 	t                               = time.Now().Format("20060102")
 	preamble, epilogue, oneQuoteSql = _getSQL(s)
@@ -25,7 +25,7 @@ var (
 
 func init() {
 	var regionReg []string
-	regionMap = make(map[string]string)
+	regionMap = make(map[string][]string)
 	sqlCode := "SELECT REGION_NAME, REGION_CODE FROM T_DMAA_REGIOIN_CODE"
 	for _, region := range mysql.Query(sqlCode) {
 		reg := regexp.MustCompile("省|市|自治区|自治州|特别行政区|区|盟")
@@ -33,7 +33,7 @@ func init() {
 		regionReg = append(regionReg, r)
 		k := strings.Replace(r, ")", "", -1)
 		if _, ok := regionMap[k]; !ok {
-			regionMap[k] = region[1]
+			regionMap[k] = region
 		}
 	}
 	regionPat = "(" + strings.Join(regionReg, "|(")
@@ -59,8 +59,8 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			mes.Summary = mes.Summary[:n]
 		}
 		if r := findregion.FindRegion(regionPat, mes.Summary); r != "" {
-			region = r
-			regionCode = regionMap[r]
+			region = regionMap[r][0]
+			regionCode = regionMap[r][1]
 		}
 		sqlValues := &callback.SqlValues{
 			NEWS_GUID:        md5.MD5(mes.Date + mes.Title),
