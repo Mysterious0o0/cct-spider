@@ -16,8 +16,7 @@ type PR struct {
 
 func (pr *PR) GetPageUrl(attrName string) (hrefList []string) {
 	html, err := pr.Request.VisitString()
-	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+	if err != nil{
 		return
 	}
 	pr.Parse.Html = html
@@ -37,8 +36,7 @@ func (pr *PR) GetHtmlInfo() (message *callback.Message) {
 		return
 	}
 	html, err := pr.Request.VisitString()
-	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+	if err != nil{
 		return
 	}
 	pr.Parse.Html = html
@@ -57,8 +55,7 @@ func (pr *PR) GetHtmlInfo() (message *callback.Message) {
 
 func (pr *PR) GetPageNum(r string) (num int) {
 	html, err := pr.Request.VisitString()
-	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+	if err != nil{
 		return
 	}
 	pr.Parse.Html = html
@@ -68,8 +65,7 @@ func (pr *PR) GetPageNum(r string) (num int) {
 
 func (pr *PR) GetCountAndSize(countR string, sizeR string) (count int, size int) {
 	html, err := pr.Request.VisitString()
-	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", pr.Request.Url))
+	if err != nil{
 		return
 	}
 	pr.Parse.Html = html

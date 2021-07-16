@@ -27,15 +27,21 @@ type Request struct {
 func (r *Request) Visit() (b []byte, err error) {
 	resp, err := r.request()
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	defer resp.Body.Close()
 	b, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	if codec.IsGbk(b) {
 		b, err = codec.GbkToUtf8(b)
+		if err != nil {
+			logger.Error(err.Error(), logger.Field("url", r.Url))
+			return
+		}
 		logger.Info("")
 	}
 	return
@@ -44,15 +50,21 @@ func (r *Request) Visit() (b []byte, err error) {
 func (r *Request) VisitString() (s string, err error) {
 	resp, err := r.request()
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	if codec.IsGbk(b) {
 		b, err = codec.GbkToUtf8(b)
+		if err != nil {
+			logger.Error(err.Error(), logger.Field("url", r.Url))
+			return
+		}
 	}
 	s = string(b)
 	return
@@ -72,6 +84,7 @@ func (r *Request) GetCookie(name string) (ck string) {
 func (r *Request) request() (resp *http.Response, err error) {
 	req, err := http.NewRequest(r.Method, r.Url, r.Body)
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36")
@@ -90,6 +103,7 @@ func (r *Request) request() (resp *http.Response, err error) {
 	client := &http.Client{Timeout: r.Timeout}
 	resp, err = client.Do(req)
 	if err != nil {
+		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != 521 {
