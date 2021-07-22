@@ -147,7 +147,7 @@ func exec(sql string, stop chan struct{}, data ...interface{}) {
 	defer clearTransaction(tx)
 	r, err := tx.Exec(sql, data...)
 	if err != nil {
-		logger.Error(err.Error())
+		logger.Error(err.Error() + `\n` + sql, logger.Field("data", data))
 		return
 	}
 	if _, err = r.RowsAffected(); err != nil {
@@ -158,6 +158,7 @@ func exec(sql string, stop chan struct{}, data ...interface{}) {
 		logger.Error(err.Error())
 		return
 	}
+	logger.Info("Insert success")
 	return
 }
 
