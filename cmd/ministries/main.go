@@ -46,11 +46,12 @@ func init() {
 
 func ministries() {
 	wg := &sync.WaitGroup{}
-	urlChannel := make(chan *callback.UrlChan)   // url请求池
-	infoChannel := make(chan *callback.InfoChan) // info请求池
-	errChannel := make(chan *callback.InfoChan)  // 异常池
-	message := make(chan *callback.Message)      // 数据池
-	save := store.InsertIntoSQL                  // 保存数据的函数
+	limitChan := make(chan struct{}, 400)
+	urlChannel := make(chan *callback.UrlChan, 10000)   // url请求池
+	infoChannel := make(chan *callback.InfoChan, 10000) // info请求池
+	errChannel := make(chan *callback.InfoChan)         // 异常池
+	message := make(chan *callback.Message)             // 数据池
+	save := store.InsertIntoSQL                         // 保存数据的函数
 
 	wg.Add(5)
 	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
@@ -65,8 +66,13 @@ func ministries() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
+			limitChan <- struct {}{}
 			wg.Add(1)
-			go v.GetUrlFunc(urlChannel, infoChannel, wg)
+			go func(v *callback.UrlChan) {
+				v.GetUrlFunc(urlChannel, infoChannel, wg)
+				<- limitChan
+			}(v)
+
 		}
 	}()
 	go func() {
@@ -75,8 +81,12 @@ func ministries() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
+			limitChan <- struct {}{}
 			wg.Add(1)
-			go v.GetInfoFunc(errChannel, message, wg)
+			go func(v *callback.InfoChan) {
+				v.GetInfoFunc(errChannel, message, wg)
+				<- limitChan
+			}(v)
 		}
 	}()
 	go func() {
