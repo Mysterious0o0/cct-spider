@@ -27,7 +27,6 @@ type Request struct {
 func (r *Request) Visit() (b []byte, err error) {
 	resp, err := r.request()
 	if err != nil {
-		logger.Error(err.Error(), logger.Field("url", r.Url))
 		return
 	}
 	defer resp.Body.Close()
@@ -97,7 +96,7 @@ func (r *Request) request() (resp *http.Response, err error) {
 	for k, v := range r.Header {
 		req.Header.Set(k, v)
 	}
-	if r.Cookies.StrCookie != ""{
+	if r.Cookies.StrCookie != "" {
 		req.Header.Set("Cookie", r.Cookies.StrCookie)
 	}
 	client := &http.Client{Timeout: r.Timeout}
