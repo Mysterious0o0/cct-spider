@@ -1,11 +1,13 @@
 package main
 
 import (
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/company"
 	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/industry"
 	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/region"
 	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/sentiment"
 	"github.com/xiaogogonuo/cct-spider/internal/tagserver/store"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"sync"
 )
 
@@ -18,11 +20,21 @@ func tagging(){
 	newsCompanyChan := make(chan *store.NewsCompany)
 	newsIndustryChan := make(chan *store.NewsIndustry)
 
+	filt := &filter.Filter{
+		Filepath: "idKey.txt",
+		ThisUrlKey: make(map[string]byte),
+	}
+	idKeyMap := filt.ReadUrlKey()
+
 	wg.Add(1)
 	go store.QueryData(newsOrgChan, wg)
 
 	go func() {
 		for n := range newsOrgChan {
+			if _, ok := idKeyMap[n.NEWS_GUID]; ok {
+				logger.Info("Obtained, no need to update", logger.Field("news_guid", n.NEWS_GUID))
+				continue
+			}
 			limitChan <- struct {}{}
 			wg.Add(1)
 			go func(n *store.PolicyNewsOrg) {
@@ -55,7 +67,7 @@ func tagging(){
 	go store.InsertRegion(newsRegionChan, wg3)
 	go store.InsertCompany(newsCompanyChan, wg3)
 	go store.InsertIndustry(newsIndustryChan, wg3)
-	go store.UpdateNews(newsChan, wg3)
+	go store.UpdateNews(filt, newsChan, wg3)
 	wg3.Wait()
 
 }

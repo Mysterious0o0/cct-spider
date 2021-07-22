@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/splitsql"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"strings"
@@ -102,7 +103,7 @@ func InsertIndustry(newsIndustryChan <-chan *NewsIndustry, wg *sync.WaitGroup) {
 	mysql.Transaction(SQl, insertValues...)
 }
 
-func UpdateNews(newsChan <-chan *PolicyNews, wg *sync.WaitGroup) {
+func UpdateNews(f *filter.Filter, newsChan <-chan *PolicyNews, wg *sync.WaitGroup) {
 	defer wg.Done()
 	var (
 		idList                           []string
@@ -115,7 +116,7 @@ func UpdateNews(newsChan <-chan *PolicyNews, wg *sync.WaitGroup) {
 	newsValue := make([]string, fieldLen)
 	for news := range newsChan {
 		updateValues := splitsql.GetWhenAndThen(news)
-
+		f.WriteMap(news.NEWS_GUID)
 		if sumLen + beginLen + len(idList) * len(news.NEWS_GUID) < 500000 {
 			idList = append(idList, fmt.Sprintf(`'%s'`, news.NEWS_GUID))
 			for i := 0; i < fieldLen; i++ {
@@ -130,6 +131,7 @@ func UpdateNews(newsChan <-chan *PolicyNews, wg *sync.WaitGroup) {
 			sqlCode = fmt.Sprintf(`UPDATE %s SET %s END %s (%s)`, `t_dmbe_policy_news_info`,
 				strings.Join(newsValue, ` END, `), epilogue, strings.Join(idList, ", "))
 			mysql.Transaction(sqlCode)
+			f.SaveUrlKey()
 			sumLen = 0
 			idList = []string{}
 			newsValue = make([]string, fieldLen)
@@ -146,5 +148,6 @@ func UpdateNews(newsChan <-chan *PolicyNews, wg *sync.WaitGroup) {
 	sqlCode = fmt.Sprintf(`UPDATE %s SET %s END %s (%s)`, `t_dmbe_policy_news_info`,
 		strings.Join(newsValue, ` END, `), epilogue, strings.Join(idList, ", "))
 	mysql.Transaction(sqlCode)
+	f.SaveUrlKey()
 }
 
