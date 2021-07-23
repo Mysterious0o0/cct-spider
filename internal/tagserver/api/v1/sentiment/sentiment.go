@@ -26,8 +26,8 @@ func init() {
 	}
 	sMap = make(map[string]string)
 	sMap["0"] = "中性"
-	sMap["1"] = "积极"
-	sMap["2"] = "消极"
+	sMap["1"] = "正面"
+	sMap["2"] = "负面"
 }
 
 type M [][]float64
