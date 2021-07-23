@@ -61,7 +61,7 @@ func AssembleData(n *PolicyNewsOrg, news chan<- *PolicyNews, newsRegion chan<- *
 			}
 			region := regionMap[r]
 			regionList = append(regionList, fmt.Sprintf(regionLabels, region[1], region[0]))
-			relevance := float64(count) / float64(n.RegionMap["sum"])
+			relevance := float64(count) / float64(n.CompanyMap["sum"])
 			newsRegion <- &NewsRegion{
 				REGION_LABEL_GUID: md5.MD5(n.NEWS_GUID + region[1]),
 				NEWS_GUID:         n.NEWS_GUID,

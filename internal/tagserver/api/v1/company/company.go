@@ -11,16 +11,14 @@ func GetCompany(n *store.PolicyNewsOrg, wg *sync.WaitGroup)  {
 	n.CompanyMap = make(map[string]int)
 	companyPat, _ := findmap.CompanyRuntime()
 	company := findmap.FindAll(companyPat, n.NEWS_SUMMARY)
-	n.CompanyMap["sum"] = 0
+	n.CompanyMap["sum"] = len(company)
 	for _, r := range company{
 		if _, ok := n.CompanyMap[r]; !ok{
 			n.CompanyMap[r] = 1
 		}else {
 			n.CompanyMap[r] += 1
 		}
-		n.CompanyMap["sum"] += 1
 	}
-	//fmt.Println(n.CompanyMap)
 }
 
 
