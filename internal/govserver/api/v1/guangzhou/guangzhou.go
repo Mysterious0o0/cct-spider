@@ -83,7 +83,7 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 			SourceCode:    "WEB_01187",
 			DateSelector:  "div[class='classify']>table>tbody>:nth-child(4)>td[class='td-value']>span",
 			TitleSelector: ".content>h1",
-			TextSelector:  ".article-content>center",
+			TextSelector:  ".article-content",
 			DomainName:    "www.gd.gov.cn",
 		},
 	}

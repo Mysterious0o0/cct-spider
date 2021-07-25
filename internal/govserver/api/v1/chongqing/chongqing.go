@@ -138,7 +138,7 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 			SourceCode:    "WEB_01460",
 			DateSelector:  "table[class='table']>tbody>tr:nth-child(4)>td:nth-child(4)",
 			TitleSelector: "td[colspan='5']",
-			TextSelector:  "div[class='document mt-1 mt-12'] p",
+			TextSelector:  "div[class='document mt-1 mt-12']",
 			DomainName:    "www.cq.gov.cn/",
 		},
 	}

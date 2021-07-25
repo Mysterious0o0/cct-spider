@@ -147,7 +147,7 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 			SourceCode:    "WEB_00213",
 			DateSelector:  "#con_time, .xxgk-span4",
 			TitleSelector: "#con_title",
-			TextSelector:  "#con_con>p",
+			TextSelector:  "#con_con p",
 			DomainName:    "https://www.miit.gov.cn/",
 		},
 	}
