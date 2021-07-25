@@ -86,7 +86,6 @@ func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, infoChan chan<
 	if num == 0 {
 		num = 20
 	}
-	fmt.Println(num)
 	for i := 1; i < num; i++ {
 		urlChan <- &callback.UrlChan{
 			Url:     fmt.Sprintf("%sindex_%v.html", url, i),
