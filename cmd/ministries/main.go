@@ -6,9 +6,9 @@ import (
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/mee"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
 	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/store"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/insertdb"
 	"github.com/xiaogogonuo/cct-spider/pkg/config"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
@@ -18,6 +18,7 @@ import (
 var (
 	minV      *viper.Viper
 	filt      *filter.Filter
+	dataInfo  *insertdb.DataInfo
 	urlKeyMap map[string]byte
 )
 
@@ -37,11 +38,15 @@ func minConfig() *viper.Viper {
 func init() {
 	minV = minConfig()
 	filt = &filter.Filter{
-		Filepath: "urlKey.txt",
+		Filepath:   "urlKey.txt",
 		ThisUrlKey: make(map[string]byte),
-
 	}
 	urlKeyMap = filt.ReadUrlKey()
+	dataInfo = &insertdb.DataInfo{
+		DBName:     "t_dmbe_policy_news_info",
+		PolicyCode: "10",
+		PolicyName: "国家政策",
+	}
 }
 
 func ministries() {
@@ -51,7 +56,7 @@ func ministries() {
 	infoChannel := make(chan *callback.InfoChan, 10000) // info请求池
 	errChannel := make(chan *callback.InfoChan)         // 异常池
 	message := make(chan *callback.Message)             // 数据池
-	save := store.InsertIntoSQL                         // 保存数据的函数
+	save := dataInfo.InsertIntoSQL                      // 保存数据的函数
 
 	wg.Add(5)
 	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
@@ -66,11 +71,11 @@ func ministries() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
-			limitChan <- struct {}{}
+			limitChan <- struct{}{}
 			wg.Add(1)
 			go func(v *callback.UrlChan) {
 				v.GetUrlFunc(urlChannel, infoChannel, wg)
-				<- limitChan
+				<-limitChan
 			}(v)
 
 		}
@@ -81,11 +86,11 @@ func ministries() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
-			limitChan <- struct {}{}
+			limitChan <- struct{}{}
 			wg.Add(1)
 			go func(v *callback.InfoChan) {
 				v.GetInfoFunc(errChannel, message, wg)
-				<- limitChan
+				<-limitChan
 			}(v)
 		}
 	}()
