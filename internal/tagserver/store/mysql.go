@@ -3,7 +3,7 @@ package store
 import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/splitsql"
+	"github.com/xiaogogonuo/cct-spider/internal/pkg/insertdb"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"strings"
 	"sync"
@@ -15,12 +15,12 @@ func InsertRegion(newsRegionChan <-chan *NewsRegion, wg *sync.WaitGroup) {
 	var (
 		quotes                          []string
 		insertValues                    []interface{}
-		preamble, epilogue, oneQuoteSql = splitsql.GetInsertBaseSQLCode(&NewsRegion{}, "t_dmbe_news_region_label")
+		preamble, epilogue, oneQuoteSql = insertdb.GetInsertBaseSQLCode(&NewsRegion{}, "t_dmbe_news_region_label")
 		beginLen                        = len(preamble) + len(epilogue)
 	)
 
 	for region := range newsRegionChan {
-		v, l := splitsql.GetQuotesAndValues(region)
+		v, l := insertdb.GetQuotesAndValues(region)
 		if beginLen+l+len(oneQuoteSql) < 500000 {
 			insertValues = append(insertValues, v...)
 			quotes = append(quotes, oneQuoteSql)
@@ -46,12 +46,12 @@ func InsertCompany(newsCompanyChan <-chan *NewsCompany, wg *sync.WaitGroup) {
 	var (
 		quotes                          []string
 		insertValues                    []interface{}
-		preamble, epilogue, oneQuoteSql = splitsql.GetInsertBaseSQLCode(&NewsCompany{}, "t_dmbe_news_company_label")
+		preamble, epilogue, oneQuoteSql = insertdb.GetInsertBaseSQLCode(&NewsCompany{}, "t_dmbe_news_company_label")
 		beginLen                        = len(preamble) + len(epilogue)
 	)
 
 	for company := range newsCompanyChan {
-		v, l := splitsql.GetQuotesAndValues(company)
+		v, l := insertdb.GetQuotesAndValues(company)
 		if beginLen+l+len(oneQuoteSql) < 500000 {
 			insertValues = append(insertValues, v...)
 			quotes = append(quotes, oneQuoteSql)
@@ -77,12 +77,12 @@ func InsertIndustry(newsIndustryChan <-chan *NewsIndustry, wg *sync.WaitGroup) {
 	var (
 		quotes                          []string
 		insertValues                    []interface{}
-		preamble, epilogue, oneQuoteSql = splitsql.GetInsertBaseSQLCode(&NewsIndustry{}, "t_dmbe_news_industry_label")
+		preamble, epilogue, oneQuoteSql = insertdb.GetInsertBaseSQLCode(&NewsIndustry{}, "t_dmbe_news_industry_label")
 		beginLen                        = len(preamble) + len(epilogue)
 	)
 
 	for industry := range newsIndustryChan {
-		v, l := splitsql.GetQuotesAndValues(industry)
+		v, l := insertdb.GetQuotesAndValues(industry)
 		if beginLen+l+len(oneQuoteSql) < 500000 {
 			insertValues = append(insertValues, v...)
 			quotes = append(quotes, oneQuoteSql)
@@ -108,16 +108,15 @@ func UpdateNews(f *filter.Filter, newsChan <-chan *PolicyNews, wg *sync.WaitGrou
 	var (
 		idList                           []string
 		sqlCode                          string
-		updateFields, epilogue, fieldLen = splitsql.GetUpdateBaseSQLCode(&PolicyNews{})
+		updateFields, epilogue, fieldLen = insertdb.GetUpdateBaseSQLCode(&PolicyNews{})
 		beginLen                         = len(epilogue)
-
 	)
 	sumLen := 0
 	newsValue := make([]string, fieldLen)
 	for news := range newsChan {
-		updateValues := splitsql.GetWhenAndThen(news)
+		updateValues := insertdb.GetWhenAndThen(news)
 		f.WriteMap(news.NEWS_GUID)
-		if sumLen + beginLen + len(idList) * len(news.NEWS_GUID) < 500000 {
+		if sumLen+beginLen+len(idList)*len(news.NEWS_GUID) < 500000 {
 			idList = append(idList, fmt.Sprintf(`'%s'`, news.NEWS_GUID))
 			for i := 0; i < fieldLen; i++ {
 				updateFields[i] = append(updateFields[i], updateValues[i])
@@ -135,7 +134,7 @@ func UpdateNews(f *filter.Filter, newsChan <-chan *PolicyNews, wg *sync.WaitGrou
 			sumLen = 0
 			idList = []string{}
 			newsValue = make([]string, fieldLen)
-			updateFields, epilogue, fieldLen = splitsql.GetUpdateBaseSQLCode(&PolicyNews{})
+			updateFields, epilogue, fieldLen = insertdb.GetUpdateBaseSQLCode(&PolicyNews{})
 
 		}
 	}
@@ -150,4 +149,3 @@ func UpdateNews(f *filter.Filter, newsChan <-chan *PolicyNews, wg *sync.WaitGrou
 	mysql.Transaction(sqlCode)
 	f.SaveUrlKey()
 }
-
