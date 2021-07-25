@@ -1,12 +1,10 @@
-package store
+package insertdb
 
 import (
 	"fmt"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/findmap"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/splitsql"
-
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/subString"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
@@ -14,18 +12,21 @@ import (
 	"time"
 )
 
-var (
-	t                               = time.Now().Format("20060102")
-	preamble, epilogue, oneQuoteSql = splitsql.GetInsertBaseSQLCode(&callback.SqlValues{}, "t_dmbe_policy_news_info")
-)
+type DataInfo struct {
+	DBName     string
+	PolicyCode string
+	PolicyName string
+}
 
-func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
+func (di *DataInfo) InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 	var (
-		region       string
-		regionCode   string
-		quotes       []string
-		insertValues []interface{}
-		beginLen     = len(preamble) + len(epilogue)
+		t                               = time.Now().Format("20060102")
+		preamble, epilogue, oneQuoteSql = GetInsertBaseSQLCode(&callback.SqlValues{}, di.DBName)
+		region                          string
+		regionCode                      string
+		quotes                          []string
+		insertValues                    []interface{}
+		beginLen                        = len(preamble) + len(epilogue)
 	)
 	for mes := range message {
 		if len(mes.Title) == 0 && len(mes.Summary) == 0 {
@@ -51,8 +52,8 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			NEWS_SOURCE:      mes.Source,
 			NEWS_SOURCE_CODE: mes.SourceCode,
 			NEWS_SUMMARY:     mes.Summary,
-			POLICY_TYPE:      "10",
-			POLICY_TYPE_NAME: "国家政策",
+			POLICY_TYPE:      di.PolicyCode,
+			POLICY_TYPE_NAME: di.PolicyName,
 			REGION_NAME:      region,
 			REGION_CODE:      regionCode,
 			IS_CONTROL:       "N",
@@ -68,7 +69,7 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 		}
 		//logger.Info("Success", logger.Field("url", mes.Url))
 		f.WriteMap(md5.MD5(mes.Url))
-		v, l := splitsql.GetQuotesAndValues(sqlValues)
+		v, l := GetQuotesAndValues(sqlValues)
 
 		//insertValues = append([]interface{}{}, v...)
 		//quotes = append([]string{}, oneQuoteSql)
@@ -89,6 +90,9 @@ func InsertIntoSQL(f *filter.Filter, message <-chan *callback.Message) {
 			quotes = append([]string{}, oneQuoteSql)
 			beginLen = len(preamble) + len(epilogue) + len(oneQuoteSql) + l
 		}
+	}
+	if len(insertValues) == 0 {
+		return
 	}
 	fmt.Printf("insert into data:%v , url: %v\n", len(insertValues), len(f.ThisUrlKey))
 	SQl := fmt.Sprintf("%s%s %s", preamble, strings.Join(quotes, ", "), epilogue)
