@@ -29,7 +29,9 @@ func (di *DataInfo) InsertIntoSQL(f *filter.Filter, message <-chan *callback.Mes
 		beginLen                        = len(preamble) + len(epilogue)
 	)
 	for mes := range message {
-		if len(mes.Title) == 0 && len(mes.Summary) == 0 {
+		tLen := len(mes.Title)
+		sLen := len(mes.Summary)
+		if (tLen == 0 && sLen == 0) || tLen+sLen < 15 {
 			continue
 		}
 		if mes.Date == "" || mes.Date > t {
@@ -44,8 +46,9 @@ func (di *DataInfo) InsertIntoSQL(f *filter.Filter, message <-chan *callback.Mes
 			region = regionMap[r][0]
 			regionCode = regionMap[r][1]
 		}
+		guid := md5.MD5(mes.Url)
 		sqlValues := &callback.SqlValues{
-			NEWS_GUID:        md5.MD5(mes.Date + mes.Title),
+			NEWS_GUID:        guid,
 			NEWS_TITLE:       mes.Title,
 			NEWS_TS:          mes.Date,
 			NEWS_URL:         mes.Url,
@@ -67,7 +70,7 @@ func (di *DataInfo) InsertIntoSQL(f *filter.Filter, message <-chan *callback.Mes
 			NEWS_GYS_CODE:    "90",
 			NEWS_GYS_NAME:    "爬虫",
 		}
-		f.WriteMap(md5.MD5(mes.Url))
+		f.WriteMap(guid)
 		v, l := GetQuotesAndValues(sqlValues)
 
 		if beginLen+l+len(oneQuoteSql) < 500000 {

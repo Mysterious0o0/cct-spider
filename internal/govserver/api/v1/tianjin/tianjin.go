@@ -71,7 +71,7 @@ func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *
 			SourceCode:    "WEB_01373",
 			DateSelector:  "#content_fbrq",
 			TitleSelector: "div[class='sx-item item-all']>div[class='sx-con']",
-			TextSelector:  "div[class='view TRS_UEDITOR trs_paper_default trs_word']",
+			TextSelector:  "div[class*='view TRS_UEDITOR']",
 			DomainName:    "www.tj.gov.cn",
 		},
 	}
