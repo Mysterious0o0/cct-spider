@@ -53,9 +53,9 @@ func init() {
 
 func government() {
 	wg := &sync.WaitGroup{}
-	//limitChan := make(chan struct{})
-	urlChannel := make(chan *callback.UrlChan)   // url请求池
-	infoChannel := make(chan *callback.InfoChan) // info请求池
+	limitChan := make(chan struct{}, 500)
+	urlChannel := make(chan *callback.UrlChan, 5000)   // url请求池
+	infoChannel := make(chan *callback.InfoChan, 100000) // info请求池
 	errChannel := make(chan *callback.InfoChan)         // 异常池
 	message := make(chan *callback.Message)             // 数据池
 	save := dataInfo.InsertIntoSQL                      // 保存数据的函数
@@ -76,11 +76,11 @@ func government() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
-			//limitChan <- struct{}{}
+			limitChan <- struct{}{}
 			wg.Add(1)
 			go func(v *callback.UrlChan) {
 				v.GetUrlFunc(urlChannel, infoChannel, wg)
-				//<-limitChan
+				<-limitChan
 			}(v)
 
 		}
@@ -91,11 +91,11 @@ func government() {
 				logger.Info("Obtained, no need to update", logger.Field("url", v.Url))
 				continue
 			}
-			//limitChan <- struct{}{}
+			limitChan <- struct{}{}
 			wg.Add(1)
 			go func(v *callback.InfoChan) {
 				v.GetInfoFunc(errChannel, message, wg)
-				//<-limitChan
+				<-limitChan
 			}(v)
 		}
 	}()
