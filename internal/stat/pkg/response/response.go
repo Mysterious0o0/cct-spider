@@ -36,8 +36,11 @@ type TargetValue struct {
 	SourceTargetCode string // 来源系统指标代码
 	RegionCode       string // 统计地区
 	RegionName       string // 统计地区说明
+	IsQuantity       string // 是否定量
 	UnitType         string // 计量单位类型
 	UnitName         string // 计量单位名称
+	PeriodType       string // 计量单位类型
+	PeriodName       string // 计量单位名称
 	AcctYear         string // 年
 	AcctSeason       string // 季
 	AcctMonth        string // 月
@@ -56,8 +59,11 @@ func (tv TargetValue) Row() (row []string) {
 		tv.SourceTargetCode,
 		tv.RegionCode,
 		tv.RegionName,
+		tv.IsQuantity,
 		tv.UnitType,
 		tv.UnitName,
+		tv.PeriodType,
+		tv.PeriodName,
 		tv.AcctYear,
 		tv.AcctSeason,
 		tv.AcctMonth,

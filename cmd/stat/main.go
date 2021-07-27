@@ -1,14 +1,13 @@
 package main
 
 import (
+	"github.com/xiaogogonuo/cct-spider/internal/indicator"
 	cpiNationMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/nation/month"
 	cpiNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/nation/year"
 	cpiRegionMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/month"
 	cpiRegionYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/year"
-
 	cqcNationMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cqc/nation/month"
 	cqcNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cqc/nation/year"
-
 	faiNationSeason "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/fai/nation/season"
 	faiNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/fai/nation/year"
 
@@ -65,7 +64,7 @@ const (
 	ppiNationMonthRun  = false
 	ppiNationYearRun   = false
 
-	rclRegionYearRun   = true
+	rclRegionYearRun   = false
 
 	scgNationMonthRun  = false
 	scgNationYearRun   = false
@@ -190,4 +189,6 @@ func main() {
 			uriNationYear.Run()
 		}
 	}
+
+	indicator.Start()
 }
