@@ -107,23 +107,22 @@ var IndexMap map[string]map[string]string
 func setUpIndexMap() {
 	IndexMap = make(map[string]map[string]string)
 
-	// TODO: last run
 	// 居民消费价格指数(上年=100)
-	//IndexMap[CPIName] = make(map[string]string)
-	//IndexMap[CPIName]["TargetCode"] = "HG00003"
-	//IndexMap[CPIName]["DataSourceCode"] = "stat"
-	//IndexMap[CPIName]["DataSourceName"] = "国家统计局"
-	//IndexMap[CPIName]["SourceTargetCode"] = "A090101"
-	//IndexMap[CPIName]["IsQuantity"] = "Y"
-	//IndexMap[CPIName]["UnitType"] = ""
-	//IndexMap[CPIName]["UnitName"] = ""
-	//IndexMap[CPIName]["PeriodType"] = PeriodTypeYear
-	//IndexMap[CPIName]["PeriodName"] = PeriodNameYear
-	//IndexMap[CPIName]["StartYear"] = "1951"
-	//IndexMap[CPIName]["StartSeason"] = ""
-	//IndexMap[CPIName]["StartMonth"] = ""
-	//IndexMap[CPIName]["DateType"] = Annual
-	//IndexMap[CPIName]["AreaType"] = Province
+	IndexMap[CPIName] = make(map[string]string)
+	IndexMap[CPIName]["TargetCode"] = "HG00003"
+	IndexMap[CPIName]["DataSourceCode"] = "stat"
+	IndexMap[CPIName]["DataSourceName"] = "国家统计局"
+	IndexMap[CPIName]["SourceTargetCode"] = "A090101"
+	IndexMap[CPIName]["IsQuantity"] = "Y"
+	IndexMap[CPIName]["UnitType"] = ""
+	IndexMap[CPIName]["UnitName"] = ""
+	IndexMap[CPIName]["PeriodType"] = PeriodTypeYear
+	IndexMap[CPIName]["PeriodName"] = PeriodNameYear
+	IndexMap[CPIName]["StartYear"] = "1951"
+	IndexMap[CPIName]["StartSeason"] = ""
+	IndexMap[CPIName]["StartMonth"] = ""
+	IndexMap[CPIName]["DateType"] = Annual
+	IndexMap[CPIName]["AreaType"] = Province
 
 	// 居民消费价格指数(上月=100)
 	//IndexMap[CPI2Name] = make(map[string]string)
@@ -142,23 +141,22 @@ func setUpIndexMap() {
 	//IndexMap[CPI2Name]["DateType"] = Monthly
 	//IndexMap[CPI2Name]["AreaType"] = Province
 
-	// TODO: last run
 	// 居民消费价格指数(上年同月=100)
-	//IndexMap[CPI3Name] = make(map[string]string)
-	//IndexMap[CPI3Name]["TargetCode"] = "HG00004"
-	//IndexMap[CPI3Name]["DataSourceCode"] = "stat"
-	//IndexMap[CPI3Name]["DataSourceName"] = "国家统计局"
-	//IndexMap[CPI3Name]["SourceTargetCode"] = "A01010101"
-	//IndexMap[CPI3Name]["IsQuantity"] = "Y"
-	//IndexMap[CPI3Name]["UnitType"] = ""
-	//IndexMap[CPI3Name]["UnitName"] = ""
-	//IndexMap[CPI3Name]["PeriodType"] = PeriodTypeMonth
-	//IndexMap[CPI3Name]["PeriodName"] = PeriodNameMonth
-	//IndexMap[CPI3Name]["StartYear"] = "2016"
-	//IndexMap[CPI3Name]["StartSeason"] = ""
-	//IndexMap[CPI3Name]["StartMonth"] = "01"
-	//IndexMap[CPI3Name]["DateType"] = Monthly
-	//IndexMap[CPI3Name]["AreaType"] = Province
+	IndexMap[CPI3Name] = make(map[string]string)
+	IndexMap[CPI3Name]["TargetCode"] = "HG00004"
+	IndexMap[CPI3Name]["DataSourceCode"] = "stat"
+	IndexMap[CPI3Name]["DataSourceName"] = "国家统计局"
+	IndexMap[CPI3Name]["SourceTargetCode"] = "A01010101"
+	IndexMap[CPI3Name]["IsQuantity"] = "Y"
+	IndexMap[CPI3Name]["UnitType"] = ""
+	IndexMap[CPI3Name]["UnitName"] = ""
+	IndexMap[CPI3Name]["PeriodType"] = PeriodTypeMonth
+	IndexMap[CPI3Name]["PeriodName"] = PeriodNameMonth
+	IndexMap[CPI3Name]["StartYear"] = "2016"
+	IndexMap[CPI3Name]["StartSeason"] = ""
+	IndexMap[CPI3Name]["StartMonth"] = "01"
+	IndexMap[CPI3Name]["DateType"] = Monthly
+	IndexMap[CPI3Name]["AreaType"] = Province
 
 	// 居民消费价格指数(上年同期=100)
 	//IndexMap[CPI4Name] = make(map[string]string)
@@ -230,7 +228,7 @@ func setUpIndexMap() {
 
 	// 固定资产投资增速(固定资产投资额_累计增长)
 	IndexMap[FAI4Name] = make(map[string]string)
-	IndexMap[FAI4Name]["TargetCode"] = "" // TODO
+	IndexMap[FAI4Name]["TargetCode"] = "HG00039"
 	IndexMap[FAI4Name]["DataSourceCode"] = "stat"
 	IndexMap[FAI4Name]["DataSourceName"] = "国家统计局"
 	IndexMap[FAI4Name]["SourceTargetCode"] = "A040102"
@@ -330,23 +328,22 @@ func setUpIndexMap() {
 	IndexMap[GDP3Name]["DateType"] = Annual
 	IndexMap[GDP3Name]["AreaType"] = Marco
 
-	// TODO: last run
 	// 地区生产总值
-	//IndexMap[GDPRName] = make(map[string]string)
-	//IndexMap[GDPRName]["TargetCode"] = "HG00002"
-	//IndexMap[GDPRName]["DataSourceCode"] = "stat"
-	//IndexMap[GDPRName]["DataSourceName"] = "国家统计局"
-	//IndexMap[GDPRName]["SourceTargetCode"] = "A020101"
-	//IndexMap[GDPRName]["IsQuantity"] = "Y"
-	//IndexMap[GDPRName]["UnitType"] = UnitTypeE
-	//IndexMap[GDPRName]["UnitName"] = UnitNameE
-	//IndexMap[GDPRName]["PeriodType"] = PeriodTypeYear
-	//IndexMap[GDPRName]["PeriodName"] = PeriodNameYear
-	//IndexMap[GDPRName]["StartYear"] = "1992"
-	//IndexMap[GDPRName]["StartSeason"] = ""
-	//IndexMap[GDPRName]["StartMonth"] = ""
-	//IndexMap[GDPRName]["DateType"] = Annual
-	//IndexMap[GDPRName]["AreaType"] = Province
+	IndexMap[GDPRName] = make(map[string]string)
+	IndexMap[GDPRName]["TargetCode"] = "HG00002"
+	IndexMap[GDPRName]["DataSourceCode"] = "stat"
+	IndexMap[GDPRName]["DataSourceName"] = "国家统计局"
+	IndexMap[GDPRName]["SourceTargetCode"] = "A020101"
+	IndexMap[GDPRName]["IsQuantity"] = "Y"
+	IndexMap[GDPRName]["UnitType"] = UnitTypeE
+	IndexMap[GDPRName]["UnitName"] = UnitNameE
+	IndexMap[GDPRName]["PeriodType"] = PeriodTypeYear
+	IndexMap[GDPRName]["PeriodName"] = PeriodNameYear
+	IndexMap[GDPRName]["StartYear"] = "1992"
+	IndexMap[GDPRName]["StartSeason"] = ""
+	IndexMap[GDPRName]["StartMonth"] = ""
+	IndexMap[GDPRName]["DateType"] = Annual
+	IndexMap[GDPRName]["AreaType"] = Province
 
 	// 国内生产总值_当季值
 	//IndexMap[GDP1Name] = make(map[string]string)
@@ -620,23 +617,22 @@ func setUpIndexMap() {
 	//IndexMap[PPI4Name]["DateType"] = Monthly
 	//IndexMap[PPI4Name]["AreaType"] = Marco
 
-	// TODO: last run
 	// 居民消费水平
-	//IndexMap[RCLName] = make(map[string]string)
-	//IndexMap[RCLName]["TargetCode"] = "HG00025"
-	//IndexMap[RCLName]["DataSourceCode"] = "stat"
-	//IndexMap[RCLName]["DataSourceName"] = "国家统计局"
-	//IndexMap[RCLName]["SourceTargetCode"] = "A020501"
-	//IndexMap[RCLName]["IsQuantity"] = "Y"
-	//IndexMap[RCLName]["UnitType"] = UnitTypeY
-	//IndexMap[RCLName]["UnitName"] = UnitNameY
-	//IndexMap[RCLName]["PeriodType"] = PeriodTypeYear
-	//IndexMap[RCLName]["PeriodName"] = PeriodNameYear
-	//IndexMap[RCLName]["StartYear"] = "1992"
-	//IndexMap[RCLName]["StartSeason"] = ""
-	//IndexMap[RCLName]["StartMonth"] = ""
-	//IndexMap[RCLName]["DateType"] = Annual
-	//IndexMap[RCLName]["AreaType"] = Province
+	IndexMap[RCLName] = make(map[string]string)
+	IndexMap[RCLName]["TargetCode"] = "HG00025"
+	IndexMap[RCLName]["DataSourceCode"] = "stat"
+	IndexMap[RCLName]["DataSourceName"] = "国家统计局"
+	IndexMap[RCLName]["SourceTargetCode"] = "A020501"
+	IndexMap[RCLName]["IsQuantity"] = "Y"
+	IndexMap[RCLName]["UnitType"] = UnitTypeY
+	IndexMap[RCLName]["UnitName"] = UnitNameY
+	IndexMap[RCLName]["PeriodType"] = PeriodTypeYear
+	IndexMap[RCLName]["PeriodName"] = PeriodNameYear
+	IndexMap[RCLName]["StartYear"] = "1992"
+	IndexMap[RCLName]["StartSeason"] = ""
+	IndexMap[RCLName]["StartMonth"] = ""
+	IndexMap[RCLName]["DateType"] = Annual
+	IndexMap[RCLName]["AreaType"] = Province
 
 	// 社会消费品零售总额
 	//IndexMap[SCGName] = make(map[string]string)
