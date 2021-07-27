@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"io/ioutil"
 	"os"
 	"strings"

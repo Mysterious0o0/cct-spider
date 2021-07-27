@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/xiaogogonuo/cct-spider/internal/indicator"
+	"github.com/489397771/cct-spider/internal/indicator"
 )
 
 func main() {

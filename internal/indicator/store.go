@@ -2,8 +2,8 @@ package indicator
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
+	"github.com/489397771/cct-spider/pkg/db/mysql"
 	"strings"
 )
 

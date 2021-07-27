@@ -2,8 +2,8 @@ package request
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/codec"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/codec"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"io"
 	"io/ioutil"
 	"net/http"

@@ -2,10 +2,10 @@ package store
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/findmap"
-	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
-	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/findmap"
+	"github.com/489397771/cct-spider/pkg/db/mysql"
+	"github.com/489397771/cct-spider/pkg/encrypt/md5"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"strconv"
 	"strings"
 	"sync"

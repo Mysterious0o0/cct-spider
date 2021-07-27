@@ -2,11 +2,11 @@ package executor
 
 import (
 	"encoding/json"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/cook"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/urllib"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/cook"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/request"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/urllib"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"strings"
 	"time"
 )

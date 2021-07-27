@@ -3,8 +3,8 @@ package parse
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/urlprocess"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/urlprocess"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"regexp"
 	"strconv"
 	"strings"

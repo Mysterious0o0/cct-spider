@@ -1,10 +1,10 @@
 package indicator
 
 import (
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/code/indicator_code"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/code/province_code"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"github.com/489397771/cct-spider/internal/indicator/code/indicator_code"
+	"github.com/489397771/cct-spider/internal/indicator/code/province_code"
+	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
+	"github.com/489397771/cct-spider/pkg/encrypt/md5"
 )
 
 type Constructor struct {
