@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/company"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/industry"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/region"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/api/v1/sentiment"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/store"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/filter"
+	"github.com/489397771/cct-spider/internal/tagserver/api/v1/company"
+	"github.com/489397771/cct-spider/internal/tagserver/api/v1/industry"
+	"github.com/489397771/cct-spider/internal/tagserver/api/v1/region"
+	"github.com/489397771/cct-spider/internal/tagserver/api/v1/sentiment"
+	"github.com/489397771/cct-spider/internal/tagserver/store"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"sync"
 )
 

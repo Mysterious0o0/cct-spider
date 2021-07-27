@@ -1,8 +1,8 @@
 package region
 
 import (
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/findmap"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/store"
+	"github.com/489397771/cct-spider/internal/pkg/findmap"
+	"github.com/489397771/cct-spider/internal/tagserver/store"
 	"sync"
 )
 

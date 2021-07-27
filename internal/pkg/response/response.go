@@ -2,10 +2,10 @@ package response
 
 import (
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/callback"
+	"github.com/489397771/cct-spider/internal/pkg/parse"
+	"github.com/489397771/cct-spider/internal/pkg/request"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"strings"
 )
 

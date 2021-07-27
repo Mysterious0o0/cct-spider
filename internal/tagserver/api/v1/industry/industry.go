@@ -3,9 +3,9 @@ package industry
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/tagserver/store"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/pkg/request"
+	"github.com/489397771/cct-spider/internal/tagserver/store"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"net/http"
 	"sort"
 	"sync"

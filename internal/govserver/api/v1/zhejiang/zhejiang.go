@@ -3,12 +3,12 @@ package zhejiang
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/govserver/store"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/parse"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/request"
-	"github.com/xiaogogonuo/cct-spider/internal/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/pkg/logger"
+	"github.com/489397771/cct-spider/internal/govserver/store"
+	"github.com/489397771/cct-spider/internal/pkg/callback"
+	"github.com/489397771/cct-spider/internal/pkg/parse"
+	"github.com/489397771/cct-spider/internal/pkg/request"
+	"github.com/489397771/cct-spider/internal/pkg/response"
+	"github.com/489397771/cct-spider/pkg/logger"
 	"net/http"
 	"strings"
 )

@@ -1,7 +1,7 @@
 package findmap
 
 import (
-	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
+	"github.com/489397771/cct-spider/pkg/db/mysql"
 	"regexp"
 	"strings"
 	"sync"
