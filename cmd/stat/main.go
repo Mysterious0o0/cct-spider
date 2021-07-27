@@ -1,14 +1,13 @@
 package main
 
 import (
+	"github.com/xiaogogonuo/cct-spider/internal/indicator"
 	cpiNationMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/nation/month"
 	cpiNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/nation/year"
 	cpiRegionMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/month"
 	cpiRegionYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cpi/region/year"
-
 	cqcNationMonth "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cqc/nation/month"
 	cqcNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/cqc/nation/year"
-
 	faiNationSeason "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/fai/nation/season"
 	faiNationYear "github.com/xiaogogonuo/cct-spider/internal/stat/api/v1/fai/nation/year"
 
@@ -38,40 +37,40 @@ import (
 )
 
 const (
-	cpiNationMonthRun  = true
-	cpiNationYearRun   = true
+	cpiNationMonthRun  = false
+	cpiNationYearRun   = false
 	cpiRegionMonthRun  = false
 	cpiRegionYearRun   = false
 
-	cqcNationMonthRun  = true
-	cqcNationYearRun   = true
+	cqcNationMonthRun  = false
+	cqcNationYearRun   = false
 
-	faiNationSeasonRun = true
-	faiNationYearRun   = true
+	faiNationSeasonRun = false
+	faiNationYearRun   = false
 
-	gdpNationSeasonRun = true
-	gdpNationYearRun   = true
+	gdpNationSeasonRun = false
+	gdpNationYearRun   = false
 	gdpRegionYearRun   = false
 
-	hecNationSeasonRun = true
-	hecNationYearRun   = true
+	hecNationSeasonRun = false
+	hecNationYearRun   = false
 
-	iavNationMonthRun  = true
-	iavNationSeasonRun = true
-	iavNationYearRun   = true
+	iavNationMonthRun  = false
+	iavNationSeasonRun = false
+	iavNationYearRun   = false
 
-	pmiNationMonthRun  = true
+	pmiNationMonthRun  = false
 
-	ppiNationMonthRun  = true
-	ppiNationYearRun   = true
+	ppiNationMonthRun  = false
+	ppiNationYearRun   = false
 
 	rclRegionYearRun   = false
 
-	scgNationMonthRun  = true
-	scgNationYearRun   = true
+	scgNationMonthRun  = false
+	scgNationYearRun   = false
 
-	uriNationSeasonRun = true
-	uriNationYearRun   = true
+	uriNationSeasonRun = false
+	uriNationYearRun   = false
 )
 
 func main() {
@@ -190,4 +189,6 @@ func main() {
 			uriNationYear.Run()
 		}
 	}
+
+	indicator.Start()
 }
