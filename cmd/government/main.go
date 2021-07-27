@@ -46,7 +46,7 @@ func init() {
 	urlKeyMap = filt.ReadUrlKey()
 	dataInfo = &insertdb.DataInfo{
 		DBName:     "t_dmbe_policy_news_info",
-		PolicyCode: "10",
+		PolicyCode: "20",
 		PolicyName: "地方政策",
 	}
 }
