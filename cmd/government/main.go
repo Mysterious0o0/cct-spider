@@ -2,10 +2,12 @@ package main
 
 import (
 	"github.com/spf13/viper"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/cbirc"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/mee"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/anhui"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/beijing"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/chongqing"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/guangzhou"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/shanghai"
+	"github.com/xiaogogonuo/cct-spider/internal/govserver/api/v1/tianjin"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/insertdb"
@@ -16,17 +18,17 @@ import (
 )
 
 var (
-	minV      *viper.Viper
+	govV      *viper.Viper
 	filt      *filter.Filter
 	dataInfo  *insertdb.DataInfo
 	urlKeyMap map[string]byte
 )
 
-func minConfig() *viper.Viper {
+func govConfig() *viper.Viper {
 	c := config.Config{
 		ConfigName: "config",
 		ConfigType: "yaml",
-		ConfigPath: "configs/min",
+		ConfigPath: "configs/gov",
 	}
 	v, err := c.NewConfig()
 	if err != nil {
@@ -36,7 +38,7 @@ func minConfig() *viper.Viper {
 }
 
 func init() {
-	minV = minConfig()
+	govV = govConfig()
 	filt = &filter.Filter{
 		Filepath:   "urlKey.txt",
 		ThisUrlKey: make(map[string]byte),
@@ -44,26 +46,29 @@ func init() {
 	urlKeyMap = filt.ReadUrlKey()
 	dataInfo = &insertdb.DataInfo{
 		DBName:     "t_dmbe_policy_news_info",
-		PolicyCode: "10",
-		PolicyName: "国家政策",
+		PolicyCode: "20",
+		PolicyName: "地方政策",
 	}
 }
 
-func ministries() {
+func government() {
 	wg := &sync.WaitGroup{}
-	limitChan := make(chan struct{}, 400)
-	urlChannel := make(chan *callback.UrlChan, 10000)   // url请求池
-	infoChannel := make(chan *callback.InfoChan, 10000) // info请求池
+	limitChan := make(chan struct{}, 500)
+	urlChannel := make(chan *callback.UrlChan, 5000)   // url请求池
+	infoChannel := make(chan *callback.InfoChan, 100000) // info请求池
 	errChannel := make(chan *callback.InfoChan)         // 异常池
 	message := make(chan *callback.Message)             // 数据池
 	save := dataInfo.InsertIntoSQL                      // 保存数据的函数
 
-	wg.Add(5)
-	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
-	go sarm.GetPageUrlList(minV.GetString("国家市场监督管理总局"), urlChannel, wg)
-	go mee.GetFirstUrl(minV.GetString("生态环境部"), urlChannel, wg)
-	go cbirc.GetPageUrlList(minV.GetString("银保监会928"), infoChannel, wg)
-	go cbirc.GetPageUrlList(minV.GetString("银保监会927"), infoChannel, wg)
+	wg.Add(6)
+	go anhui.GetPageUrlList(govV.GetString("安徽"), urlChannel, wg)
+	go beijing.GetPageUrlList(govV.GetString("北京"), urlChannel, wg)
+	go chongqing.GetFirstUrl(govV.GetString("重庆"), urlChannel, wg)
+	go guangzhou.GetPageUrlList(govV.GetString("广州"), urlChannel, wg)
+	go shanghai.GetPageUrlList(govV.GetString("上海"), urlChannel, wg)
+	go tianjin.GetPageUrlList(govV.GetString("天津"), urlChannel, wg)
+
+
 
 	go func() {
 		for v := range urlChannel {
@@ -104,5 +109,5 @@ func ministries() {
 }
 
 func main() {
-	ministries()
+	government()
 }

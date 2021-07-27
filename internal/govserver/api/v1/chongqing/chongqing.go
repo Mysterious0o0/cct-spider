@@ -1,4 +1,4 @@
-package mee
+package chongqing
 
 import (
 	"fmt"
@@ -19,26 +19,32 @@ func GetFirstUrl(url string, urlChan chan<- *callback.UrlChan, wg *sync.WaitGrou
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
+			UrlSelector: "a[class='item-top-right rt hover']",
 			BaseUrl:     url,
-			UrlSelector: "div[class='outBox zcwj']>div>a",
 		},
 	}
-	for _, link := range pr.GetPageUrl("href") {
+	urlList := pr.GetPageUrl("href")
+	for _, link := range urlList {
 		urlChan <- &callback.UrlChan{
 			Url:     link,
 			GetUrlF: GetSecondUrl,
 		}
-		//time.Sleep(time.Second*1)  // 单跑这个需要加延迟，
-	}
 
+	}
 }
 
 func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
+
 	s := strings.Split(url, "/")
-	switch s[4] {
-	case "zyygwj", "gwywj", "xzspwj":
+	switch s[6] {
+	case "qtgw":
 		urlChan <- &callback.UrlChan{
 			Url:     url,
+			GetUrlF: GetPageUrlList,
+		}
+	case "zfgz":
+		urlChan <- &callback.UrlChan{
+			Url:     url + "zfgz/",
 			GetUrlF: GetPageUrlList,
 		}
 	default:
@@ -49,7 +55,7 @@ func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- 
 			},
 			Parse: parse.Parse{
 				BaseUrl:     url,
-				UrlSelector: "span[class='mobile_none']>a",
+				UrlSelector: "a[class='item-top-right rt']",
 			},
 		}
 		for _, link := range pr.GetPageUrl("href") {
@@ -62,6 +68,7 @@ func GetSecondUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- 
 }
 
 func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
+
 	urlChan <- &callback.UrlChan{
 		Url:     url,
 		GetUrlF: GetDetailPageUrl,
@@ -72,33 +79,36 @@ func GetPageUrlList(url string, urlChan chan<- *callback.UrlChan, infoChan chan<
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			PageNumSelector: ".slideTxtBoxgsf script",
+			PageNumSelector: "#page>script",
 		},
 	}
-	num := pr.GetPageNum("var countPage = [0-9]+//")
+	num := pr.GetPageNum("createPage\\([0-9]+,")
 	if num == 0 {
-		num = 40
+		num = 20
 	}
 	for i := 1; i < num; i++ {
 		urlChan <- &callback.UrlChan{
-			Url:     fmt.Sprintf("%sindex_%v.shtml", url, i),
+			Url:     fmt.Sprintf("%sindex_%v.html", url, i),
 			GetUrlF: GetDetailPageUrl,
 		}
 	}
 }
 
 func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan chan<- *callback.InfoChan) {
+
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
+			UrlSelector: ".list a",
 			BaseUrl:     url,
-			UrlSelector: "#div>li>a",
 		},
 	}
-	for _, link := range pr.GetPageUrl("href") {
+	urlList := pr.GetPageUrl("href")
+	for _, link := range urlList {
+
 		infoChan <- &callback.InfoChan{
 			Url:      link,
 			GetInfoF: GetHtmlInfo,
@@ -107,18 +117,19 @@ func GetDetailPageUrl(url string, urlChan chan<- *callback.UrlChan, infoChan cha
 }
 
 func GetHtmlInfo(url string, errChan chan<- *callback.InfoChan, message chan<- *callback.Message) {
+
 	pr := response.PR{
 		Request: request.Request{
 			Url:    url,
 			Method: http.MethodGet,
 		},
 		Parse: parse.Parse{
-			Source:        "生态环境部",
-			SourceCode:    "WEB_01013",
-			DateSelector:  ".wjkFontBox>em, .content_top_box, span[class='xqLyPc time']",
-			TitleSelector: "h1, .neiright_Box>h2",
-			TextSelector:  ".Custom_UnionStyle p, .Custom_UnionStyle div, .content_body_box p, .content_body_box div, .neiright_JPZ_GK_CP>p, .neiright_JPZ_GK_CP div, .TRS_Editor p .TRS_Editor div",
-			DomainName:    "http://www.mee.gov.cn",
+			Source:        "重庆市人民政府",
+			SourceCode:    "WEB_01460",
+			DateSelector:  "table[class='table']>tbody>tr:nth-child(4)>td:nth-child(4)",
+			TitleSelector: "td[colspan='5']",
+			TextSelector:  "div[class='document mt-1 mt-12']",
+			DomainName:    "www.cq.gov.cn/",
 		},
 	}
 	message <- pr.GetHtmlInfo()

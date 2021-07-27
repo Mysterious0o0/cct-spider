@@ -1,4 +1,4 @@
-package splitsql
+package insertdb
 
 import (
 	"fmt"
@@ -40,11 +40,11 @@ func _parseField(v reflect.Value) (fieldValue interface{}, valLen int) {
 
 	case reflect.Float32:
 		fieldValue = v.Float()
-		valLen = len(strconv.FormatFloat(v.Float(),  'f', -1, 32))
+		valLen = len(strconv.FormatFloat(v.Float(), 'f', -1, 32))
 
 	case reflect.Float64:
 		fieldValue = v.Float()
-		valLen = len(strconv.FormatFloat(v.Float(),  'f', -1, 64))
+		valLen = len(strconv.FormatFloat(v.Float(), 'f', -1, 64))
 
 	}
 	return
@@ -79,8 +79,7 @@ func GetInsertBaseSQLCode(v interface{}, dbName string) (preambleSql string, epi
 	return
 }
 
-
-func GetUpdateBaseSQLCode(v interface{}) (updateFields [][]string, epilogue string, fieldLen int){
+func GetUpdateBaseSQLCode(v interface{}) (updateFields [][]string, epilogue string, fieldLen int) {
 
 	elem := reflect.ValueOf(v)
 	if elem.Kind() == reflect.Ptr {
@@ -97,7 +96,7 @@ func GetUpdateBaseSQLCode(v interface{}) (updateFields [][]string, epilogue stri
 		updateFields = append(updateFields, []string{fmt.Sprintf(`%s = CASE %s`, field, idField)})
 	}
 	epilogue = fmt.Sprintf(`WHERE %s IN `, idField)
-	fieldLen --
+	fieldLen--
 	return
 
 }

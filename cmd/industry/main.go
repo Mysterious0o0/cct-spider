@@ -2,10 +2,8 @@ package main
 
 import (
 	"github.com/spf13/viper"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/cbirc"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/mee"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/miit"
-	"github.com/xiaogogonuo/cct-spider/internal/minserver/api/v1/sarm"
+	"github.com/xiaogogonuo/cct-spider/internal/indserver/api/v1/logistics"
+	"github.com/xiaogogonuo/cct-spider/internal/indserver/api/v1/ppi"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/callback"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/filter"
 	"github.com/xiaogogonuo/cct-spider/internal/pkg/insertdb"
@@ -16,17 +14,17 @@ import (
 )
 
 var (
-	minV      *viper.Viper
+	indV      *viper.Viper
 	filt      *filter.Filter
 	dataInfo  *insertdb.DataInfo
 	urlKeyMap map[string]byte
 )
 
-func minConfig() *viper.Viper {
+func indConfig() *viper.Viper {
 	c := config.Config{
 		ConfigName: "config",
 		ConfigType: "yaml",
-		ConfigPath: "configs/min",
+		ConfigPath: "configs/ind",
 	}
 	v, err := c.NewConfig()
 	if err != nil {
@@ -36,7 +34,7 @@ func minConfig() *viper.Viper {
 }
 
 func init() {
-	minV = minConfig()
+	indV = indConfig()
 	filt = &filter.Filter{
 		Filepath:   "urlKey.txt",
 		ThisUrlKey: make(map[string]byte),
@@ -44,8 +42,8 @@ func init() {
 	urlKeyMap = filt.ReadUrlKey()
 	dataInfo = &insertdb.DataInfo{
 		DBName:     "t_dmbe_policy_news_info",
-		PolicyCode: "10",
-		PolicyName: "国家政策",
+		PolicyCode: "30",
+		PolicyName: "行业政策",
 	}
 }
 
@@ -58,12 +56,9 @@ func ministries() {
 	message := make(chan *callback.Message)             // 数据池
 	save := dataInfo.InsertIntoSQL                      // 保存数据的函数
 
-	wg.Add(5)
-	go miit.GetPageUrlList(minV.GetString("工业和信息化部"), urlChannel, wg)
-	go sarm.GetPageUrlList(minV.GetString("国家市场监督管理总局"), urlChannel, wg)
-	go mee.GetFirstUrl(minV.GetString("生态环境部"), urlChannel, wg)
-	go cbirc.GetPageUrlList(minV.GetString("银保监会928"), infoChannel, wg)
-	go cbirc.GetPageUrlList(minV.GetString("银保监会927"), infoChannel, wg)
+	wg.Add(2)
+	go ppi.GetPageUrlList(indV.GetString("造纸协会"), urlChannel, wg)
+	go logistics.GetPageUrlList(indV.GetString("物流协会"), urlChannel, wg)
 
 	go func() {
 		for v := range urlChannel {
