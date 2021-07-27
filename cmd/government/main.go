@@ -54,11 +54,11 @@ func init() {
 func government() {
 	wg := &sync.WaitGroup{}
 	limitChan := make(chan struct{}, 500)
-	urlChannel := make(chan *callback.UrlChan, 5000)   // url请求池
+	urlChannel := make(chan *callback.UrlChan, 5000)     // url请求池
 	infoChannel := make(chan *callback.InfoChan, 100000) // info请求池
-	errChannel := make(chan *callback.InfoChan)         // 异常池
-	message := make(chan *callback.Message)             // 数据池
-	save := dataInfo.InsertIntoSQL                      // 保存数据的函数
+	errChannel := make(chan *callback.InfoChan)          // 异常池
+	message := make(chan *callback.Message)              // 数据池
+	save := dataInfo.InsertIntoSQL                       // 保存数据的函数
 
 	wg.Add(6)
 	go anhui.GetPageUrlList(govV.GetString("安徽"), urlChannel, wg)
@@ -67,8 +67,6 @@ func government() {
 	go guangzhou.GetPageUrlList(govV.GetString("广州"), urlChannel, wg)
 	go shanghai.GetPageUrlList(govV.GetString("上海"), urlChannel, wg)
 	go tianjin.GetPageUrlList(govV.GetString("天津"), urlChannel, wg)
-
-
 
 	go func() {
 		for v := range urlChannel {
