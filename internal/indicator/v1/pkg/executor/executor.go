@@ -2,13 +2,12 @@ package executor
 
 import (
 	"encoding/json"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/cook"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/request"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/urllib"
-	"github.com/489397771/cct-spider/pkg/logger"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/pkg/cook"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/pkg/request"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/pkg/response"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/pkg/urllib"
+	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"strings"
-	"time"
 )
 
 // end return the last value of a slice
@@ -37,7 +36,7 @@ func Execute(param urllib.Param, cn, zb string) (row [][]string) {
 		Cookie: cookie,
 	}
 	resBody, err := req.Visit()
-	time.Sleep(time.Second * 3)
+	//time.Sleep(time.Second * 3)
 	if err != nil {
 		logger.Error(err.Error())
 		return

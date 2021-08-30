@@ -1,10 +1,10 @@
-package indicator
+package v1
 
 import (
-	"github.com/489397771/cct-spider/internal/indicator/code/indicator_code"
-	"github.com/489397771/cct-spider/internal/indicator/code/province_code"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
-	"github.com/489397771/cct-spider/pkg/encrypt/md5"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/code/indicator_code"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/code/province_code"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/v1/pkg/response"
+	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
 )
 
 type Constructor struct {
@@ -41,13 +41,14 @@ func acct(date, dateType string, targetValue *response.TargetValue) {
 // - 季度：md5(TARGET_CODE + ACCT_YEAR + ACCT_QUARTOR + REGION_CODE)
 // - 月度：md5(TARGET_CODE + ACCT_YEAR + ACCT_MONTH + REGION_CODE)
 
-func (c Constructor ) Construct() (data []response.TargetValue) {
+func (c Constructor) Construct() (data []response.TargetValue) {
 	for _, indicator := range c.IndicatorData {
 		tv := &response.TargetValue{}
 		tv.ValueGUID = md5.MD5(c.IndicatorInfo["TargetCode"] + indicator[0] + c.RegionCode)
 		tv.TargetGUID = md5.MD5(c.IndicatorInfo["TargetCode"])
 		tv.TargetCode = c.IndicatorInfo["TargetCode"]
 		tv.TargetName = c.IndicatorName
+		tv.TargetNameEN = c.IndicatorInfo["TargetNameEN"]
 		tv.DataSourceCode = c.IndicatorInfo["DataSourceCode"]
 		tv.DataSourceName = c.IndicatorInfo["DataSourceName"]
 		tv.SourceTargetCode = c.IndicatorInfo["SourceTargetCode"]

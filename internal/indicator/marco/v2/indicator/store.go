@@ -2,16 +2,14 @@ package indicator
 
 import (
 	"fmt"
-	"github.com/489397771/cct-spider/internal/indicator/pkg/response"
-	"github.com/489397771/cct-spider/pkg/db/mysql"
+	"github.com/xiaogogonuo/cct-spider/internal/indicator/marco/v2/pkg/response"
+	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"strings"
 )
 
-var Table = "t_dmaa_base_target_value"
-
 func questionMark() string {
 	var mark []string
-	for i := 0; i < response.TargetValueFieldNum; i++ {
+	for i := 0; i < response.FieldNum; i++ {
 		mark = append(mark, "?")
 	}
 	return strings.Join(mark, ",")
@@ -23,18 +21,18 @@ func init() {
 	dataString = "(" + questionMark() + ")"
 }
 
-func Dump(data []response.TargetValue) {
+func Dump(data []response.Field) {
 	var multiQuestionMark []string
 	for i := 0; i < len(data); i++ {
 		multiQuestionMark = append(multiQuestionMark, dataString)
 	}
 	multiQuestionMarkString := strings.Join(multiQuestionMark, ",")
 	sql := `INSERT INTO %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s`
-    sql = fmt.Sprintf(sql, Table, response.TargetValueFieldStr, multiQuestionMarkString, response.TargetValueFieldSVS)
-    var dumpData []interface{}
-    for _, tv := range data {
-    	values := tv.GetValues()
-    	dumpData = append(dumpData, values...)
+	sql = fmt.Sprintf(sql, table, response.FieldStr, multiQuestionMarkString, response.FieldSVS)
+	var dumpData []interface{}
+	for _, f := range data {
+		values := f.GetValues()
+		dumpData = append(dumpData, values...)
 	}
 	mysql.Transaction(sql, dumpData...)
 }
