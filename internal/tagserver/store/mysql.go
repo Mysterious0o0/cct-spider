@@ -2,9 +2,9 @@ package store
 
 import (
 	"fmt"
-	"github.com/489397771/cct-spider/internal/pkg/filter"
-	"github.com/489397771/cct-spider/internal/pkg/insertdb"
-	"github.com/489397771/cct-spider/pkg/db/mysql"
+	"cct-spider-s/internal/pkg/filter"
+	"cct-spider-s/internal/pkg/insertdb"
+	"cct-spider-s/pkg/db/mysql"
 	"strings"
 	"sync"
 )

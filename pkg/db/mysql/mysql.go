@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
-	"github.com/489397771/cct-spider/pkg/config"
-	"github.com/489397771/cct-spider/pkg/logger"
+	"cct-spider-s/pkg/config"
+	"cct-spider-s/pkg/logger"
 	"strconv"
 	"time"
 )

@@ -1,9 +1,9 @@
 package indicator
 
 import (
+	"cct-spider-s/internal/indicator/industry/v2/pkg/response"
+	"cct-spider-s/pkg/db/mysql"
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"math"
 	"strings"
 )
@@ -28,8 +28,8 @@ func batchDump(data []response.Field) {
 	length := len(data)
 	epoch := int(math.Ceil(float64(length) / float64(batchSize)))
 	for i := 0; i < epoch; i++ {
-		if batchSize * (i + 1) < length {
-			batchData := data[i*batchSize:(i+1)*batchSize]
+		if batchSize*(i+1) < length {
+			batchData := data[i*batchSize : (i+1)*batchSize]
 			dump(batchData)
 		} else {
 			batchData := data[i*batchSize:]

@@ -1,10 +1,10 @@
 package indicator
 
 import (
+	"cct-spider-s/internal/indicator/industry/v2/code"
+	"cct-spider-s/internal/indicator/industry/v2/pkg/net/http/request"
+	"cct-spider-s/internal/indicator/industry/v2/pkg/response"
 	"fmt"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/code"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/pkg/net/http/request"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/pkg/response"
 	"github.com/xiaogogonuo/cct-spider/pkg/db/mysql"
 	"github.com/xiaogogonuo/cct-spider/pkg/logger"
 	"sync"
@@ -42,13 +42,13 @@ func (m model) entrypoint(wg *sync.WaitGroup) {
 		rowRespond = response.CrawlEastMoney(m.indicatorInfo["SourceTargetCode"])
 	case "sci":
 		pd := request.PostData{
-		HY: m.indicatorInfo["HY"],
-		Level: m.indicatorInfo["2"],
-		Path1: m.indicatorInfo["Path1"],
-		Path2: m.indicatorInfo["Path2"],
-		Path3: m.indicatorInfo["Path3"],
-		Path4: m.indicatorInfo["Path4"],
-		Type: m.indicatorInfo["Type"],
+			HY:    m.indicatorInfo["HY"],
+			Level: m.indicatorInfo["2"],
+			Path1: m.indicatorInfo["Path1"],
+			Path2: m.indicatorInfo["Path2"],
+			Path3: m.indicatorInfo["Path3"],
+			Path4: m.indicatorInfo["Path4"],
+			Type:  m.indicatorInfo["Type"],
 		}
 		rowRespond = response.CrawlSCI(pd)
 	case "sina":
@@ -68,7 +68,7 @@ func (m model) entrypoint(wg *sync.WaitGroup) {
 	c := constructor{
 		indicatorName: m.indicatorName,
 		indicatorInfo: m.indicatorInfo,
-		respond: diffRespond,
+		respond:       diffRespond,
 	}
 	data := c.construct()
 	logger.Info(m.indicatorName, logger.Field("updating rows: ", len(data)))

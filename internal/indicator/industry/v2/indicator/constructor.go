@@ -1,9 +1,9 @@
 package indicator
 
 import (
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/code"
-	"github.com/xiaogogonuo/cct-spider/internal/indicator/industry/v2/pkg/response"
-	"github.com/xiaogogonuo/cct-spider/pkg/encrypt/md5"
+	"cct-spider-s/internal/indicator/industry/v2/code"
+	"cct-spider-s/internal/indicator/industry/v2/pkg/response"
+	"cct-spider-s/pkg/encrypt/md5"
 )
 
 type constructor struct {

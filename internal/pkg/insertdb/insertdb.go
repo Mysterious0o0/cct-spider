@@ -2,12 +2,12 @@ package insertdb
 
 import (
 	"fmt"
-	"github.com/489397771/cct-spider/internal/pkg/callback"
-	"github.com/489397771/cct-spider/internal/pkg/filter"
-	"github.com/489397771/cct-spider/internal/pkg/findmap"
-	"github.com/489397771/cct-spider/internal/pkg/subString"
-	"github.com/489397771/cct-spider/pkg/db/mysql"
-	"github.com/489397771/cct-spider/pkg/encrypt/md5"
+	"cct-spider-s/internal/pkg/callback"
+	"cct-spider-s/internal/pkg/filter"
+	"cct-spider-s/internal/pkg/findmap"
+	"cct-spider-s/internal/pkg/subString"
+	"cct-spider-s/pkg/db/mysql"
+	"cct-spider-s/pkg/encrypt/md5"
 	"strings"
 	"time"
 )

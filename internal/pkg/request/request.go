@@ -1,9 +1,9 @@
 package request
 
 import (
+	"cct-spider-s/internal/pkg/codec"
+	"cct-spider-s/pkg/logger"
 	"fmt"
-	"github.com/489397771/cct-spider/internal/pkg/codec"
-	"github.com/489397771/cct-spider/pkg/logger"
 	"io"
 	"io/ioutil"
 	"net/http"

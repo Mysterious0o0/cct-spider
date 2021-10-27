@@ -1,11 +1,11 @@
 package shanghai
 
 import (
+	"cct-spider-s/internal/pkg/callback"
+	"cct-spider-s/internal/pkg/parse"
+	"cct-spider-s/internal/pkg/request"
+	"cct-spider-s/internal/pkg/response"
 	"fmt"
-	"github.com/489397771/cct-spider/internal/pkg/callback"
-	"github.com/489397771/cct-spider/internal/pkg/parse"
-	"github.com/489397771/cct-spider/internal/pkg/request"
-	"github.com/489397771/cct-spider/internal/pkg/response"
 	"net/http"
 	"sync"
 )

@@ -2,16 +2,16 @@ package main
 
 import (
 	"github.com/spf13/viper"
-	"github.com/489397771/cct-spider/internal/minserver/api/v1/cbirc"
-	"github.com/489397771/cct-spider/internal/minserver/api/v1/mee"
-	"github.com/489397771/cct-spider/internal/minserver/api/v1/miit"
-	"github.com/489397771/cct-spider/internal/minserver/api/v1/sarm"
-	"github.com/489397771/cct-spider/internal/pkg/callback"
-	"github.com/489397771/cct-spider/internal/pkg/filter"
-	"github.com/489397771/cct-spider/internal/pkg/insertdb"
-	"github.com/489397771/cct-spider/pkg/config"
-	"github.com/489397771/cct-spider/pkg/encrypt/md5"
-	"github.com/489397771/cct-spider/pkg/logger"
+	"cct-spider-s/internal/minserver/api/v1/cbirc"
+	"cct-spider-s/internal/minserver/api/v1/mee"
+	"cct-spider-s/internal/minserver/api/v1/miit"
+	"cct-spider-s/internal/minserver/api/v1/sarm"
+	"cct-spider-s/internal/pkg/callback"
+	"cct-spider-s/internal/pkg/filter"
+	"cct-spider-s/internal/pkg/insertdb"
+	"cct-spider-s/pkg/config"
+	"cct-spider-s/pkg/encrypt/md5"
+	"cct-spider-s/pkg/logger"
 	"sync"
 )
 
