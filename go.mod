@@ -10,5 +10,5 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/xiaogogonuo/cct-spider v0.0.0-20210813021612-df6915e26480
 	go.uber.org/zap v1.19.1
-	golang.org/x/text v0.3.7
+	golang.org/x/text v0.3.8
 )
